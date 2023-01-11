@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  # web:
+    # build: .
+    # ports:
+      # - "1337:8080"
+    # depends_on:
+      # - db
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+  database:
+    image: "postgres"
+    restart: always
+    ports: 
+      - 5000:5432
+    volumes: 
+      - database:/data
+    environment:
+      POSTGRES_USER: username 
+      POSTGRES_PASSWORD: password 
+      POSTGRES_DB: typerace
+      
+volumes:
+  redis:
+  database:
