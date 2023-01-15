@@ -5,14 +5,18 @@ import { addRoutes } from './routers';
 import passport from 'passport';
 import dotenv from 'dotenv';
 import { initalizePassportStrategies } from './auth/strategies';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 initalizePassportStrategies();
 
+const port = process.env.EXPRESS_PORT || 1337;
+
 const app = express();
-const port = 1337;
+
 app.use(bodyParser.json());
 app.use(passport.initialize());
+app.use(cookieParser());
 
 addRoutes(app);
 

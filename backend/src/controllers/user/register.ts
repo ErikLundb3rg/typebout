@@ -12,8 +12,6 @@ interface RegisterProps {
   confirmPassword: string;
 }
 
-const saltRounds = 4;
-
 const userExists = async (username: string) => {
   const user = await getUserByUsername(username);
   return user && true;
@@ -62,7 +60,10 @@ export const register: AsyncController<RegisterProps> = async (req) => {
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(
+      password,
+      Number(process.env.SALT_ROUNDS)
+    );
 
     const user = await registerUser({
       username,

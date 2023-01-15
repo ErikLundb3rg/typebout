@@ -36,6 +36,7 @@ export const login: AsyncController<LoginProps> = async (req, res) => {
     });
   }
 
+  console.log('comparing');
   res.cookie('jid', generateRefreshToken(username), { httpOnly: true });
 
   return defaultHappyResponse({

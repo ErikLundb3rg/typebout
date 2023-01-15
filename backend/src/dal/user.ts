@@ -1,4 +1,4 @@
-import { db } from '../../prisma/client';
+import db from '../../prisma/client';
 
 interface UserDBProps {
   username: string;
