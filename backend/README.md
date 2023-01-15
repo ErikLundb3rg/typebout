@@ -1,5 +1,5 @@
-Build docker container:
+# Build docker container:
 `docker build .`
 
-Run docker image:
+# Run docker image:
 `docker compose --env-file .env up -d`

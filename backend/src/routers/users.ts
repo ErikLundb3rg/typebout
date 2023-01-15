@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import { asyncHandler } from '../api-utils';
+import { login, register } from '../controllers/user';
 
 const router = Router();
 
-router.get('/hello', (req, res) => {
-  res.json({ message: 'hello :D:DDD' });
-});
+router.post('/register', asyncHandler(register));
+router.post('/login', asyncHandler(login));
 
 export default router;

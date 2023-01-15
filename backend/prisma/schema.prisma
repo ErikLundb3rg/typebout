@@ -12,7 +12,7 @@ datasource db {
 
 model Users {
   id           Int            @id @default(autoincrement())
-  name         String
+  username     String         @unique
   password     String
   createdAt    DateTime       @default(now())
   performances Performances[]
@@ -40,7 +40,7 @@ model Races {
 
 model Quotes {
   id         Int          @id @default(autoincrement())
-  content    String
+  content    String       @unique
   categories Categories[]
   author     Author       @relation(fields: [authorId], references: [id])
   authorId   Int
@@ -49,12 +49,12 @@ model Quotes {
 
 model Author {
   id     Int      @id @default(autoincrement())
-  name   String
+  name   String   @unique
   Quotes Quotes[]
 }
 
 model Categories {
   id     Int      @id @default(autoincrement())
-  name   String
+  name   String   @unique
   quotes Quotes[]
 }
