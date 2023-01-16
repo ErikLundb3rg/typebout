@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Register Controller is successful with correct input 1`] = `
+{
+  "data": {
+    "createdAt": 2023-01-01T00:00:00.000Z,
+    "id": 1,
+    "password": "password",
+    "username": "username",
+  },
+  "message": "User signup was successful",
+  "ok": true,
+  "status": 200,
+}
+`;
+
+exports[`Register Controller is unsuccessful with confirmedPassword not matching password 1`] = `
+{
+  "data": {
+    "confirmPassword": "Confirmed password must be same as password",
+  },
+  "message": null,
+  "ok": false,
+  "status": 400,
+}
+`;
+
+exports[`Register Controller is unsuccessful with empty input 1`] = `
+{
+  "data": {
+    "password": "Password cannot be empty",
+    "username": "Username cannot be empty",
+  },
+  "message": null,
+  "ok": false,
+  "status": 400,
+}
+`;
+
+exports[`Register Controller unsuccessful with already existing user 1`] = `
+{
+  "data": null,
+  "message": "A user with this username already exists",
+  "ok": false,
+  "status": 400,
+}
+`;

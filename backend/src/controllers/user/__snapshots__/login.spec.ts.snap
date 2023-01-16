@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login Controller is successful with correct input 1`] = `
+{
+  "data": {
+    "accessToken": "accesstoken",
+  },
+  "message": "Successful Login",
+  "ok": true,
+  "status": 200,
+}
+`;
+
+exports[`Login Controller is unsuccessful with faulty password 1`] = `
+{
+  "data": null,
+  "message": "Could not find a user with that username or password",
+  "ok": false,
+  "status": 400,
+}
+`;
+
+exports[`Login Controller is unsuccessful with non-existant username 1`] = `
+{
+  "data": null,
+  "message": "Could not find a user with that username or password",
+  "ok": false,
+  "status": 400,
+}
+`;

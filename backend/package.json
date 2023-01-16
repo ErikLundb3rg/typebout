@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest -i",
+    "test": "jest",
+    "test:update": "jest --updateSnapshot",
     "dev": "nodemon ./src/index.ts",
     "start": "tsc && node dist/index.js",
     "lint": "eslint . --ext .ts",
