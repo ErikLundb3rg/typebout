@@ -42,12 +42,12 @@ model Quotes {
   id         Int          @id @default(autoincrement())
   content    String       @unique
   categories Categories[]
-  author     Author       @relation(fields: [authorId], references: [id])
+  author     Authors      @relation(fields: [authorId], references: [id])
   authorId   Int
   Races      Races[]
 }
 
-model Author {
+model Authors {
   id     Int      @id @default(autoincrement())
   name   String   @unique
   Quotes Quotes[]

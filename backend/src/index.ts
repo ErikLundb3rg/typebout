@@ -1,29 +1,16 @@
-import express from 'express';
-// import * as redis from "redis";
-import bodyParser from 'body-parser';
-import { addRoutes } from './routers';
-import passport from 'passport';
-import dotenv from 'dotenv';
-import { initalizePassportStrategies } from './auth/strategies';
-import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv'
+import { initalizePassportStrategies } from './auth/strategies'
+import app from './app'
 
-dotenv.config();
-initalizePassportStrategies();
+const bootServer = (port: string | number) => {
+  dotenv.config()
+  initalizePassportStrategies()
 
-const port = process.env.EXPRESS_PORT || 1337;
+  app.listen(port, () => {
+    return console.log(`Express is listening at http://localhost:${port}`)
+  })
+}
 
-const app = express();
+const port = process.env.EXPRESS_PORT || 1337
 
-app.use(bodyParser.json());
-app.use(passport.initialize());
-app.use(cookieParser());
-
-addRoutes(app);
-
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello' });
-});
-
-app.listen(port, () => {
-  return console.log(`Express is listening at http://localhost:${port}`);
-});
+bootServer(port)

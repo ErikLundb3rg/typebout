@@ -1,11 +1,13 @@
-import { Router } from 'express';
-import { asyncHandler } from '../api-utils';
-import { login, register, logout } from '../controllers/user';
+import { Router } from 'express'
+import { asyncHandler } from '../middlewares/api-utils'
+import { login, register, logout } from '../controllers/user'
 
-const router = Router();
+const router = Router()
 
-router.post('/register', asyncHandler(register));
-router.post('/login', asyncHandler(login));
-router.post('/logout', asyncHandler(logout));
+router.post('/register', asyncHandler(register))
 
-export default router;
+router.post('/login', asyncHandler(login))
+
+router.post('/logout', asyncHandler(logout))
+
+export default router

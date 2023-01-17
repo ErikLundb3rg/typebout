@@ -5,7 +5,7 @@ exports[`Logout Controller fails to sign out when cookie is present 1`] = `
   "data": null,
   "message": "Could not logout, perhaps you are not logged in?",
   "ok": false,
-  "status": 400,
+  "status": 401,
 }
 `;
 

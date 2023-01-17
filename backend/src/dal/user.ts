@@ -1,8 +1,8 @@
-import db from '../../prisma/client';
+import db from '../../prisma/client'
 
 interface UserDBProps {
-  username: string;
-  password: string;
+  username: string
+  password: string
 }
 
 export const registerUser = async ({ username, password }: UserDBProps) =>
@@ -11,11 +11,11 @@ export const registerUser = async ({ username, password }: UserDBProps) =>
       username,
       password
     }
-  });
+  })
 
 export const getUserByUsername = async (username: string) =>
   await db.users.findUnique({
     where: {
       username
     }
-  });
+  })

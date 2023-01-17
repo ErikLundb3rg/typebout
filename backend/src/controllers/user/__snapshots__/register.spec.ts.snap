@@ -42,6 +42,6 @@ exports[`Register Controller unsuccessful with already existing user 1`] = `
   "data": null,
   "message": "A user with this username already exists",
   "ok": false,
-  "status": 400,
+  "status": 401,
 }
 `;
