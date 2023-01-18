@@ -19,8 +19,9 @@ export class BaseError extends Error {
 
     if (this.status >= 500) {
       this.message = 'Internal Server Error'
-    } else {
-      this.message = String(message)
+      return
     }
+
+    this.message = String(message)
   }
 }
