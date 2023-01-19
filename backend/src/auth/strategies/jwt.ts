@@ -1,15 +1,14 @@
-import passport from 'passport';
-import { Strategy as JWTStrategy } from 'passport-jwt';
-import { Request } from 'express';
+import passport from 'passport'
+import { Strategy as JWTStrategy } from 'passport-jwt'
+import { Request } from 'express'
 
 const cookieExtractor = (req: Request) => {
   if (req && req.cookies) {
-    const jwt = req.cookies['jid'];
-    console.log('jwt', jwt);
-    return jwt;
+    const jwt = req.cookies['jid']
+    return jwt
   }
-  return null;
-};
+  return null
+}
 
 export const initializeJWTStrategy = () => {
   passport.use(
@@ -20,13 +19,13 @@ export const initializeJWTStrategy = () => {
         secretOrKey: process.env.PRIVATE_KEY_JWT_REFRESH
       },
       (payload, done) => {
-        const { expiration } = payload;
+        const { expiration } = payload
 
         if (Date.now() > expiration) {
-          done('Expired token', false);
+          done('Expired token', false)
         }
-        done(null, payload);
+        done(null, payload)
       }
     )
-  );
-};
+  )
+}

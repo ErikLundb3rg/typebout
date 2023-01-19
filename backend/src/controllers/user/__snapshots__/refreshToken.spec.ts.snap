@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RefreshToken Controller gives back refreshToken and accessToken 1`] = `
+{
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMyMzEzMTMxIiwiaWF0IjoxNjc0MTQzNTYzLCJleHAiOjE2Nzg0NjM1NjN9.lA3Pb__ue79VrkZ9pNhdx3bjtOyk4AN1pTeKSNlL658",
+  },
+  "message": "Successfully updated the access token",
+  "ok": true,
+  "status": 200,
+}
+`;

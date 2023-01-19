@@ -25,15 +25,22 @@ const onConnection = (socket: Socket) => {
   })
 }
 
-export const addSocketIO = (app: Application) => {
-  const httpServer = http.createServer(app)
+const LOCALHOST_URL = 'http://localhost:3000'
 
+export const bootSocketIO = (socketPort: number) => {
   const io = new Server<
     ClientToServerEvents,
     ServerToClientEvents,
     Record<string, never>,
     SocketData
-  >(httpServer)
+  >({
+    cors: {
+      origin: LOCALHOST_URL,
+      methods: ['GET', 'POST']
+    }
+  })
 
   io.on('connection', onConnection)
+
+  io.listen(socketPort)
 }

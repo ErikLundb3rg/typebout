@@ -19,3 +19,10 @@ export const getUserByUsername = async (username: string) =>
       username
     }
   })
+
+export const getUserById = async (id: number) =>
+  await db.users.findUnique({
+    where: {
+      id
+    }
+  })
