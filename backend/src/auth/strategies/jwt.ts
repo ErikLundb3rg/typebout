@@ -10,6 +10,8 @@ const cookieExtractor = (req: Request) => {
   return null
 }
 
+// This is used to verify refresh token, which is stored
+// in an httponly cookie.
 export const initializeJWTStrategy = () => {
   passport.use(
     'jwt',
@@ -20,7 +22,7 @@ export const initializeJWTStrategy = () => {
       },
       (payload, done) => {
         const { expiration } = payload
-
+        console.log('running jwt strategy')
         if (Date.now() > expiration) {
           done('Expired token', false)
         }

@@ -35,14 +35,18 @@ export const asyncHandler = (controller: AsyncController<any>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const response = await controller(req, res)
-      const { message, data, status, ok } = response
-      res.status(status).send({
-        message,
-        ok,
-        data
-      })
+      sendBaseResponse(response, res)
     } catch (error) {
       next(error)
     }
   }
+}
+
+export const sendBaseResponse = (baseResponse: BaseResponse, res: Response) => {
+  const { message, data, status, ok } = baseResponse
+  res.status(status).send({
+    message,
+    ok,
+    data
+  })
 }
