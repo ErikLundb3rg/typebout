@@ -3,7 +3,7 @@
 exports[`RefreshToken Controller gives back refreshToken and accessToken 1`] = `
 {
   "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMyMzEzMTMxIiwiaWF0IjoxNjc0MTQzNTYzLCJleHAiOjE2Nzg0NjM1NjN9.lA3Pb__ue79VrkZ9pNhdx3bjtOyk4AN1pTeKSNlL658",
+    "accessToken": Any<String>,
   },
   "message": "Successfully updated the access token",
   "ok": true,
