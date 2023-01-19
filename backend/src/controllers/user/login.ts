@@ -9,6 +9,7 @@ import {
   generateRefreshToken,
   generateAccessToken
 } from '../../auth/util/verifyers'
+import { errorCodes } from '../../utils/error-codes'
 
 interface LoginProps {
   username: string
@@ -23,7 +24,7 @@ export const login: AsyncController<LoginProps> = async (req, res) => {
   if (!user) {
     return defaultErrorResponse({
       message: 'Could not find a user with that username or password',
-      status: 401
+      status: errorCodes.UNAUTHENTICATED
     })
   }
 
@@ -34,7 +35,7 @@ export const login: AsyncController<LoginProps> = async (req, res) => {
   if (!result) {
     return defaultErrorResponse({
       message: 'Could not find a user with that username or password',
-      status: 401
+      status: errorCodes.UNAUTHENTICATED
     })
   }
 

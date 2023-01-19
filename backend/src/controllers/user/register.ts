@@ -5,6 +5,7 @@ import {
 } from '../../middlewares/api-utils'
 import { registerUser, getUserByUsername } from '../../dal/user'
 import bcrypt from 'bcrypt'
+import { errorCodes } from '../../utils/error-codes'
 
 interface RegisterProps {
   username: string
@@ -46,7 +47,7 @@ export const register: AsyncController<RegisterProps> = async (req) => {
   if (!ok) {
     return defaultErrorResponse({
       data: errors,
-      status: 400
+      status: errorCodes.BAD_REQUEST
     })
   }
 
@@ -55,7 +56,7 @@ export const register: AsyncController<RegisterProps> = async (req) => {
   if (await userExists(username)) {
     return defaultErrorResponse({
       message: 'A user with this username already exists',
-      status: 401
+      status: errorCodes.UNAUTHENTICATED
     })
   }
 
@@ -77,7 +78,7 @@ export const register: AsyncController<RegisterProps> = async (req) => {
   } catch (error) {
     return defaultErrorResponse({
       message: 'Something went wrong',
-      status: 500
+      status: errorCodes.INTERNAL_SERVER_ERROR
     })
   }
 }

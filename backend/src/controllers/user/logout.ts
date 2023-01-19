@@ -3,6 +3,7 @@ import {
   defaultErrorResponse,
   defaultHappyResponse
 } from '../../middlewares/api-utils'
+import { errorCodes } from '../../utils/error-codes'
 
 export const logout: AsyncController<Record<string, never>> = async (
   req,
@@ -17,6 +18,6 @@ export const logout: AsyncController<Record<string, never>> = async (
 
   return defaultErrorResponse({
     message: 'Could not logout, perhaps you are not logged in?',
-    status: 401
+    status: errorCodes.UNAUTHENTICATED
   })
 }

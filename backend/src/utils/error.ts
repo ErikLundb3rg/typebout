@@ -1,10 +1,12 @@
+import { errorCodes } from './error-codes'
+
 export class BaseError extends Error {
   public status: number
   public message: string
 
   constructor(status: number, message?: string, stack?: string) {
     super()
-    this.status = status ?? 500
+    this.status = status ?? errorCodes.INTERNAL_SERVER_ERROR
 
     // So that `instanceof` will work with custom errors
     // https://www.dannyguo.com/blog/how-to-fix-instanceof-not-working-for-custom-errors-in-typescript
