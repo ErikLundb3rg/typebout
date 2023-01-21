@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { refreshToken } from './index'
+import { sendBaseResponse } from '../../middlewares/api-utils'
 
 describe('RefreshToken Controller', () => {
   let req: any = {}
@@ -9,6 +10,7 @@ describe('RefreshToken Controller', () => {
     req = {}
     res = {}
     res.cookie = jest.fn()
+    ;(sendBaseResponse as jest.Mock) = jest.fn()
   })
 
   test('gives back refreshToken and accessToken', async () => {
@@ -17,7 +19,9 @@ describe('RefreshToken Controller', () => {
         userId: 1232313131
       }
     }
-    expect(refreshToken(req, res)).toMatchSnapshot({
+    refreshToken(req, res)
+    const response = (sendBaseResponse as jest.Mock).mock.calls[0][0]
+    expect(response).toMatchSnapshot({
       data: {
         accessToken: expect.any(String)
       }

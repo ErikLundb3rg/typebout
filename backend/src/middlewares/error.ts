@@ -6,8 +6,7 @@ import { errorCodes } from '../utils/error-codes'
 export const errorHandlingMiddleWare = (
   genericError: Error,
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) => {
   const response: BaseResponse = {
     data: null,
