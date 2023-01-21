@@ -28,7 +28,7 @@ export const login: AsyncController<LoginProps> = async (req, res) => {
     })
   }
 
-  const { password: hashedPassword } = user
+  const { password: hashedPassword, id } = user
 
   const result = await bcrypt.compare(password, hashedPassword)
 
@@ -39,11 +39,11 @@ export const login: AsyncController<LoginProps> = async (req, res) => {
     })
   }
 
-  res.cookie('jid', generateRefreshToken(username), { httpOnly: true })
+  res.cookie('jid', generateRefreshToken(id), { httpOnly: true })
 
   return defaultHappyResponse({
     data: {
-      accessToken: generateAccessToken(username)
+      accessToken: generateAccessToken(id)
     },
     message: 'Successful Login'
   })

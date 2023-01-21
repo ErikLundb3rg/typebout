@@ -10,7 +10,8 @@ import { JWTPayload } from '../../types'
 import { Request, Response } from 'express'
 
 export const refreshToken = (req: Request, res: Response) => {
-  const userId = String((req.user as JWTPayload).userId)
+  const userId = (req.user as JWTPayload).userId
+
   res.cookie('jid', generateRefreshToken(userId))
 
   sendBaseResponse(

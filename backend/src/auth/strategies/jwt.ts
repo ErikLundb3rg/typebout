@@ -22,7 +22,6 @@ export const initializeJWTStrategy = () => {
       },
       (payload, done) => {
         const { expiration } = payload
-        console.log('running jwt strategy')
         if (Date.now() > expiration) {
           done('Expired token', false)
         }

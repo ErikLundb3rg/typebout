@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { BaseResponse } from './api-utils'
+import { BaseResponse, sendBaseResponse } from './api-utils'
 import { BaseError } from '../utils/error'
 import { errorCodes } from '../utils/error-codes'
 
@@ -30,10 +30,5 @@ export const errorHandlingMiddleWare = (
     console.error(error)
   }
 
-  const { data, message, ok, status } = response
-  res.status(status).send({
-    message,
-    ok,
-    data
-  })
+  sendBaseResponse(response, res)
 }

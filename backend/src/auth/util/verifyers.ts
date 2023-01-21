@@ -1,17 +1,17 @@
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'
 
-export const generateAccessToken = (userId: string) => {
+export const generateAccessToken = (userId: number) => {
   return jwt.sign({ userId }, process.env.PRIVATE_KEY_JWT_ACCESS as string, {
     expiresIn: '50d'
-  });
-};
+  })
+}
 
-export const generateRefreshToken = (userId: string) => {
+export const generateRefreshToken = (userId: number) => {
   return jwt.sign({ userId }, process.env.PRIVATE_KEY_JWT_REFRESH as string, {
     expiresIn: '10d'
-  });
-};
+  })
+}
 
 export const verifyAccessToken = (token: string) => {
-  return jwt.verify(token, process.env.PRIVATE_KEY_JWT_ACCESS as string);
-};
+  return jwt.verify(token, process.env.PRIVATE_KEY_JWT_ACCESS as string)
+}

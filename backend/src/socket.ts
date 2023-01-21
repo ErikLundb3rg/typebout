@@ -1,7 +1,5 @@
 import { Server, Socket } from 'socket.io'
-import { Application } from 'express'
 import { createRoomHandler } from './game/handlers'
-import http from 'http'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ServerToClientEvents {}
