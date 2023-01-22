@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { errorHandlingMiddleWare } from './error'
 import { sendBaseResponse } from './api-utils'
+import { BaseError } from '../utils/error'
+import { errorCodes } from '../utils/error-codes'
 
 describe('Error handling middleware', () => {
   let req: any = {}
@@ -23,6 +25,15 @@ describe('Error handling middleware', () => {
   })
   test('should return a error response on URI error', async () => {
     errorHandlingMiddleWare(new URIError(), req, res)
+    const response = (sendBaseResponse as jest.Mock).mock.calls[0][0]
+    expect(response).toMatchSnapshot()
+  })
+  test('should replace response with BaseError', async () => {
+    errorHandlingMiddleWare(
+      new BaseError(errorCodes.BAD_REQUEST, 'Custom message'),
+      req,
+      res
+    )
     const response = (sendBaseResponse as jest.Mock).mock.calls[0][0]
     expect(response).toMatchSnapshot()
   })

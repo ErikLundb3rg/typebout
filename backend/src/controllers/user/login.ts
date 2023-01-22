@@ -43,7 +43,8 @@ export const login: AsyncController<LoginProps> = async (req, res) => {
 
   return defaultHappyResponse({
     data: {
-      accessToken: generateAccessToken(id)
+      accessToken: generateAccessToken(id),
+      user
     },
     message: 'Successful Login'
   })

@@ -1,17 +1,11 @@
 import dotenv from 'dotenv'
 import { initalizePassportStrategies } from './auth/strategies'
-import app from './app'
+import { bootServer } from './app'
 import { bootSocketIO } from './socket'
 
 const setup = () => {
   dotenv.config()
   initalizePassportStrategies()
-}
-
-const bootServer = (port: string | number) => {
-  app.listen(port, () => {
-    return console.log(`Express is listening at http://localhost:${port}`)
-  })
 }
 
 const initialize = () => {

@@ -6,18 +6,18 @@ import cookieParser from 'cookie-parser'
 import { errorHandlingMiddleWare } from './middlewares/error'
 import cors from 'cors'
 
-const buildApp = () => {
+export const bootServer = (port: string | number) => {
   const app = express()
 
+  app.use(cors())
   app.use(bodyParser.json())
   app.use(cookieParser())
   app.use(passport.initialize())
-  app.use(cors())
 
   addRoutes(app)
   app.use(errorHandlingMiddleWare)
 
-  return app
+  app.listen(port, () => {
+    return console.log(`Express is listening at http://localhost:${port}`)
+  })
 }
-
-export default buildApp()

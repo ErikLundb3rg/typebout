@@ -4,6 +4,12 @@ exports[`Login Controller is successful with correct input 1`] = `
 {
   "data": {
     "accessToken": "accesstoken",
+    "user": {
+      "createdAt": Any<Date>,
+      "id": 1,
+      "password": "password",
+      "username": "username",
+    },
   },
   "message": "Successful Login",
   "ok": true,
