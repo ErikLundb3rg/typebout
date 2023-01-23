@@ -2,9 +2,11 @@
 
 import useAuth from '@/providers/useAuth';
 import { FormEvent } from 'react';
+import { useRouter } from 'next/navigation'
 
 export default function Login() {
   const { login, loading, error } = useAuth();
+  const router = useRouter()
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -15,6 +17,8 @@ export default function Login() {
       formData.get('username') as string, 
       formData.get('password') as string
     )
+
+    router.push('/')
   }
   
 
