@@ -9,16 +9,17 @@ import React, {
 } from "react";
 import * as api from "../apicalls/index";
 import { usePathname } from 'next/navigation'
-import { Player, User } from '@/types'
+import { Player } from '@/types'
 import { refreshTokens } from "@/util/auth";
 import { keys } from '@/util/localstoragekeys'
 
 interface AuthContextProps {
   loading: boolean,
   error?: any
-  user: User
+  user: Player 
   login: (username: string, password: string) => void
   logout: () => void
+  becomeGuest: (username: string) => void
 }
 
 const AuthContext = createContext<AuthContextProps>(
@@ -26,7 +27,7 @@ const AuthContext = createContext<AuthContextProps>(
 )
 
 // I hate authentication but here we go: 
-// Authentication utilizes access and refresh tokens, as described here:
+// TypeBout utilizes access and refresh tokens, as described here:
 // https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/
 // The nice part of this is that you store your longer lived refresh token
 // in an http-only cookie, which can't be accessed by client side javascript.
@@ -62,12 +63,16 @@ export const AuthProvider = ({
   useEffect(() => {
     const user = localStorage.getItem(keys.user)
     if (user) {
+      console.log('setting user in [] useEffect', JSON.parse(user))
       setUser(JSON.parse(user))
     }
   }, [])
 
   useEffect(() => {
     user && localStorage.setItem(keys.user, JSON.stringify(user))
+    if (user) {
+      console.log('setting localstorage item in [user] useEffect', JSON.stringify(user))
+    }
   }, [user])
 
 
@@ -80,7 +85,8 @@ export const AuthProvider = ({
         clearInterval(interval)
         return
       }
-
+      
+      console.log('gonna refresh tokens')
       const successful = await refreshTokens()
       console.log('Token stuff', successful, localStorage.getItem(keys.accessToken))
       
@@ -98,6 +104,7 @@ export const AuthProvider = ({
   }, [user, isGuest])
 
   const becomeGuest = (username: string) => {
+    console.log('setting user in becomeGuest useEffect')
     setUser({username})
     setIsGuest(true)
   }
@@ -121,12 +128,13 @@ export const AuthProvider = ({
   const logout = async () => {
     try {
       await api.logout()
-      setUser(undefined)
       localStorage.removeItem(keys.accessToken)
+      localStorage.removeItem(keys.user)
+      console.log('setting user in logout useEffect')
+      setUser(undefined)
     } catch (error) {
       setError(error)
     }
-
   }
 
   const memoedValue = useMemo(
