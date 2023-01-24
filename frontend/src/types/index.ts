@@ -1,9 +1,15 @@
-export interface User {
+export interface Player {
+  username: string
+}
+
+export interface User extends Player {
     id:  number,
-    username: string,
     password: string,
     createdAt: Date
 }
+
+export type Guest = Player
+
 
 export interface BaseResponse {
   message: string | null

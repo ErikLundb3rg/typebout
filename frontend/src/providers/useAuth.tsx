@@ -1,3 +1,4 @@
+"use client"
 import React, {
   createContext,
   ReactNode,
@@ -7,15 +8,17 @@ import React, {
   useState,
 } from "react";
 import * as api from "../apicalls/index";
-import { usePathname, useRouter} from 'next/navigation'
-import { User } from '@/types'
+import { usePathname } from 'next/navigation'
+import { Player, User } from '@/types'
 import { refreshTokens } from "@/util/auth";
 import { keys } from '@/util/localstoragekeys'
 
 interface AuthContextProps {
   loading: boolean,
   error?: any
+  user: User
   login: (username: string, password: string) => void
+  logout: () => void
 }
 
 const AuthContext = createContext<AuthContextProps>(
@@ -42,11 +45,11 @@ export const AuthProvider = ({
   children: ReactNode
 }): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<Player>()
+  const [isGuest, setIsGuest] = useState<boolean>(false)
   const [loadingInitial, setLoadingInitial] = useState<boolean>(false)
   const [error, setError] = useState<any>({})
   const path = usePathname()
-  const { push }= useRouter()
 
   // If we switch to another page we reset error  
   useEffect(() => {
@@ -57,8 +60,27 @@ export const AuthProvider = ({
   }, [path])
 
   useEffect(() => {
+    const user = localStorage.getItem(keys.user)
+    if (user) {
+      setUser(JSON.parse(user))
+    }
+  }, [])
+
+  useEffect(() => {
+    user && localStorage.setItem(keys.user, JSON.stringify(user))
+  }, [user])
+
+
+  useEffect(() => {
+    if (isGuest) return
+
     const time = Number(process.env.NEXT_PUBLIC_REFRESH_INTERVAL_SECONDS)*1000 || 30*1000
     const interval = setInterval(async () => {
+      if (localStorage.getItem(keys.accessToken) === undefined) {
+        clearInterval(interval)
+        return
+      }
+
       const successful = await refreshTokens()
       console.log('Token stuff', successful, localStorage.getItem(keys.accessToken))
       
@@ -73,20 +95,38 @@ export const AuthProvider = ({
       clearInterval(interval)
     }
 
-  }, [user, push])
+  }, [user, isGuest])
 
-  const login = (username: string, password: string) => {
+  const becomeGuest = (username: string) => {
+    setUser({username})
+    setIsGuest(true)
+  }
+
+  const login = async (username: string, password: string) => {
+    if (isGuest) setIsGuest(false)
     setLoading(true)
 
-    api.login({username, password})
-      .then((res) => res.data)
-      .then((res) => {
-        const { accessToken, user } = res.data
-        localStorage.setItem(keys.accessToken, accessToken)
-        setUser(user)
-    })
-      .catch(error => { setError(error) })
-      .finally(() => setLoading(false))
+    try {
+      const response  = (await api.login({username, password})).data
+      const { accessToken, user } = response.data
+      localStorage.setItem(keys.accessToken, accessToken)
+      setUser(user)
+    } catch (error) {
+      setError(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const logout = async () => {
+    try {
+      await api.logout()
+      setUser(undefined)
+      localStorage.removeItem(keys.accessToken)
+    } catch (error) {
+      setError(error)
+    }
+
   }
 
   const memoedValue = useMemo(
@@ -95,6 +135,8 @@ export const AuthProvider = ({
       loading,
       error,
       login,
+      becomeGuest,
+      logout
     }),
     [user, loading, error]
   )

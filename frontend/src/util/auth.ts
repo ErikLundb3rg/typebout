@@ -30,16 +30,7 @@ const accessTokenIsValid = () => {
   }
 }
 
-const isGuest = () => {
-  return getAccessToken() === undefined 
-}
-
-
 export const refreshTokens = async () => {
-  if (isGuest() || accessTokenIsValid()) {
-    return true
-  }
-
   const response = (await refreshToken()).data
   const { data, ok } = response
   if (ok) {

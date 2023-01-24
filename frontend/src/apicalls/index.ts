@@ -21,3 +21,10 @@ export const refreshToken = async () => {
     withCredentials: true 
   }))
 }
+
+export const logout = async () => {
+  redaxios.defaults.withCredentials = true
+  return (await redaxios.post<BaseResponse>(url + '/users/logout', {
+    withCredentials: true 
+  }))
+}

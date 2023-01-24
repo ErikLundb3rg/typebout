@@ -1,5 +1,6 @@
 
 
 export const keys = {
-  accessToken: 'access_token'
+  accessToken: 'access_token',
+  user: 'user'
 }
