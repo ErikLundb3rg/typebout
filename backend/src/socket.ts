@@ -1,27 +1,11 @@
-import { Server, Socket } from 'socket.io'
-import { createRoomHandler } from './game/handlers'
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface ServerToClientEvents {}
-
-interface ClientToServerEvents {
-  createRoom: () => void
-}
-
-interface SocketData {
-  username: string
-  isGuest: boolean
-}
-
-const onConnection = (socket: Socket) => {
-  console.log('user connected')
-
-  socket.on('createRoom', createRoomHandler(socket))
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
-  })
-}
+import { Server } from 'socket.io'
+import { onConnection } from './game'
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+  SocketData
+} from './game/socketTypes'
+import { verifyConnection } from './game/middlewares/verify'
 
 const LOCALHOST_URL = 'http://localhost:3000'
 
@@ -38,6 +22,7 @@ export const bootSocketIO = (socketPort: number) => {
     }
   })
 
+  io.use(verifyConnection)
   io.on('connection', onConnection)
 
   io.listen(socketPort)

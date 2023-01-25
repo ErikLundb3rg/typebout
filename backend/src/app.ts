@@ -9,7 +9,12 @@ import cors from 'cors'
 export const bootServer = (port: string | number) => {
   const app = express()
 
-  app.use(cors())
+  app.use(
+    cors({
+      credentials: true,
+      origin: 'http://localhost:3000'
+    })
+  )
   app.use(bodyParser.json())
   app.use(cookieParser())
   app.use(passport.initialize())

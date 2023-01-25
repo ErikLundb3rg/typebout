@@ -23,16 +23,18 @@ class RoomDirector {
     this.roomIDGenerator = new RoomIDGenerator()
   }
 
-  createRoom = (socket: Socket) => {
-    this.rooms.set(this.roomIDGenerator.getID(), new Room(socket))
+  createRoom = (user: Socket) => {
+    const id = this.roomIDGenerator.getID()
+    this.rooms.set(id, new Room(user))
+    return id
   }
 
-  addUser = (socket: Socket, roomID: number) => {
+  addUser = (user: Socket, roomID: number) => {
     const room = this.rooms.get(roomID)
     if (room) {
-      room.addUser(socket)
+      room.addUser(user)
     } else {
-      console.log(`Room not found: ${socket.data.username}${roomID}, `)
+      console.log(`Room not found: ${user.data.username}${roomID}, `)
     }
   }
 }
