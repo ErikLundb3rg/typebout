@@ -17,6 +17,7 @@ interface AuthContextProps {
   loading: boolean,
   error?: any
   user: Player 
+  isGuest: boolean,
   login: (username: string, password: string) => void
   logout: () => void
   becomeGuest: (username: string) => void
@@ -60,59 +61,77 @@ export const AuthProvider = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path])
 
+  // Reintroduce state if we refresh the page
   useEffect(() => {
     const user = localStorage.getItem(keys.user)
     if (user) {
-      console.log('setting user in [] useEffect', JSON.parse(user))
       setUser(JSON.parse(user))
+    }
+    const isGuest = localStorage.getItem(keys.isGuest)
+    if (isGuest) {
+      setIsGuest(JSON.parse(isGuest))
     }
   }, [])
 
+  // Save user in localstorage whenever we update it
   useEffect(() => {
     user && localStorage.setItem(keys.user, JSON.stringify(user))
-    if (user) {
-      console.log('setting localstorage item in [user] useEffect', JSON.stringify(user))
-    }
   }, [user])
 
-
+  // Save if user is a guest in localstorage whenever we update it
   useEffect(() => {
-    if (isGuest) return
+    localStorage.setItem(keys.isGuest, JSON.stringify(isGuest))
+  }, [isGuest])
 
+  const isLoggedIn = () => {
+    return user && !isGuest 
+  }
+  // fetch tokens periodically if logged in 
+  useEffect(() => {
+    // Don't fetch if user is a guest or if we are already fetching from another tab
+    const fetchingPeriodically = localStorage.getItem(keys.fetchingPeriodically)
+    const isFetchingPeriodically = fetchingPeriodically && JSON.parse(fetchingPeriodically)
+    console.log(`hook running, fetchingPeriodically: guest: ${isGuest}, fetching periodically: ${isFetchingPeriodically}`)
+    if (isFetchingPeriodically || !isLoggedIn()) return
+
+    localStorage.setItem(keys.fetchingPeriodically, JSON.stringify(true))
     const time = Number(process.env.NEXT_PUBLIC_REFRESH_INTERVAL_SECONDS)*1000 || 30*1000
+
+    const doneFetching = () => {
+      localStorage.setItem(keys.fetchingPeriodically, JSON.stringify(false))
+      clearInterval(interval)
+    }
+
     const interval = setInterval(async () => {
+      // If user logs out don't refresh anymore
       if (localStorage.getItem(keys.accessToken) === undefined) {
-        clearInterval(interval)
+        doneFetching()
         return
       }
-      
-      console.log('gonna refresh tokens')
+
       const successful = await refreshTokens()
-      console.log('Token stuff', successful, localStorage.getItem(keys.accessToken))
-      
+      console.log('refreshed tokens', successful)
+
       if (!successful) {
-        console.log('access token not valid...')
         setUser(undefined)
-        clearInterval(interval)
+        doneFetching()
       }
     }, time)
 
     return () => {
-      clearInterval(interval)
+      doneFetching()
     }
 
   }, [user, isGuest])
 
   const becomeGuest = (username: string) => {
-    console.log('setting user in becomeGuest useEffect')
     setUser({username})
     setIsGuest(true)
+    localStorage.setItem(keys.isGuest, JSON.stringify(true))
   }
 
   const login = async (username: string, password: string) => {
-    if (isGuest) setIsGuest(false)
     setLoading(true)
-
     try {
       const response  = (await api.login({username, password})).data
       const { accessToken, user } = response.data
@@ -123,6 +142,11 @@ export const AuthProvider = ({
     } finally {
       setLoading(false)
     }
+
+    if (isGuest) {
+      setIsGuest(false)
+      localStorage.setItem(keys.isGuest, JSON.stringify(false))
+    }
   }
 
   const logout = async () => {
@@ -130,7 +154,6 @@ export const AuthProvider = ({
       await api.logout()
       localStorage.removeItem(keys.accessToken)
       localStorage.removeItem(keys.user)
-      console.log('setting user in logout useEffect')
       setUser(undefined)
     } catch (error) {
       setError(error)
@@ -144,6 +167,7 @@ export const AuthProvider = ({
       error,
       login,
       becomeGuest,
+      isGuest,
       logout
     }),
     [user, loading, error]

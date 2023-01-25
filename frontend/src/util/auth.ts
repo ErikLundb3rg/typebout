@@ -34,7 +34,6 @@ export const refreshTokens = async () => {
   const response = (await refreshToken()).data
   const { data, ok } = response
   if (ok) {
-    console.log('setting access token')
     setAccessToken(data.accessToken)
   } else {
     console.error('invalid refresh_token')

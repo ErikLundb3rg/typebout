@@ -7,14 +7,14 @@ import styles from '@/app/page.module.css'
 
 
 export default function Login() {
-  const { login, loading, user, error } = useAuth();
+  const { login, loading, user, error, isGuest } = useAuth();
   const router = useRouter()
 
   useEffect(() => {
-    if (user) {
+    if (user && !isGuest) {
       router.push('/')
     }
-  }, [user, router])
+  }, [user, router, isGuest])
 
   
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {

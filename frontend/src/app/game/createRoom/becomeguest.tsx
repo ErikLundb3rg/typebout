@@ -1,5 +1,5 @@
 import styles from '../../page.module.css'
-import { FormEvent, useEffect } from 'react';
+import { FormEvent } from 'react';
 import useAuth from '@/providers/useAuth'
 
 const BecomeGuest = () =>  {

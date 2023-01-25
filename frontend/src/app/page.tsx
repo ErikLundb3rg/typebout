@@ -7,12 +7,13 @@ import useAuth from '@/providers/useAuth'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const { user, logout } = useAuth()
+  const { user, logout, isGuest } = useAuth()
 
   return (
     <main className={styles.main}>
       <div className={styles.description}>
-        {user && <p> You are logged in as {user.username} </p>}
+        {isGuest && <p> Guest </p>}
+        {user && <p> Hello {user.username} </p>}
         <Link href = '/users/login'> Login here </Link>
         <button onClick = {logout}> Logout here </button>
         <Link href = '/users/register'> Sign up here </Link>
