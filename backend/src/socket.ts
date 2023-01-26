@@ -4,7 +4,7 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
   SocketData
-} from './game/socketTypes'
+} from './game/types/socket'
 import { verifyConnection } from './game/middlewares/verify'
 
 const LOCALHOST_URL = 'http://localhost:3000'

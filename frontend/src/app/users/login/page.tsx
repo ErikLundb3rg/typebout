@@ -1,41 +1,33 @@
-'use client';
+'use client'
 
-import useAuth from '@/providers/useAuth';
-import { FormEvent, useEffect } from 'react';
+import useAuth from '@/providers/useAuth'
+import { FormEvent, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import styles from '@/app/page.module.css'
 
-
 export default function Login() {
-  const { login, loading, user, error, isGuest } = useAuth();
+  const { login, loading, user, error, isGuest } = useAuth()
   const router = useRouter()
 
-  useEffect(() => {
-    if (user && !isGuest) {
-      router.push('/')
-    }
-  }, [user, router, isGuest])
-
-  
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
 
     login(
-      formData.get('username') as string, 
+      formData.get('username') as string,
       formData.get('password') as string
     )
   }
 
   return (
-    <div className = {styles.description}>
-      {error && <p> Something went wrong in your input </p>}
+    <div className={styles.description}>
+      {error && <p> Something was wrong in your input </p>}
       <form onSubmit={handleSubmit}>
         <h1>Login</h1>
 
         <label>
-          username 
+          username
           <input name="username" />
         </label>
 
@@ -52,10 +44,7 @@ export default function Login() {
           Control these as you desire!
           {error && <p className={styles.error}>Bad login/password</p>}
         */}
-
       </form>
     </div>
   )
 }
-
-

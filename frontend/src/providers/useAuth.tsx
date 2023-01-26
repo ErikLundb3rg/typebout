@@ -1,48 +1,45 @@
-"use client"
+'use client'
 import React, {
   createContext,
   ReactNode,
   useContext,
   useEffect,
   useMemo,
-  useState,
-} from "react";
-import * as api from "../apicalls/index";
+  useState
+} from 'react'
+import * as api from '../apicalls/index'
 import { usePathname } from 'next/navigation'
 import { Player } from '@/types'
-import { refreshTokens } from "@/util/auth";
 import { keys } from '@/util/localstoragekeys'
 
 interface AuthContextProps {
-  loading: boolean,
+  loading: boolean
   error?: any
-  user: Player 
-  isGuest: boolean,
+  user: Player
+  isGuest: boolean
   login: (username: string, password: string) => void
   logout: () => void
   becomeGuest: (username: string) => void
 }
 
-const AuthContext = createContext<AuthContextProps>(
-  {} as AuthContextProps
-)
+const AuthContext = createContext<AuthContextProps>({} as AuthContextProps)
 
-// I hate authentication but here we go: 
+// I hate authentication but here we go:
 // TypeBout utilizes access and refresh tokens, as described here:
 // https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/
 // The nice part of this is that you store your longer lived refresh token
 // in an http-only cookie, which can't be accessed by client side javascript.
-// However: this is prone to xsrf, cross site request forgery. 
-// Our access token, which is shorter lived resides in localStorage and 
+// However: this is prone to xsrf, cross site request forgery.
+// Our access token, which is shorter lived resides in localStorage and
 // is sent in the request body and is thus not subject to xsrf,
 // However it is prone to CSS, cross site scripting.
 
-// Apparently some smart person came up with the pairing of the two, which is 
+// Apparently some smart person came up with the pairing of the two, which is
 // supposedly safer. It is horrible to implement in practice:
-// We use our refresh token to constantly refresh our access_token periodically.
+// We use axios intercept to try and refresh our tokens if our fetch fails
 
 export const AuthProvider = ({
-  children,
+  children
 }: {
   children: ReactNode
 }): JSX.Element => {
@@ -53,12 +50,12 @@ export const AuthProvider = ({
   const [error, setError] = useState<any>({})
   const path = usePathname()
 
-  // If we switch to another page we reset error  
+  // If we switch to another page we reset error
   useEffect(() => {
     if (error) {
       setError(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path])
 
   // Reintroduce state if we refresh the page
@@ -68,7 +65,9 @@ export const AuthProvider = ({
       setUser(JSON.parse(user))
     }
     const isGuest = localStorage.getItem(keys.isGuest)
+    console.log('retrieved, isguest', isGuest)
     if (isGuest) {
+      console.log('setting isGuest', JSON.parse(isGuest))
       setIsGuest(JSON.parse(isGuest))
     }
   }, [])
@@ -80,60 +79,19 @@ export const AuthProvider = ({
 
   // Save if user is a guest in localstorage whenever we update it
   useEffect(() => {
-    localStorage.setItem(keys.isGuest, JSON.stringify(isGuest))
+    isGuest && localStorage.setItem(keys.isGuest, JSON.stringify(isGuest))
   }, [isGuest])
 
-  const isLoggedIn = () => {
-    return user && !isGuest 
-  }
-  // fetch tokens periodically if logged in 
-  useEffect(() => {
-    // Don't fetch if user is a guest or if we are already fetching from another tab
-    const fetchingPeriodically = localStorage.getItem(keys.fetchingPeriodically)
-    const isFetchingPeriodically = fetchingPeriodically && JSON.parse(fetchingPeriodically)
-    console.log(`hook running, fetchingPeriodically: guest: ${isGuest}, fetching periodically: ${isFetchingPeriodically}`)
-    if (isFetchingPeriodically || !isLoggedIn()) return
-
-    localStorage.setItem(keys.fetchingPeriodically, JSON.stringify(true))
-    const time = Number(process.env.NEXT_PUBLIC_REFRESH_INTERVAL_SECONDS)*1000 || 30*1000
-
-    const doneFetching = () => {
-      localStorage.setItem(keys.fetchingPeriodically, JSON.stringify(false))
-      clearInterval(interval)
-    }
-
-    const interval = setInterval(async () => {
-      // If user logs out don't refresh anymore
-      if (localStorage.getItem(keys.accessToken) === undefined) {
-        doneFetching()
-        return
-      }
-
-      const successful = await refreshTokens()
-      console.log('refreshed tokens', successful)
-
-      if (!successful) {
-        setUser(undefined)
-        doneFetching()
-      }
-    }, time)
-
-    return () => {
-      doneFetching()
-    }
-
-  }, [user, isGuest])
-
   const becomeGuest = (username: string) => {
-    setUser({username})
+    setUser({ username })
     setIsGuest(true)
-    localStorage.setItem(keys.isGuest, JSON.stringify(true))
   }
 
   const login = async (username: string, password: string) => {
     setLoading(true)
     try {
-      const response  = (await api.login({username, password})).data
+      const response = (await api.login(username, password)).data
+      console.log('res', response)
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
       setUser(user)
@@ -145,7 +103,7 @@ export const AuthProvider = ({
 
     if (isGuest) {
       setIsGuest(false)
-      localStorage.setItem(keys.isGuest, JSON.stringify(false))
+      localStorage.removeItem(keys.isGuest)
     }
   }
 

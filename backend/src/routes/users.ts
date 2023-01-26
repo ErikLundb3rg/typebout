@@ -14,7 +14,7 @@ router.post('/logout', asyncHandler(logout))
 router.post(
   '/refreshToken',
   passport.authenticate('jwt', { session: false }),
-  refreshToken
+  asyncHandler(refreshToken)
 )
 
 router.post(

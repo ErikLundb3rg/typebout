@@ -1,30 +1,68 @@
 import { User, BaseResponse } from '@/types'
-import redaxios from 'redaxios'
+import { keys } from '@/util/localstoragekeys'
+import axios from 'axios'
 
-const url = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:1337'
+axios.defaults.withCredentials = true
 
-export const login = async (params: {
-  username: string,
-  password: string
-}) => {
-  redaxios.defaults.withCredentials = true
-  const response = await redaxios.post<BaseResponse>(url + '/users/login', {
-    ...params,
-    withCredentials: true
-  }) 
-  return response
-}
+const instance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:1337',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
 
-export const refreshToken = async () => {
-  redaxios.defaults.withCredentials = true
-  return (await redaxios.post<BaseResponse>(url + '/users/refreshToken', {
-    withCredentials: true 
-  }))
-}
+instance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem(keys.accessToken)
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
 
-export const logout = async () => {
-  redaxios.defaults.withCredentials = true
-  return (await redaxios.post<BaseResponse>(url + '/users/logout', {
-    withCredentials: true 
-  }))
-}
+instance.interceptors.response.use(
+  (res) => {
+    return res
+  },
+  async (err) => {
+    const originalConfig = err.config
+    console.log('res,', originalConfig)
+
+    if (originalConfig.url !== '/users/login' && err.response) {
+      // Our access token has expired
+      if (err.response.status === 401 && !originalConfig._retry) {
+        originalConfig._retry = true
+
+        try {
+          const res = await instance.post('/users/refreshToken')
+          console.log('res', res)
+          const { accessToken } = res.data
+
+          localStorage.setItem(keys.accessToken, accessToken)
+
+          return instance(originalConfig)
+        } catch (error) {
+          return Promise.reject(error)
+        }
+      }
+    }
+
+    return Promise.reject(err)
+  }
+)
+
+export const login = async (username: string, password: string) =>
+  await instance.post<BaseResponse>('/users/login', {
+    username,
+    password
+  })
+
+export const refreshToken = async () =>
+  await instance.post<BaseResponse>('/users/refreshToken')
+
+export const logout = async () =>
+  await instance.post<BaseResponse>('/users/logout')

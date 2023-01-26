@@ -1,8 +1,8 @@
 import styles from '../../page.module.css'
-import { FormEvent } from 'react';
+import { FormEvent } from 'react'
 import useAuth from '@/providers/useAuth'
 
-const BecomeGuest = () =>  {
+const BecomeGuest = () => {
   const { becomeGuest } = useAuth()
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -16,12 +16,12 @@ const BecomeGuest = () =>  {
   }
 
   return (
-    <div className = {styles.description}>
+    <div className={styles.description}>
       <form onSubmit={handleSubmit}>
         <h1>Play as guest</h1>
 
         <label>
-          Before you can play, please enter your nickname: 
+          Before you can play, please enter your nickname:
           <input name="username" />
         </label>
         <button> Submit</button>
