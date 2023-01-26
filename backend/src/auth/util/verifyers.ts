@@ -2,9 +2,18 @@ import jwt from 'jsonwebtoken'
 import { Users } from '@prisma/client'
 
 export const generateAccessToken = (user: Users) => {
-  return jwt.sign(user, process.env.PRIVATE_KEY_JWT_ACCESS as string, {
-    expiresIn: '50d'
-  })
+  const { id, username, createdAt } = user
+  return jwt.sign(
+    {
+      id,
+      username,
+      createdAt
+    },
+    process.env.PRIVATE_KEY_JWT_ACCESS as string,
+    {
+      expiresIn: '50d'
+    }
+  )
 }
 
 export const generateRefreshToken = (userId: number) => {
