@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import { BaseResponse, sendBaseResponse } from './api-utils'
 import { BaseError } from '../utils/error'
 import { errorCodes } from '../utils/error-codes'

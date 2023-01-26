@@ -18,6 +18,7 @@ interface LoginProps {
 
 export const login: AsyncController<LoginProps> = async (req, res) => {
   const { username, password } = req.body
+  console.log('handling login request')
 
   const user = await getUserByUsername(username)
 
@@ -43,7 +44,7 @@ export const login: AsyncController<LoginProps> = async (req, res) => {
 
   return defaultHappyResponse({
     data: {
-      accessToken: generateAccessToken(id),
+      accessToken: generateAccessToken(user),
       user
     },
     message: 'Successful Login'
