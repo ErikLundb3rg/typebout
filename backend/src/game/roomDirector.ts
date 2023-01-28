@@ -1,5 +1,5 @@
-import { Socket } from 'socket.io'
-
+import { TypeBoutSocket } from './types/game'
+// This should be something a bit more sophisticated after MVP
 class RoomIDGenerator {
   private count: number
 
@@ -23,34 +23,29 @@ class RoomDirector {
     this.roomIDGenerator = new RoomIDGenerator()
   }
 
-  createRoom = (user: Socket) => {
+  createRoom = (user: TypeBoutSocket) => {
     const id = this.roomIDGenerator.getID()
     this.rooms.set(id, new Room(user))
     return id
   }
 
-  addUser = (user: Socket, roomID: number) => {
-    const room = this.rooms.get(roomID)
-    if (room) {
-      room.addUser(user)
-    } else {
-      console.log(`Room not found: ${user.data.username}${roomID}, `)
-    }
-  }
+  getRoom = (roomId: number) => this.rooms.get(roomId)
 }
 
 class Room {
-  private users: Socket[]
-  private admin: Socket
+  private users: TypeBoutSocket[]
+  private admin: TypeBoutSocket
 
-  constructor(admin: Socket) {
-    this.admin = admin
-    this.users = [admin]
+  constructor(user: TypeBoutSocket) {
+    this.admin = user
+    this.users = [user]
   }
 
-  addUser = (user: Socket) => {
+  addUser = (user: TypeBoutSocket) => {
     this.users.push(user)
   }
+
+  getInformation = () => this.users.map((user) => user.data)
 }
 
 export default new RoomDirector()

@@ -1,14 +1,11 @@
-import { Socket } from 'socket.io'
 import roomDirector from '../roomDirector'
-import { ClientToServerEvents } from '../types/socket'
+import { SocketHandler } from '../middlewares/handlerutils'
 
 const createLink = (roomId: number) => {
-  return `http://localhost:3000/game/join/${roomId}`
+  return `http://localhost:3000/game/joinRoom?room=${roomId}`
 }
 
-export const createRoomHandler = (
-  socket: Socket
-): ClientToServerEvents['createRoom'] => {
+export const createRoomHandler: SocketHandler<'createRoom'> = (socket) => {
   return (callback) => {
     console.log('Creating room...')
     console.log('socket data: ', socket.data)

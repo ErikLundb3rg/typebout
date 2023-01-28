@@ -18,6 +18,6 @@ export const logout: AsyncController<Record<string, never>> = async (
 
   return defaultErrorResponse({
     message: 'Could not logout, perhaps you are not logged in?',
-    status: errorCodes.UNAUTHENTICATED
+    status: errorCodes.BAD_REQUEST
   })
 }
