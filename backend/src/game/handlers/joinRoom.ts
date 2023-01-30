@@ -1,5 +1,6 @@
 import roomDirector from '../roomDirector'
 import { SocketHandler } from '../middlewares/handlerutils'
+import { sendRoomInfo } from '../emissions'
 
 export const joinRoomHandler: SocketHandler<'joinRoom'> = (socket) => {
   return (roomId, callback) => {
@@ -11,7 +12,7 @@ export const joinRoomHandler: SocketHandler<'joinRoom'> = (socket) => {
     }
 
     room.addUser(socket)
-    socket.emit('roomInfo', room.getInformation())
+    sendRoomInfo(room)
     callback(true)
   }
 }

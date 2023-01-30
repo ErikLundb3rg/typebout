@@ -18,7 +18,6 @@ interface LoginProps {
 
 export const login: AsyncController<LoginProps> = async (req, res) => {
   const { username, password } = req.body
-  console.log('handling login request')
 
   const user = await getUserByUsername(username)
 

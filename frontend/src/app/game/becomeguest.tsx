@@ -1,4 +1,4 @@
-import styles from '../../page.module.css'
+import styles from '../page.module.css'
 import { FormEvent } from 'react'
 import useAuth from '@/providers/useAuth'
 

@@ -1,6 +1,12 @@
-import { User, BaseResponse } from '@/types'
 import { keys } from '@/util/localstoragekeys'
 import axios from 'axios'
+
+export interface BaseResponse {
+  message: string | null
+  data: any
+  status: number
+  ok: boolean
+}
 
 axios.defaults.withCredentials = true
 

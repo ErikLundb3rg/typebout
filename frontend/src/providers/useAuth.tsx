@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import * as api from '../apicalls/index'
 import { usePathname } from 'next/navigation'
-import { Player } from '@/types'
+import { Player } from '@/socket/types'
 import { keys } from '@/util/localstoragekeys'
 
 interface AuthContextProps {

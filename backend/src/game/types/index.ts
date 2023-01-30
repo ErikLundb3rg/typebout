@@ -1,4 +1,4 @@
-import { Socket } from 'socket.io-client'
+import { Socket } from 'socket.io'
 
 export interface Player {
   username: string
@@ -35,4 +35,9 @@ export interface SocketData {
   isGuest: boolean
 }
 
-export type TypeBoutSocket = Socket<ServerToClientEvents, ClientToServerEvents>
+export type TypeBoutSocket = Socket<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  Record<string, never>,
+  SocketData
+>

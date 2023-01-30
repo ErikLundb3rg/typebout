@@ -1,4 +1,5 @@
-import { TypeBoutSocket } from './types/game'
+import { TypeBoutSocket } from './types'
+import { UserInformation } from './types'
 // This should be something a bit more sophisticated after MVP
 class RoomIDGenerator {
   private count: number
@@ -26,13 +27,14 @@ class RoomDirector {
   createRoom = (user: TypeBoutSocket) => {
     const id = this.roomIDGenerator.getID()
     this.rooms.set(id, new Room(user))
+    console.log(`Creating room with roomID: ${id}`)
     return id
   }
 
   getRoom = (roomId: number) => this.rooms.get(roomId)
 }
 
-class Room {
+export class Room {
   private users: TypeBoutSocket[]
   private admin: TypeBoutSocket
 
@@ -45,7 +47,16 @@ class Room {
     this.users.push(user)
   }
 
-  getInformation = () => this.users.map((user) => user.data)
+  public getUsers = () => this.users
+
+  getInformation = () =>
+    this.users.map((user) => {
+      const { isGuest, username } = user.data
+      return {
+        isGuest,
+        username
+      } as UserInformation
+    })
 }
 
 export default new RoomDirector()

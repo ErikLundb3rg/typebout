@@ -1,7 +1,7 @@
 'use client'
 import styles from '../../page.module.css'
 import useAuth from '@/providers/useAuth'
-import BecomeGuest from './becomeguest'
+import BecomeGuest from '../becomeguest'
 import { useEffect, useState } from 'react'
 import { createSocket } from '@/socket/createSocket'
 import { TypeBoutSocket } from '@/socket/types'

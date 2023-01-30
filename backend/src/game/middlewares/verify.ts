@@ -1,8 +1,8 @@
-import { Socket } from 'socket.io'
 import { ExtendedError } from 'socket.io/dist/namespace'
-import { Player } from '../types/game'
+import { Player } from '../types/index'
 import { verifyAccessToken } from '../../auth/util/verifyers'
 import { Users } from '@prisma/client'
+import { TypeBoutSocket } from '../types'
 
 // This middleware will check if the connecting
 // client has the status of a logged in User
@@ -16,7 +16,7 @@ interface SocketAuthProps {
 }
 
 type SocketIOMiddleWareHandler = (
-  socket: Socket,
+  socket: TypeBoutSocket,
   next: (err?: ExtendedError | undefined) => void
 ) => void
 export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
@@ -25,8 +25,8 @@ export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
 
   if (isGuest) {
     socket.data = {
-      user,
-      isGuest
+      username: user.username,
+      isGuest: true
     }
   } // Verify that the user is actually logged in and not just saying "i'm not a guest"
   else {
@@ -35,12 +35,9 @@ export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
         accessToken
       ) as Users
       socket.data = {
-        user: {
-          id,
-          username,
-          createdAt
-        },
-        isGuest
+        id,
+        username,
+        isGuest: false
       }
     } catch (e) {
       console.error(
