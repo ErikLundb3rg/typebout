@@ -1,4 +1,4 @@
-import roomDirector from '../roomDirector'
+import roomDirector from '../logic/roomDirector'
 import { SocketHandler } from '../middlewares/handlerutils'
 import { sendRoomInfo } from '../emissions'
 

@@ -1,12 +1,11 @@
-import { Socket } from 'socket.io'
-import { TypeBoutSocket } from './types'
-import { UserInformation } from './types'
+import { TypeBoutSocket } from '../types'
+import { UserInformation } from '../types'
 
 class RoomIDGenerator {
   private count: number
 
   constructor() {
-    this.count = 0
+    this.count = 1000
   }
 
   getID = () => {

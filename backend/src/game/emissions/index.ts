@@ -1,4 +1,4 @@
-import type { Room } from '../roomDirector'
+import type { Room } from '../logic/roomDirector'
 
 export const sendRoomInfo = (room: Room) => {
   const roomInfo = room.getInformation()

@@ -1,6 +1,5 @@
-import { Socket } from 'socket.io'
-import { ClientToServerEvents } from '../types'
+import { ClientToServerEvents, TypeBoutSocket } from '../types'
 
 export type SocketHandler<fn extends keyof ClientToServerEvents> = (
-  socket: Socket
+  socket: TypeBoutSocket
 ) => ClientToServerEvents[fn]

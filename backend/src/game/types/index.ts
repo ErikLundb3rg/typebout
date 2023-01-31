@@ -27,6 +27,7 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   createRoom: (callback: (link: string) => void) => void
   joinRoom: (roomId: number, callback: (successful: boolean) => void) => void
+  startGame: () => void
 }
 
 export interface SocketData {

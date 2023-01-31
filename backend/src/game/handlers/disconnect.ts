@@ -1,5 +1,5 @@
 import { TypeBoutSocket } from '../types'
-import roomDirector from '../roomDirector'
+import roomDirector from '../logic/roomDirector'
 import { sendRoomInfo } from '../emissions'
 
 // When a sockets disconnect we should:

@@ -2,7 +2,8 @@ import { Socket } from 'socket.io'
 import {
   createRoomHandler,
   joinRoomHandler,
-  disconnectHandler
+  disconnectHandler,
+  startGameHandler
 } from './handlers'
 
 export const onConnection = (socket: Socket) => {
@@ -10,6 +11,7 @@ export const onConnection = (socket: Socket) => {
 
   socket.on('createRoom', createRoomHandler(socket))
   socket.on('joinRoom', joinRoomHandler(socket))
+  socket.on('startGame', startGameHandler(socket))
 
   socket.on('disconnect', disconnectHandler(socket))
 }
