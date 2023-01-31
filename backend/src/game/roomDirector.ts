@@ -25,14 +25,16 @@ class RoomDirector {
     this.roomIDGenerator = new RoomIDGenerator()
   }
 
-  createRoom = (user: TypeBoutSocket) => {
+  public createRoom = (user: TypeBoutSocket) => {
     const id = this.roomIDGenerator.getID()
     this.rooms.set(id, new Room(user, id))
     console.log(`Creating room with roomID: ${id}`)
     return id
   }
 
-  getRoom = (roomId: number) => this.rooms.get(roomId)
+  public getRoom = (roomID: number) => this.rooms.get(roomID)
+
+  public removeRoom = (roomID: number) => this.rooms.delete(roomID)
 }
 
 export class Room {
@@ -47,7 +49,7 @@ export class Room {
     this.addUser(user)
   }
 
-  addUser = (user: TypeBoutSocket) => {
+  public addUser = (user: TypeBoutSocket) => {
     this.users.push(user)
     user.data.roomID = this.id
   }
@@ -58,7 +60,9 @@ export class Room {
     this.users = this.users.filter((current) => current !== user)
   }
 
-  getInformation = () =>
+  public isEmpty = () => this.users.length === 0
+
+  public getInformation = () =>
     this.users.map((user) => {
       const { isGuest, username } = user.data
       return {

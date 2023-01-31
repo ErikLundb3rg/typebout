@@ -21,6 +21,11 @@ export const disconnectHandler = (socket: TypeBoutSocket) => {
 
     room.removeUser(socket)
 
+    if (room.isEmpty()) {
+      roomDirector.removeRoom(roomID)
+      return
+    }
+
     // Update other connected users about the condition of the room
     sendRoomInfo(room)
   }
