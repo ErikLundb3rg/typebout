@@ -45,8 +45,8 @@ instance.interceptors.response.use(
 
         try {
           const res = await instance.post('/users/refreshToken')
-          console.log('res', res)
-          const { accessToken } = res.data
+          const { accessToken } = res.data.data
+          console.log('received access token: ', accessToken)
 
           localStorage.setItem(keys.accessToken, accessToken)
 

@@ -14,15 +14,17 @@ export default function CreateRoom() {
   const [players, setPlayers] = useState<UserInformation[]>()
 
   useEffect(() => {
-    if (!user) return
+    ;(async () => {
+      if (!user) return
 
-    if (!socket) {
-      socket = createSocket(user, isGuest)
-    }
+      if (!socket) {
+        socket = await createSocket(user, isGuest)
+      }
 
-    socket.on('roomInfo', (players) => {
-      setPlayers(players)
-    })
+      socket.on('roomInfo', (players) => {
+        setPlayers(players)
+      })
+    })()
 
     return () => {
       socket = null
@@ -55,7 +57,7 @@ export default function CreateRoom() {
       {players?.map((player) => {
         const { isGuest, username } = player
         return (
-          <p>
+          <p key={username}>
             {' '}
             {username}: {isGuest && 'guest'}{' '}
           </p>

@@ -18,23 +18,24 @@ export default function JoinRoom() {
   const [players, setPlayers] = useState<UserInformation[]>()
 
   useEffect(() => {
-    if (!user || roomID === null) return
-    console.log('in here! ')
+    ;(async () => {
+      if (!user || roomID === null) return
 
-    if (!socket) {
-      socket = createSocket(user, isGuest)
-    }
-
-    socket.emit('joinRoom', Number(roomID), (successful) => {
-      if (!successful) {
-        setError(true)
+      if (!socket) {
+        socket = await createSocket(user, isGuest)
       }
-      setLoading(false)
-    })
 
-    socket.on('roomInfo', (players) => {
-      setPlayers(players)
-    })
+      socket.emit('joinRoom', Number(roomID), (successful) => {
+        if (!successful) {
+          setError(true)
+        }
+        setLoading(false)
+      })
+
+      socket.on('roomInfo', (players) => {
+        setPlayers(players)
+      })
+    })()
 
     return () => {
       socket = null
