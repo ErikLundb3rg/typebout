@@ -4,13 +4,14 @@ import useAuth from '@/providers/useAuth'
 import BecomeGuest from '../becomeguest'
 import { useEffect, useState } from 'react'
 import { createSocket } from '@/socket/createSocket'
-import { TypeBoutSocket } from '@/socket/types'
+import { TypeBoutSocket, UserInformation } from '@/socket/types'
 
 let socket: TypeBoutSocket | null = null
 
 export default function CreateRoom() {
   const { user, isGuest } = useAuth()
   const [link, setLink] = useState<string>()
+  const [players, setPlayers] = useState<UserInformation[]>()
 
   useEffect(() => {
     if (!user) return
@@ -18,6 +19,10 @@ export default function CreateRoom() {
     if (!socket) {
       socket = createSocket(user, isGuest)
     }
+
+    socket.on('roomInfo', (players) => {
+      setPlayers(players)
+    })
 
     return () => {
       socket = null
@@ -47,7 +52,15 @@ export default function CreateRoom() {
       ) : (
         <button onClick={handleCreateRoom}> Click here </button>
       )}
-      {}
+      {players?.map((player) => {
+        const { isGuest, username } = player
+        return (
+          <p>
+            {' '}
+            {username}: {isGuest && 'guest'}{' '}
+          </p>
+        )
+      })}
     </div>
   )
 }

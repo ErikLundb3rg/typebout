@@ -33,6 +33,7 @@ export interface SocketData {
   id?: number
   username: string
   isGuest: boolean
+  roomID: number | null
 }
 
 export type TypeBoutSocket = Socket<

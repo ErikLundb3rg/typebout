@@ -1,6 +1,7 @@
+import { Socket } from 'socket.io'
 import { TypeBoutSocket } from './types'
 import { UserInformation } from './types'
-// This should be something a bit more sophisticated after MVP
+
 class RoomIDGenerator {
   private count: number
 
@@ -26,7 +27,7 @@ class RoomDirector {
 
   createRoom = (user: TypeBoutSocket) => {
     const id = this.roomIDGenerator.getID()
-    this.rooms.set(id, new Room(user))
+    this.rooms.set(id, new Room(user, id))
     console.log(`Creating room with roomID: ${id}`)
     return id
   }
@@ -35,19 +36,27 @@ class RoomDirector {
 }
 
 export class Room {
-  private users: TypeBoutSocket[]
+  private users: TypeBoutSocket[] = []
+  // We only allow the admin to emit a start game event
   private admin: TypeBoutSocket
+  private id: number
 
-  constructor(user: TypeBoutSocket) {
+  constructor(user: TypeBoutSocket, id: number) {
     this.admin = user
-    this.users = [user]
+    this.id = id
+    this.addUser(user)
   }
 
   addUser = (user: TypeBoutSocket) => {
     this.users.push(user)
+    user.data.roomID = this.id
   }
 
   public getUsers = () => this.users
+
+  public removeUser = (user: TypeBoutSocket) => {
+    this.users = this.users.filter((current) => current !== user)
+  }
 
   getInformation = () =>
     this.users.map((user) => {

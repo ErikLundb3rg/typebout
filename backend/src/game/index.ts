@@ -1,5 +1,9 @@
 import { Socket } from 'socket.io'
-import { createRoomHandler, joinRoomHandler } from './handlers'
+import {
+  createRoomHandler,
+  joinRoomHandler,
+  disconnectHandler
+} from './handlers'
 
 export const onConnection = (socket: Socket) => {
   console.log('user connected')
@@ -7,7 +11,5 @@ export const onConnection = (socket: Socket) => {
   socket.on('createRoom', createRoomHandler(socket))
   socket.on('joinRoom', joinRoomHandler(socket))
 
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
-  })
+  socket.on('disconnect', disconnectHandler(socket))
 }
