@@ -3,43 +3,26 @@ import styles from '../../page.module.css'
 import useAuth from '@/providers/useAuth'
 import BecomeGuest from '../becomeguest'
 import { useEffect, useState } from 'react'
+import PlayGame from '../play'
 import { createSocket } from '@/socket/createSocket'
-import { TypeBoutSocket, UserInformation } from '@/socket/types'
+import { TypeBoutSocket } from '@/socket/types'
+import SocketGameComponent, {
+  BeforeGameComponentProps
+} from '../socketGameComponent'
 
 let socket: TypeBoutSocket | null = null
 
-export default function CreateRoom() {
-  const { user, isGuest } = useAuth()
+const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
   const [link, setLink] = useState<string>()
-  const [players, setPlayers] = useState<UserInformation[]>()
-
-  useEffect(() => {
-    ;(async () => {
-      if (!user) return
-
-      if (!socket) {
-        socket = await createSocket(user, isGuest)
-      }
-
-      socket.on('roomInfo', (players) => {
-        setPlayers(players)
-      })
-    })()
-
-    return () => {
-      socket = null
-    }
-  }, [user])
 
   const handleCreateRoom = () => {
-    socket?.emit('createRoom', (link) => {
-      console.log('creating room')
+    socket.emit('createRoom', (link) => {
       setLink(link)
     })
   }
 
-  if (!user) {
-    return <BecomeGuest />
+  const handleStartGame = () => {
+    socket.emit('startGame')
   }
 
   return (
@@ -50,9 +33,10 @@ export default function CreateRoom() {
         <div>
           <p> This is your link: </p>
           <p> {link} </p>
+          <button onClick={handleStartGame}> Start game </button>
         </div>
       ) : (
-        <button onClick={handleCreateRoom}> Click here </button>
+        <button onClick={handleCreateRoom}> Create room</button>
       )}
       {players?.map((player) => {
         const { isGuest, username } = player
@@ -66,3 +50,5 @@ export default function CreateRoom() {
     </div>
   )
 }
+
+export default SocketGameComponent({ BeforeGameComponent: CreateRoom })

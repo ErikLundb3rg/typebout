@@ -14,7 +14,8 @@ const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:1337',
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  withCredentials: true
 })
 
 instance.interceptors.request.use(
@@ -36,9 +37,12 @@ instance.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config
-    console.log('res,', originalConfig)
 
-    if (originalConfig.url !== '/users/login' && err.response) {
+    if (
+      originalConfig.url !== '/users/refreshToken' &&
+      originalConfig.url !== '/users/login' &&
+      err.response
+    ) {
       // Our access token has expired
       if (err.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true

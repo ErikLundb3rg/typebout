@@ -4,8 +4,8 @@ import { createSocket } from './createSocket'
 
 let socket: TypeBoutSocket | null = null
 
-export const setSocket = (user: Player, isGuest: boolean) => {
-  socket = createSocket(user, isGuest)
+export const setSocket = async (user: Player, isGuest: boolean) => {
+  socket = await createSocket(user, isGuest)
   return socket
 }
 
