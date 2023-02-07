@@ -37,10 +37,10 @@ class RoomDirector {
 }
 
 export class Room {
-  private users: TypeBoutSocket[] = []
+  public users: TypeBoutSocket[] = []
   // We only allow the admin to emit a start game event
-  private admin: TypeBoutSocket
-  private id: number
+  readonly admin: TypeBoutSocket
+  readonly id: number
 
   constructor(user: TypeBoutSocket, id: number) {
     this.admin = user
@@ -53,21 +53,22 @@ export class Room {
     user.data.roomID = this.id
   }
 
-  public getUsers = () => this.users
-
   public removeUser = (user: TypeBoutSocket) => {
     this.users = this.users.filter((current) => current !== user)
   }
 
   public isEmpty = () => this.users.length === 0
 
-  public getInformation = () =>
+  public getInformation = (): UserInformation[] =>
     this.users.map((user) => {
       const { isGuest, username } = user.data
+      if (isGuest === undefined || username === undefined) {
+        throw new Error('isGuest or username not attached to socket data')
+      }
       return {
         isGuest,
         username
-      } as UserInformation
+      }
     })
 }
 

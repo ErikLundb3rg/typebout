@@ -16,7 +16,7 @@ export const disconnectHandler = (socket: TypeBoutSocket) => {
     const room = roomDirector.getRoom(roomID)
 
     if (!room) {
-      throw new Error('We could not find the room from attached roomID')
+      return
     }
 
     room.removeUser(socket)

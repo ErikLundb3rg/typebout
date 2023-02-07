@@ -1,9 +1,62 @@
 import type { Room } from '../logic/roomDirector'
+import type { Group } from '../logic/gameDirector'
+import { TypeBoutSocket, Quote } from '../types'
+
+// Laughable:
+const toSockets = (
+  sockets: TypeBoutSocket[],
+  callback: (socket: TypeBoutSocket) => void
+) => {
+  sockets.forEach((socket) => {
+    callback(socket)
+  })
+}
 
 export const sendRoomInfo = (room: Room) => {
   const roomInfo = room.getInformation()
 
-  room.getUsers().forEach((user) => {
+  toSockets(room.users, (user) => {
     user.emit('roomInfo', roomInfo)
+  })
+}
+
+// This is very ugly but I do can't come
+// up with a better way to do this
+export const sendCountDown = (
+  count: number,
+  group: Group,
+  callback: () => void
+) => {
+  if (count <= 0) {
+    throw new Error('Count cannot be less than 0')
+  }
+  const interval = setInterval(() => {
+    toSockets(group.getSockets(), (socket) => {
+      socket.emit('countdown', count)
+    })
+    if (count === 0) {
+      clearInterval(interval)
+      callback()
+    }
+    count -= 1
+  }, 1000)
+}
+
+export const sendGameInfo = (group: Group) => {
+  const gameInfo = group.gameInformation()
+  toSockets(group.getSockets(), (user) => {
+    user.emit('gameInfo', gameInfo)
+  })
+}
+
+export const sendGameStart = (group: Group) => {
+  toSockets(group.getSockets(), (user) => {
+    user.emit('gameStarted')
+  })
+}
+
+export const sendPrepareGame = (group: Group, quote: Quote) => {
+  toSockets(group.getSockets(), (user) => {
+    user.emit('prepareGame', quote)
   })
 }

@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io'
+import { Group, PersonalGame } from '../logic/gameDirector'
 
 export interface Player {
   username: string
@@ -19,15 +20,40 @@ export interface UserInformation {
   isGuest: boolean
 }
 
+// Information about the game sent continuosly
+// to the clients
+export interface GameInformation {
+  wpm: number
+  username: string
+  color: string
+}
+
+export interface Quote {
+  content: string
+  author: string
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ServerToClientEvents {
   roomInfo: (players: UserInformation[]) => void
+  sendWord: (word: string) => void
+  // Telling client to set up the page for
+  // the game
+  prepareGame: (quote: Quote) => void
+  countdown: (count: number) => void
+  // Info about users progress sent during
+  // the game
+  gameInfo: (info: GameInformation[]) => void
+  // This is for when the players are able to
+  // start typing
+  gameStarted: () => void
 }
 
 export interface ClientToServerEvents {
   createRoom: (callback: (link: string) => void) => void
   joinRoom: (roomId: number, callback: (successful: boolean) => void) => void
   startGame: () => void
+  sendWord: (word: string) => void
 }
 
 export interface SocketData {
@@ -35,6 +61,8 @@ export interface SocketData {
   username: string
   isGuest: boolean
   roomID: number | null
+  group: Group
+  personalGame: PersonalGame
 }
 
 export type TypeBoutSocket = Socket<
