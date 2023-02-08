@@ -20,12 +20,9 @@ export interface BeforeGameComponentProps {
   players: UserInformation[] | undefined
 }
 
-interface SocketGameComponentProps {
+export default function SocketGameComponentWrapper(
   BeforeGameComponent: React.FC<BeforeGameComponentProps>
-}
-export default function SocketGameComponent({
-  BeforeGameComponent
-}: SocketGameComponentProps) {
+) {
   return () => {
     const { user, isGuest } = useAuth()
     const [players, setPlayers] = useState<UserInformation[]>()
@@ -33,7 +30,7 @@ export default function SocketGameComponent({
     const [quote, setQuote] = useState<Quote>()
     const [gameInfoArr, setGameInfoArr] = useState<GameInformation[]>([])
     const [gameStarted, setGameStarted] = useState<boolean>(false)
-    const [hasSocket, setHasSocket] = useState(false)
+    const [hasSocket, setHasSocket] = useState<boolean>(false)
 
     useEffect(() => {
       ;(async () => {
@@ -42,23 +39,24 @@ export default function SocketGameComponent({
         if (!socket) {
           socket = await createSocket(user, isGuest)
           setHasSocket(true)
+
+          socket.on('roomInfo', (players) => {
+            setPlayers(players)
+          })
+          socket.on('prepareGame', (quote) => {
+            console.log('quote', quote)
+            setQuote(quote)
+          })
+          socket.on('countdown', (count) => {
+            setCount(count)
+          })
+          socket.on('gameStarted', () => {
+            setGameStarted(true)
+          })
+          socket.on('gameInfo', (gameInfoArr) => {
+            setGameInfoArr(gameInfoArr)
+          })
         }
-        socket.on('roomInfo', (players) => {
-          setPlayers(players)
-        })
-        socket.on('prepareGame', (quote) => {
-          console.log('quote', quote)
-          setQuote(quote)
-        })
-        socket.on('countdown', (count) => {
-          setCount(count)
-        })
-        socket.on('gameStarted', () => {
-          setGameStarted(true)
-        })
-        socket.on('gameInfo', (gameInfoArr) => {
-          setGameInfoArr(gameInfoArr)
-        })
       })()
 
       return () => {
@@ -70,7 +68,7 @@ export default function SocketGameComponent({
       return <BecomeGuest />
     }
 
-    if (hasSocket && quote) {
+    if (socket && hasSocket && quote) {
       return (
         <PlayGame
           count={count!}
@@ -84,7 +82,7 @@ export default function SocketGameComponent({
       )
     }
 
-    if (hasSocket) {
+    if (socket && hasSocket) {
       return (
         <BeforeGameComponent socket={socket} user={user} players={players} />
       )

@@ -1,16 +1,9 @@
 'use client'
 import styles from '../../page.module.css'
-import useAuth from '@/providers/useAuth'
-import BecomeGuest from '../becomeguest'
-import { useEffect, useState } from 'react'
-import PlayGame from '../play'
-import { createSocket } from '@/socket/createSocket'
-import { TypeBoutSocket } from '@/socket/types'
-import SocketGameComponent, {
+import { useState } from 'react'
+import SocketGameComponentWrapper, {
   BeforeGameComponentProps
-} from '../socketGameComponent'
-
-let socket: TypeBoutSocket | null = null
+} from '../socketGameComponentWrapper'
 
 const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
   const [link, setLink] = useState<string>()
@@ -51,4 +44,4 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
   )
 }
 
-export default SocketGameComponent({ BeforeGameComponent: CreateRoom })
+export default SocketGameComponentWrapper(CreateRoom)

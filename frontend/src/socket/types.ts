@@ -25,6 +25,16 @@ export interface GameInformation {
   wpm: number
   username: string
   color: string
+  progressPercentage: number
+}
+
+export interface EndGameStats {
+  wpm: number
+  username: string
+  progressPercentage: number
+  correct: number
+  mistakes: number
+  mistakeWords: string[]
 }
 
 export interface Quote {
@@ -35,6 +45,7 @@ export interface Quote {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ServerToClientEvents {
   roomInfo: (players: UserInformation[]) => void
+  sendWord: (word: string) => void
   // Telling client to set up the page for
   // the game
   prepareGame: (quote: Quote) => void
@@ -42,6 +53,8 @@ export interface ServerToClientEvents {
   // Info about users progress sent during
   // the game
   gameInfo: (info: GameInformation[]) => void
+  // Stats about the completed game
+  completedStats: (info: EndGameStats[]) => void
   // This is for when the players are able to
   // start typing
   gameStarted: () => void
