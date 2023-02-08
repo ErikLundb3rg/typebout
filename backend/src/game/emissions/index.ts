@@ -25,7 +25,7 @@ export const sendRoomInfo = (room: Room) => {
 export const sendCountDown = (
   count: number,
   group: Group,
-  callback: () => void
+  onFinished: () => void
 ) => {
   if (count <= 0) {
     throw new Error('Count cannot be less than 0')
@@ -36,7 +36,7 @@ export const sendCountDown = (
     })
     if (count === 0) {
       clearInterval(interval)
-      callback()
+      onFinished()
     }
     count -= 1
   }, 1000)
@@ -58,5 +58,11 @@ export const sendGameStart = (group: Group) => {
 export const sendPrepareGame = (group: Group, quote: Quote) => {
   toSockets(group.getSockets(), (user) => {
     user.emit('prepareGame', quote)
+  })
+}
+
+export const sendEndGameStats = (group: Group) => {
+  toSockets(group.getSockets(), (user) => {
+    user.emit('completedStats', group.endGameStats())
   })
 }

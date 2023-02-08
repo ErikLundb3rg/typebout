@@ -1,16 +1,9 @@
 import { TypeBoutSocket } from '../types'
-import { sendGameInfo } from '../emissions'
 
 export const sendWordHandler = (socket: TypeBoutSocket) => {
   return (word: string) => {
     const { group, personalGame } = socket.data
 
-    console.log(
-      personalGame,
-      group,
-      group?.started,
-      personalGame?.hasFinished()
-    )
     if (
       !personalGame ||
       !group ||
@@ -24,6 +17,5 @@ export const sendWordHandler = (socket: TypeBoutSocket) => {
     }
 
     personalGame.receiveWord(word)
-    sendGameInfo(group)
   }
 }

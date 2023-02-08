@@ -9,7 +9,6 @@ const createLink = (roomId: number) => {
 export const createRoomHandler: SocketHandler<'createRoom'> = (socket) => {
   return (callback) => {
     console.log('Creating room...')
-    console.log('socket data: ', socket.data)
     const roomId = roomDirector.createRoom(socket)
     const room = roomDirector.getRoom(roomId)
     sendRoomInfo(room!)

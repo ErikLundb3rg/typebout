@@ -1,8 +1,46 @@
 import { SocketHandler } from '../middlewares/handlerutils'
 import roomDirector from '../logic/roomDirector'
-import games, { Group } from '../logic/gameDirector'
-import { sendCountDown, sendGameStart, sendPrepareGame } from '../emissions'
+import games, { Group, PersonalGame } from '../logic/gameDirector'
+import {
+  sendCountDown,
+  sendEndGameStats,
+  sendGameInfo,
+  sendGameStart,
+  sendPrepareGame
+} from '../emissions'
 import { Quote } from '../types/index'
+
+const sendGameInfoRepeatedly = (
+  group: Group,
+  intervalTimeMS: number,
+  maxSeconds: number
+) => {
+  // Only allow for game to run for maxSeconds
+  const maxSendTimes = maxSeconds / (intervalTimeMS / 1000)
+  let times = 0
+
+  const interval = setInterval(() => {
+    sendGameInfo(group)
+    times += 1
+    if (group.allFinished() || times > maxSendTimes) {
+      clearInterval(interval)
+    }
+  }, intervalTimeMS)
+}
+
+const onFinish = (personalGame: PersonalGame) => {
+  const { group } = personalGame
+
+  if (!group) {
+    throw new Error('PersonalGame has no attached group')
+  }
+
+  sendGameInfo(group)
+  // Send final users data to user
+  sendEndGameStats(group)
+
+  // Log users result to database
+}
 
 // Here we move the users connected to the room
 // from the roomDirector to the game logic classes
@@ -38,7 +76,7 @@ export const startGameHandler: SocketHandler<'startGame'> = (socket) => {
       author: 'author name'
     }
 
-    const group = Group.fromUsers(users, quote)
+    const group = Group.fromUsers(users, quote, onFinish)
     games.addGroup(group, room.id)
 
     group.personalGames.forEach((personalGame) => {
@@ -48,8 +86,10 @@ export const startGameHandler: SocketHandler<'startGame'> = (socket) => {
 
     sendPrepareGame(group, quote)
 
+    sendGameInfo(group)
     sendCountDown(5, group, () => {
       group.startGames()
+      sendGameInfoRepeatedly(group, 500, 140)
       sendGameStart(group)
     })
   }

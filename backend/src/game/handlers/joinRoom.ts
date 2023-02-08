@@ -5,6 +5,7 @@ import { sendRoomInfo } from '../emissions'
 export const joinRoomHandler: SocketHandler<'joinRoom'> = (socket) => {
   return (roomId, callback) => {
     const room = roomDirector.getRoom(roomId)
+    console.log(`Socket joining: user: ${socket.data.username}`)
 
     if (!room) {
       callback(false)

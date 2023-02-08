@@ -1,4 +1,4 @@
-import { TypeBoutSocket, GameInformation, Quote } from '../types'
+import { TypeBoutSocket, GameInformation, Quote, EndGameStats } from '../types'
 
 const colors = ['green', 'purple', 'blue', 'black']
 
@@ -39,11 +39,17 @@ export class Group {
   constructor(personalGames: PersonalGame[], quote: Quote) {
     this.personalGames = personalGames
     this.quote = quote
+    personalGames.forEach((personalGame) => (personalGame.group = this))
   }
 
-  public static fromUsers(users: TypeBoutSocket[], quote: Quote) {
+  public static fromUsers(
+    users: TypeBoutSocket[],
+    quote: Quote,
+    finishedCallback: (personalGame: PersonalGame) => void
+  ) {
     const personalGames = users.map(
-      (user, index) => new PersonalGame(user, colors[index], quote)
+      (user, index) =>
+        new PersonalGame(user, colors[index], quote, finishedCallback)
     )
     return new this(personalGames, quote)
   }
@@ -56,6 +62,12 @@ export class Group {
 
   public gameInformation = () =>
     this.personalGames.map((personalGame) => personalGame.getInformation())
+
+  public endGameStats = () =>
+    this.personalGames.map((personalGame) => personalGame.getEndGameStats())
+
+  public allFinished = () =>
+    this.personalGames.every((personalGame) => personalGame.hasFinished())
 
   public startGames = () => {
     if (this.started) {
@@ -73,19 +85,28 @@ export class PersonalGame {
 
   private color: string
   public user: TypeBoutSocket
+  public group: Group | undefined
 
   private quote: Quote
   private splitQuoteContent: string[]
   private currentWordIndex = 0
   private correct: number = 0
   private mistakes: number = 0
-  private mistakenWords: string[] = []
+  private mistakeWords: string[] = []
 
-  constructor(user: TypeBoutSocket, color: string, quote: Quote) {
+  private finishedCallback: (personalGame: PersonalGame) => void
+
+  constructor(
+    user: TypeBoutSocket,
+    color: string,
+    quote: Quote,
+    finishedCallback: (personalGame: PersonalGame) => void
+  ) {
     this.user = user
     this.color = color
     this.quote = quote
     this.splitQuoteContent = splitStringIncludeSpaces(quote.content)
+    this.finishedCallback = finishedCallback
   }
 
   public startGame = () => {
@@ -94,20 +115,44 @@ export class PersonalGame {
 
   public hasFinished = () => this.endTime !== null
 
+  private getWPM = () => {
+    if (this.endTime !== null && this.startTime !== null) {
+      return Math.round(
+        this.correct / 5 / ((this.endTime - this.startTime) / 60000)
+      )
+    }
+
+    if (this.startTime !== null) {
+      return Math.round(
+        this.correct / 5 / ((Date.now() - this.startTime) / 60000)
+      )
+    }
+    return 0
+  }
+
   // This information is sent during the game
   // to all users
   public getInformation = (): GameInformation => {
-    if (this.startTime == null) {
-      throw new Error(
-        'Can not get information of PersonalGame when there is no set Starttime'
+    return {
+      wpm: this.getWPM(),
+      username: this.user.data.username || 'unknown',
+      color: this.color,
+      progressPercentage: Math.round(
+        (this.currentWordIndex / this.quote.content.length) * 100
       )
     }
-    const deltaTime = Date.now() - this.startTime
+  }
 
+  public getEndGameStats = (): EndGameStats => {
+    const { progressPercentage, username, wpm } = this.getInformation()
+    const { correct, mistakes, mistakeWords } = this
     return {
-      wpm: Math.round(this.correct / 5 / (deltaTime / 60000)),
-      username: this.user.data.username || 'unknown',
-      color: this.color
+      progressPercentage,
+      username,
+      wpm,
+      correct,
+      mistakes,
+      mistakeWords
     }
   }
 
@@ -119,9 +164,9 @@ export class PersonalGame {
 
       // If we have not Aalready hade a mistake on this word,
       // add it to the list of mistaken words
-      const lastMistakenWord = this.mistakenWords[this.mistakenWords.length - 1]
+      const lastMistakenWord = this.mistakeWords[this.mistakeWords.length - 1]
       if (lastMistakenWord !== currentWord) {
-        this.mistakenWords.push(currentWord)
+        this.mistakeWords.push(currentWord)
       }
 
       return false
@@ -133,6 +178,7 @@ export class PersonalGame {
     const wasLastWord = this.currentWordIndex === this.splitQuoteContent.length
     if (wasLastWord) {
       this.endTime = Date.now()
+      this.finishedCallback(this)
     }
 
     return true
