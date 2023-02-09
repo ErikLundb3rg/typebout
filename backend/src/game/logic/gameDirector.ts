@@ -18,17 +18,17 @@ const splitStringIncludeSpaces = (str: string) => {
   return res
 }
 class Games {
-  private games: Map<number, Group>
+  private games: Map<string, Group>
 
   constructor() {
     this.games = new Map()
   }
 
-  public addGroup = (group: Group, id: number) => {
+  public addGroup = (group: Group, id: string) => {
     this.games.set(id, group)
   }
 
-  public getGroup = (id: number) => this.games.get(id)
+  public getGroup = (id: string) => this.games.get(id)
 }
 
 export class Group {
@@ -147,7 +147,6 @@ export class PersonalGame {
     const { progressPercentage, username, wpm } = this.getInformation()
     const { correct, mistakes, mistakeWords } = this
     return {
-      progressPercentage,
       username,
       wpm,
       correct,

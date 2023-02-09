@@ -34,7 +34,6 @@ const onFinish = (personalGame: PersonalGame) => {
   if (!group) {
     throw new Error('PersonalGame has no attached group')
   }
-
   sendGameInfo(group)
   // Send final users data to user
   sendEndGameStats(group)
