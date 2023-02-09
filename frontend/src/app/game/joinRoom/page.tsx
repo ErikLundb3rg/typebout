@@ -15,7 +15,12 @@ const JoinRoom = ({ players, socket, user }: BeforeGameComponentProps) => {
   useEffect(() => {
     if (!user) return
 
-    socket.emit('joinRoom', Number(roomID), (successful) => {
+    if (!roomID) {
+      setError(true)
+      return
+    }
+
+    socket.emit('joinRoom', roomID, (successful) => {
       if (!successful) {
         setError(true)
       }

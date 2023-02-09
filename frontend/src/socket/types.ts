@@ -31,7 +31,6 @@ export interface GameInformation {
 export interface EndGameStats {
   wpm: number
   username: string
-  progressPercentage: number
   correct: number
   mistakes: number
   mistakeWords: string[]
@@ -62,16 +61,9 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   createRoom: (callback: (link: string) => void) => void
-  joinRoom: (roomId: number, callback: (successful: boolean) => void) => void
+  joinRoom: (roomId: string, callback: (successful: boolean) => void) => void
   startGame: () => void
   sendWord: (word: string) => void
-}
-
-export interface SocketData {
-  id?: number
-  username: string
-  isGuest: boolean
-  roomID: number | null
 }
 
 export type TypeBoutSocket = Socket<ServerToClientEvents, ClientToServerEvents>

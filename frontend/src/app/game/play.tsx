@@ -1,7 +1,12 @@
 'use client'
 import styles from '../page.module.css'
 import { useEffect, useState } from 'react'
-import { Quote, TypeBoutSocket, GameInformation } from '@/socket/types'
+import {
+  Quote,
+  TypeBoutSocket,
+  GameInformation,
+  EndGameStats
+} from '@/socket/types'
 import { getAutomaticTypeDirectiveNames } from 'typescript'
 
 interface PlayGameProps {
@@ -9,7 +14,8 @@ interface PlayGameProps {
   quote: Quote
   gameStarted: boolean
   onCorrectWord: (word: string) => void
-  gameInfoArr: GameInformation[] | null
+  gameInfoArr: GameInformation[]
+  endGameStats: EndGameStats[]
 }
 
 const splitStringIncludeSpaces = (str: string) => {
@@ -34,7 +40,8 @@ export default function PlayGame({
   quote,
   gameStarted,
   onCorrectWord,
-  gameInfoArr
+  gameInfoArr,
+  endGameStats
 }: PlayGameProps) {
   const splitContent = splitStringIncludeSpaces(quote.content)
   const [completedContent, setCompletedContent] = useState('')
@@ -98,6 +105,18 @@ export default function PlayGame({
       <h2> Play the game here :D </h2>
       <p> Countdown: {count && count}</p>
 
+      <div>
+        {gameInfoArr.map((g, index) => {
+          const { color, username, wpm } = g
+          return (
+            <p style={{ color: color }} key={index}>
+              {' '}
+              {username} -- wpm: {wpm}{' '}
+            </p>
+          )
+        })}
+      </div>
+
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <span style={{ color: 'gray' }}>{completedContent}</span>
         {completedContent && <pre> </pre>}
@@ -136,13 +155,24 @@ export default function PlayGame({
       </form>
 
       <div>
-        {gameInfoArr?.map((g) => {
-          const { color, username, wpm } = g
+        {endGameStats.map((stats, index) => {
+          const { correct, mistakeWords, mistakes, username, wpm } = stats
           return (
-            <p style={{ color: color }}>
-              {' '}
-              {username} -- wpm: {wpm}{' '}
-            </p>
+            <ul key={index}>
+              <h2> {username} end of game stats </h2>
+              <li> wpm: {wpm} </li>
+              <li> correct: {correct} </li>
+              <li> mistakes: {mistakes} </li>
+              {mistakeWords.length > 0 && (
+                <li>
+                  {' '}
+                  mistakeWords:{' '}
+                  {mistakeWords.map((word, idx) => {
+                    return <div> {word} </div>
+                  })}{' '}
+                </li>
+              )}
+            </ul>
           )
         })}
       </div>

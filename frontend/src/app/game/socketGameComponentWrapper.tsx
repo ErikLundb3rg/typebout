@@ -5,6 +5,7 @@ import { createSocket } from '@/socket/createSocket'
 import BecomeGuest from './becomeguest'
 import PlayGame from './play'
 import {
+  EndGameStats,
   GameInformation,
   Player,
   Quote,
@@ -29,6 +30,7 @@ export default function SocketGameComponentWrapper(
     const [count, setCount] = useState<number>()
     const [quote, setQuote] = useState<Quote>()
     const [gameInfoArr, setGameInfoArr] = useState<GameInformation[]>([])
+    const [endGameStatsArr, setEndGameStatsArr] = useState<EndGameStats[]>([])
     const [gameStarted, setGameStarted] = useState<boolean>(false)
     const [hasSocket, setHasSocket] = useState<boolean>(false)
 
@@ -56,6 +58,9 @@ export default function SocketGameComponentWrapper(
           socket.on('gameInfo', (gameInfoArr) => {
             setGameInfoArr(gameInfoArr)
           })
+          socket.on('completedStats', (stats) => {
+            setEndGameStatsArr(stats)
+          })
         }
       })()
 
@@ -78,6 +83,7 @@ export default function SocketGameComponentWrapper(
             socket?.emit('sendWord', word)
           }}
           gameInfoArr={gameInfoArr}
+          endGameStats={endGameStatsArr}
         />
       )
     }
