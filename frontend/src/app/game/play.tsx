@@ -1,19 +1,19 @@
 'use client'
 import styles from '../page.module.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Quote,
   TypeBoutSocket,
   GameInformation,
-  EndGameStats
+  EndGameStats,
+  MistakeProps
 } from '@/socket/types'
-import { getAutomaticTypeDirectiveNames } from 'typescript'
 
 interface PlayGameProps {
   count: number
   quote: Quote
   gameStarted: boolean
-  onCorrectWord: (word: string) => void
+  onCorrectWord: (word: string, mistakeWords?: MistakeProps) => void
   gameInfoArr: GameInformation[]
   endGameStats: EndGameStats[]
 }
@@ -53,6 +53,9 @@ export default function PlayGame({
   const [wrongIndex, setWrongIndex] = useState<number>(-1)
   const [completed, setCompleted] = useState(false)
 
+  let mistakes = useRef(0)
+  let mistakeWords = useRef<string[]>([])
+
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
     if (!gameStarted) {
       // @ts-ignore
@@ -61,8 +64,8 @@ export default function PlayGame({
     const input = event.currentTarget.value
 
     let isFaulty = false
-    let correctIdx = -1
-    let wrongIdx = -1
+    let newCorrectIndex = -1
+    let newWrongIndex = -1
     for (let i = 0; i < input.length; i++) {
       if (i >= currentWord.length) {
         return
@@ -70,14 +73,23 @@ export default function PlayGame({
       const char = input[i]
 
       if (char === currentWord[i] && !isFaulty) {
-        correctIdx = i
+        newCorrectIndex = i
       } else {
         isFaulty = true
-        wrongIdx = i
+        newWrongIndex = i
       }
     }
 
-    if (correctIdx === currentWord.length - 1) {
+    if (newWrongIndex > wrongIndex) {
+      mistakes.current++
+      const latestMistakeWord =
+        mistakeWords.current[mistakeWords.current.length - 1]
+      if (currentWord !== latestMistakeWord) {
+        mistakeWords.current.push(currentWord)
+      }
+    }
+
+    if (newCorrectIndex === currentWord.length - 1) {
       // @ts-ignore
       document.getElementById('input-form')?.reset()
       const newCompletedContent = completedContent + currentWord
@@ -90,14 +102,19 @@ export default function PlayGame({
 
       setCorrectIndex(-1)
       setWrongIndex(-1)
-      onCorrectWord(input)
 
       if (newCompletedContent.length === quote.content.length) {
         setCompleted(true)
+        onCorrectWord(input, {
+          mistakes: mistakes.current,
+          mistakeWords: mistakeWords.current
+        })
+        return
       }
+      onCorrectWord(input)
     } else {
-      setCorrectIndex(correctIdx)
-      setWrongIndex(wrongIdx)
+      setCorrectIndex(newCorrectIndex)
+      setWrongIndex(newWrongIndex)
     }
   }
   return (
@@ -156,11 +173,21 @@ export default function PlayGame({
 
       <div>
         {endGameStats.map((stats, index) => {
-          const { correct, mistakeWords, mistakes, username, wpm } = stats
+          const {
+            correct,
+            mistakeWords,
+            mistakes,
+            username,
+            wpm,
+            accuracy,
+            time
+          } = stats
           return (
             <ul key={index}>
               <h2> {username} end of game stats </h2>
               <li> wpm: {wpm} </li>
+              <li> accuracy: {accuracy}% </li>
+              <li> time: {time} seconds</li>
               <li> correct: {correct} </li>
               <li> mistakes: {mistakes} </li>
               {mistakeWords.length > 0 && (
@@ -168,7 +195,7 @@ export default function PlayGame({
                   {' '}
                   mistakeWords:{' '}
                   {mistakeWords.map((word, idx) => {
-                    return <div> {word} </div>
+                    return <span> {word} </span>
                   })}{' '}
                 </li>
               )}

@@ -1,7 +1,9 @@
-import { TypeBoutSocket } from '../types'
+import { TypeBoutSocket, ClientToServerEvents } from '../types'
 
-export const sendWordHandler = (socket: TypeBoutSocket) => {
-  return (word: string) => {
+export const sendWordHandler = (
+  socket: TypeBoutSocket
+): ClientToServerEvents['sendWord'] => {
+  return (word, mistakesObj) => {
     const { group, personalGame } = socket.data
 
     if (
@@ -16,6 +18,7 @@ export const sendWordHandler = (socket: TypeBoutSocket) => {
       return
     }
 
+    mistakesObj && personalGame.setMistakes(mistakesObj)
     personalGame.receiveWord(word)
   }
 }

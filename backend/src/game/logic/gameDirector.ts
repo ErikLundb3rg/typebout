@@ -1,4 +1,10 @@
-import { TypeBoutSocket, GameInformation, Quote, EndGameStats } from '../types'
+import {
+  TypeBoutSocket,
+  GameInformation,
+  Quote,
+  EndGameStats,
+  MistakeProps
+} from '../types'
 
 const colors = ['green', 'purple', 'blue', 'black']
 
@@ -17,6 +23,12 @@ const splitStringIncludeSpaces = (str: string) => {
   }
   return res
 }
+
+const round = (value: number, precision: number) => {
+  const multiplier = Math.pow(10, precision || 0)
+  return Math.round(value * multiplier) / multiplier
+}
+
 class Games {
   private games: Map<string, Group>
 
@@ -64,7 +76,9 @@ export class Group {
     this.personalGames.map((personalGame) => personalGame.getInformation())
 
   public endGameStats = () =>
-    this.personalGames.map((personalGame) => personalGame.getEndGameStats())
+    this.personalGames
+      .filter((pg) => pg.hasFinished())
+      .map((pg) => pg.getEndGameStats())
 
   public allFinished = () =>
     this.personalGames.every((personalGame) => personalGame.hasFinished())
@@ -90,7 +104,7 @@ export class PersonalGame {
   private quote: Quote
   private splitQuoteContent: string[]
   private currentWordIndex = 0
-  private correct: number = 0
+  private current: number = 0
   private mistakes: number = 0
   private mistakeWords: string[] = []
 
@@ -118,13 +132,13 @@ export class PersonalGame {
   private getWPM = () => {
     if (this.endTime !== null && this.startTime !== null) {
       return Math.round(
-        this.correct / 5 / ((this.endTime - this.startTime) / 60000)
+        this.current / 5 / ((this.endTime - this.startTime) / 60000)
       )
     }
 
     if (this.startTime !== null) {
       return Math.round(
-        this.correct / 5 / ((Date.now() - this.startTime) / 60000)
+        this.current / 5 / ((Date.now() - this.startTime) / 60000)
       )
     }
     return 0
@@ -144,15 +158,27 @@ export class PersonalGame {
   }
 
   public getEndGameStats = (): EndGameStats => {
-    const { progressPercentage, username, wpm } = this.getInformation()
-    const { correct, mistakes, mistakeWords } = this
+    if (this.endTime === null || this.startTime === null) {
+      throw new Error('Cannot retrieve end of game stats')
+    }
+    const { username, wpm } = this.getInformation()
+    const { current, mistakes, mistakeWords } = this
+    const correct = current - mistakes
     return {
       username,
       wpm,
+      time: round((this.endTime - this.startTime) / 1000, 1),
+      accuracy: round(100 * (correct / current), 0),
       correct,
       mistakes,
       mistakeWords
     }
+  }
+
+  public setMistakes = (mistakesObj: MistakeProps) => {
+    const { mistakeWords, mistakes } = mistakesObj
+    this.mistakes = mistakes
+    this.mistakeWords = mistakeWords
   }
 
   public receiveWord = (receivedWord: string) => {
@@ -172,7 +198,7 @@ export class PersonalGame {
     }
 
     this.currentWordIndex += 1
-    this.correct += currentWord.length
+    this.current += currentWord.length
 
     const wasLastWord = this.currentWordIndex === this.splitQuoteContent.length
     if (wasLastWord) {

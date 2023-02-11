@@ -3,7 +3,7 @@ import { UserInformation } from '../types'
 import ShortUniqueId from 'short-unique-id'
 
 class RoomIDGenerator {
-  uid: ShortUniqueId
+  private uid: ShortUniqueId
   constructor() {
     this.uid = new ShortUniqueId({ dictionary: 'alphanum_upper' })
   }

@@ -7,6 +7,7 @@ import PlayGame from './play'
 import {
   EndGameStats,
   GameInformation,
+  MistakeProps,
   Player,
   Quote,
   TypeBoutSocket,
@@ -79,8 +80,8 @@ export default function SocketGameComponentWrapper(
           count={count!}
           quote={quote!}
           gameStarted={gameStarted}
-          onCorrectWord={(word) => {
-            socket?.emit('sendWord', word)
+          onCorrectWord={(word: string, mistakesObj?: MistakeProps) => {
+            socket?.emit('sendWord', word, mistakesObj)
           }}
           gameInfoArr={gameInfoArr}
           endGameStats={endGameStatsArr}
