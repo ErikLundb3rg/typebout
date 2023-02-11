@@ -15,7 +15,7 @@ import { keys } from '@/util/localstoragekeys'
 interface AuthContextProps {
   loading: boolean
   error?: any
-  user: Player
+  user: Player | undefined
   isGuest: boolean
   login: (username: string, password: string) => void
   logout: () => void

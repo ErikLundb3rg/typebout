@@ -1,5 +1,5 @@
 import { TypeBoutSocket } from '../types'
-import roomDirector from '../roomDirector'
+import roomDirector from '../logic/roomDirector'
 import { sendRoomInfo } from '../emissions'
 
 // When a sockets disconnect we should:
@@ -16,7 +16,7 @@ export const disconnectHandler = (socket: TypeBoutSocket) => {
     const room = roomDirector.getRoom(roomID)
 
     if (!room) {
-      throw new Error('We could not find the room from attached roomID')
+      return
     }
 
     room.removeUser(socket)

@@ -9,9 +9,13 @@ export const createSocket = async (user: Player, isGuest: boolean) => {
   // we authenticate the user from the socket server.
 
   if (!isGuest) {
-    const res = await refreshToken()
-    const { accessToken } = res.data.data
-    localStorage.setItem(keys.accessToken, accessToken)
+    try {
+      const res = await refreshToken()
+      const { accessToken } = res.data.data
+      localStorage.setItem(keys.accessToken, accessToken)
+    } catch (error) {
+      console.log('failing refreshed tokens on createSocket')
+    }
   }
 
   const accessToken = localStorage.getItem(keys.accessToken)

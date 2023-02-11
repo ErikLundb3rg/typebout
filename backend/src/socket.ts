@@ -26,4 +26,5 @@ export const bootSocketIO = (socketPort: number) => {
   io.on('connection', onConnection)
 
   io.listen(socketPort)
+  console.log(`Socket io server listening on ${socketPort}`)
 }

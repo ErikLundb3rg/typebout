@@ -1,23 +1,20 @@
-import { Socket } from 'socket.io'
-import { TypeBoutSocket } from './types'
-import { UserInformation } from './types'
+import { TypeBoutSocket } from '../types'
+import { UserInformation } from '../types'
+import ShortUniqueId from 'short-unique-id'
 
 class RoomIDGenerator {
-  private count: number
-
+  private uid: ShortUniqueId
   constructor() {
-    this.count = 0
+    this.uid = new ShortUniqueId({ dictionary: 'alphanum_upper' })
   }
 
   getID = () => {
-    const tmp = this.count
-    this.count += 1
-    return tmp
+    return this.uid.randomUUID()
   }
 }
 
 class RoomDirector {
-  private rooms: Map<number, Room>
+  private rooms: Map<string, Room>
   private roomIDGenerator: RoomIDGenerator
 
   constructor() {
@@ -32,18 +29,18 @@ class RoomDirector {
     return id
   }
 
-  public getRoom = (roomID: number) => this.rooms.get(roomID)
+  public getRoom = (roomID: string) => this.rooms.get(roomID)
 
-  public removeRoom = (roomID: number) => this.rooms.delete(roomID)
+  public removeRoom = (roomID: string) => this.rooms.delete(roomID)
 }
 
 export class Room {
-  private users: TypeBoutSocket[] = []
+  public users: TypeBoutSocket[] = []
   // We only allow the admin to emit a start game event
-  private admin: TypeBoutSocket
-  private id: number
+  readonly admin: TypeBoutSocket
+  readonly id: string
 
-  constructor(user: TypeBoutSocket, id: number) {
+  constructor(user: TypeBoutSocket, id: string) {
     this.admin = user
     this.id = id
     this.addUser(user)
@@ -54,21 +51,22 @@ export class Room {
     user.data.roomID = this.id
   }
 
-  public getUsers = () => this.users
-
   public removeUser = (user: TypeBoutSocket) => {
     this.users = this.users.filter((current) => current !== user)
   }
 
   public isEmpty = () => this.users.length === 0
 
-  public getInformation = () =>
+  public getInformation = (): UserInformation[] =>
     this.users.map((user) => {
       const { isGuest, username } = user.data
+      if (isGuest === undefined || username === undefined) {
+        throw new Error('isGuest or username not attached to socket data')
+      }
       return {
         isGuest,
         username
-      } as UserInformation
+      }
     })
 }
 

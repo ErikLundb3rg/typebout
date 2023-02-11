@@ -2,54 +2,36 @@
 import styles from '../../page.module.css'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { TypeBoutSocket, UserInformation } from '@/socket/types'
-import useAuth from '@/providers/useAuth'
-import { createSocket } from '@/socket/createSocket'
-import BecomeGuest from '../becomeguest'
+import SocketGameComponent, {
+  BeforeGameComponentProps
+} from '../socketGameComponentWrapper'
 
-let socket: TypeBoutSocket | null = null
-
-export default function JoinRoom() {
-  const { user, isGuest } = useAuth()
+const JoinRoom = ({ players, socket, user }: BeforeGameComponentProps) => {
   const searchParams = useSearchParams()
   const roomID = searchParams.get('room')
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [players, setPlayers] = useState<UserInformation[]>()
 
   useEffect(() => {
-    ;(async () => {
-      if (!user || roomID === null) return
+    if (!user) return
 
-      if (!socket) {
-        socket = await createSocket(user, isGuest)
-      }
-
-      socket.emit('joinRoom', Number(roomID), (successful) => {
-        if (!successful) {
-          setError(true)
-        }
-        setLoading(false)
-      })
-
-      socket.on('roomInfo', (players) => {
-        setPlayers(players)
-      })
-    })()
-
-    return () => {
-      socket = null
+    if (!roomID) {
+      setError(true)
+      return
     }
-  }, [user])
 
-  if (!user) {
-    return <BecomeGuest />
-  }
+    socket.emit('joinRoom', roomID, (successful) => {
+      if (!successful) {
+        setError(true)
+      }
+      setLoading(false)
+    })
+  }, [user])
 
   if (loading) {
     return (
       <div className={styles.description}>
-        <p> Loading... </p>
+        <p> Joining room... </p>
       </div>
     )
   }
@@ -75,3 +57,5 @@ export default function JoinRoom() {
     </div>
   )
 }
+
+export default SocketGameComponent(JoinRoom)
