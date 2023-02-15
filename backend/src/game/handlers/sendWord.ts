@@ -1,8 +1,9 @@
+import { SocketHandler } from '../middlewares/handlerutils'
 import { TypeBoutSocket, ClientToServerEvents } from '../types'
 
-export const sendWordHandler = (
+export const sendWordHandler: SocketHandler<'sendWord'> = (
   socket: TypeBoutSocket
-): ClientToServerEvents['sendWord'] => {
+) => {
   return (word, mistakesObj) => {
     const { group, personalGame } = socket.data
 

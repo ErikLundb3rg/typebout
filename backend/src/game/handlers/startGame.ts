@@ -8,7 +8,8 @@ import {
   sendGameStart,
   sendPrepareGame
 } from '../emissions'
-import { Quote } from '../types/index'
+import { getRandomQuote } from '../../dal/quotes'
+import { addPerformance } from '../../dal/performances'
 
 const sendGameInfoRepeatedly = (
   group: Group,
@@ -28,7 +29,7 @@ const sendGameInfoRepeatedly = (
   }, intervalTimeMS)
 }
 
-const onFinish = (personalGame: PersonalGame) => {
+const onFinish = async (personalGame: PersonalGame) => {
   const { group } = personalGame
 
   if (!group) {
@@ -38,14 +39,31 @@ const onFinish = (personalGame: PersonalGame) => {
   // Send final users data to user
   sendEndGameStats(group)
 
+  if (personalGame.user.data.isGuest) {
+    return
+  }
+
   // Log users result to database
+  const personalGameFinalStats = personalGame.getEndGameStats()
+  const { correct, mistakes, time } = personalGameFinalStats
+  const { raceId } = await addPerformance({
+    completed_in_ms: Math.round(time * 10),
+    correct,
+    mistakes,
+    quoteId: group.quote.id,
+    userId: personalGame.user.data.id!,
+    raceId: group.raceId
+  })
+  if (!group.raceId) {
+    group.raceId = raceId
+  }
 }
 
 // Here we move the users connected to the room
 // from the roomDirector to the game logic classes
 // why? abstraction?
 export const startGameHandler: SocketHandler<'startGame'> = (socket) => {
-  return () => {
+  return async () => {
     const { roomID } = socket.data
 
     if (roomID === null || roomID === undefined) {
@@ -70,11 +88,7 @@ export const startGameHandler: SocketHandler<'startGame'> = (socket) => {
     const users = room.users
     roomDirector.removeRoom(roomID)
 
-    const quote: Quote = {
-      content: 'Please type this out. Hi ho ha ha',
-      author: 'author name'
-    }
-
+    const quote = await getRandomQuote()
     const group = Group.fromUsers(users, quote, onFinish)
     games.addGroup(group, room.id)
 

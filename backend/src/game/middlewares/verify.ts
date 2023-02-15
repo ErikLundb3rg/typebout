@@ -20,10 +20,9 @@ type SocketIOMiddleWareHandler = (
   next: (err?: ExtendedError | undefined) => void
 ) => void
 export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
-  const { accessToken, user, isGuest } = socket.handshake
-    .auth as SocketAuthProps
+  const { accessToken, user } = socket.handshake.auth as SocketAuthProps
 
-  if (isGuest) {
+  if (user.isGuest) {
     socket.data = {
       username: user.username,
       isGuest: true

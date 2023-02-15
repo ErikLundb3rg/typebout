@@ -19,15 +19,15 @@ model Users {
 }
 
 model Performances {
-  id           Int      @id @default(autoincrement())
-  correct      Int
-  mistakes     Int
-  completed_in Int
-  createdAt    DateTime @default(now())
-  user         Users    @relation(fields: [userId], references: [id])
-  userId       Int
-  race         Races    @relation(fields: [raceId], references: [id])
-  raceId       Int
+  id              Int      @id @default(autoincrement())
+  correct         Int
+  mistakes        Int
+  completed_in_ms Int
+  createdAt       DateTime @default(now())
+  user            Users    @relation(fields: [userId], references: [id])
+  userId          Int
+  race            Races    @relation(fields: [raceId], references: [id])
+  raceId          Int
 }
 
 model Races {

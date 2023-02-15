@@ -11,14 +11,14 @@ export const generateAccessToken = (user: Users) => {
     },
     process.env.PRIVATE_KEY_JWT_ACCESS as string,
     {
-      expiresIn: '50d'
+      expiresIn: '15s'
     }
   )
 }
 
 export const generateRefreshToken = (userId: number) => {
   return jwt.sign({ userId }, process.env.PRIVATE_KEY_JWT_REFRESH as string, {
-    expiresIn: '10d'
+    expiresIn: '7d'
   })
 }
 

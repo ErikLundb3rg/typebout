@@ -1,10 +1,10 @@
 import {
   TypeBoutSocket,
   GameInformation,
-  Quote,
   EndGameStats,
   MistakeProps
 } from '../types'
+import { Quotes } from '@prisma/client'
 
 const colors = ['green', 'purple', 'blue', 'black']
 
@@ -13,13 +13,10 @@ const splitStringIncludeSpaces = (str: string) => {
   let curr = []
   for (let i = 0; i < str.length; i++) {
     curr.push(str[i])
-    if (str[i] === ' ') {
+    if (str[i] === ' ' || i === str.length - 1) {
       res.push(curr.join(''))
       curr = []
     }
-  }
-  if (curr.length > 0) {
-    res.push(curr.join(''))
   }
   return res
 }
@@ -45,10 +42,11 @@ class Games {
 
 export class Group {
   public personalGames: PersonalGame[]
-  public quote: Quote
+  public quote: Quotes
   public started = false
+  public raceId?: number
 
-  constructor(personalGames: PersonalGame[], quote: Quote) {
+  constructor(personalGames: PersonalGame[], quote: Quotes) {
     this.personalGames = personalGames
     this.quote = quote
     personalGames.forEach((personalGame) => (personalGame.group = this))
@@ -56,8 +54,8 @@ export class Group {
 
   public static fromUsers(
     users: TypeBoutSocket[],
-    quote: Quote,
-    finishedCallback: (personalGame: PersonalGame) => void
+    quote: Quotes,
+    finishedCallback: (personalGame: PersonalGame) => Promise<void>
   ) {
     const personalGames = users.map(
       (user, index) =>
@@ -101,20 +99,20 @@ export class PersonalGame {
   public user: TypeBoutSocket
   public group: Group | undefined
 
-  private quote: Quote
+  private quote: Quotes
   private splitQuoteContent: string[]
   private currentWordIndex = 0
   private current: number = 0
   private mistakes: number = 0
   private mistakeWords: string[] = []
 
-  private finishedCallback: (personalGame: PersonalGame) => void
+  private finishedCallback: (personalGame: PersonalGame) => Promise<void>
 
   constructor(
     user: TypeBoutSocket,
     color: string,
-    quote: Quote,
-    finishedCallback: (personalGame: PersonalGame) => void
+    quote: Quotes,
+    finishedCallback: (personalGame: PersonalGame) => Promise<void>
   ) {
     this.user = user
     this.color = color

@@ -1,5 +1,5 @@
 import { TypeBoutSocket } from '../types'
-import { UserInformation } from '../types'
+import { Player } from '../types'
 import ShortUniqueId from 'short-unique-id'
 
 class RoomIDGenerator {
@@ -57,7 +57,7 @@ export class Room {
 
   public isEmpty = () => this.users.length === 0
 
-  public getInformation = (): UserInformation[] =>
+  public getInformation = (): Player[] =>
     this.users.map((user) => {
       const { isGuest, username } = user.data
       if (isGuest === undefined || username === undefined) {
