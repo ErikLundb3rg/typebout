@@ -23,13 +23,10 @@ const splitStringIncludeSpaces = (str: string) => {
   let curr = []
   for (let i = 0; i < str.length; i++) {
     curr.push(str[i])
-    if (str[i] === ' ') {
+    if (str[i] === ' ' || i === str.length - 1) {
       res.push(curr.join(''))
       curr = []
     }
-  }
-  if (curr.length > 0) {
-    res.push(curr.join(''))
   }
   return res
 }
@@ -136,8 +133,8 @@ export default function PlayGame({
 
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <span style={{ color: 'gray' }}>{completedContent}</span>
-        {completedContent && <pre> </pre>}
-        <span style={{ display: 'flex', flexDirection: 'row' }}>
+        {completedContent && <div>&nbsp;</div>}
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
           {currentWord?.split('').map((c, index) => {
             if (correctIndex >= index) {
               return (
@@ -157,13 +154,9 @@ export default function PlayGame({
 
             return <div key={index}> {c} </div>
           })}
-        </span>
-        <pre> </pre>
-        <span>
-          {upComingContent.map((word, idx) => {
-            return <span key={idx}> {word} </span>
-          })}
-        </span>
+        </div>
+        &nbsp;
+        <span>{upComingContent.join('')}</span>
       </div>
       <form id="input-form">
         {!completed && (

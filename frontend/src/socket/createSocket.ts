@@ -4,14 +4,12 @@ import { io } from 'socket.io-client'
 import { TypeBoutSocket } from './types'
 import { refreshToken } from '@/apicalls'
 
-export const createSocket = async (user: Player, isGuest: boolean) => {
-  // TODO: We should refresh tokens here as this is the only time
-  // we authenticate the user from the socket server.
-
-  if (!isGuest) {
+export const createSocket = async (user: Player) => {
+  if (!user.isGuest) {
     try {
       const res = await refreshToken()
       const { accessToken } = res.data.data
+      console.log('got new access token: ', accessToken)
       localStorage.setItem(keys.accessToken, accessToken)
     } catch (error) {
       console.log('failing refreshed tokens on createSocket')
@@ -25,8 +23,7 @@ export const createSocket = async (user: Player, isGuest: boolean) => {
     {
       auth: {
         accessToken,
-        user,
-        isGuest
+        user
       }
     }
   )

@@ -10,8 +10,7 @@ import {
   MistakeProps,
   Player,
   Quote,
-  TypeBoutSocket,
-  UserInformation
+  TypeBoutSocket
 } from '@/socket/types'
 
 let socket: TypeBoutSocket | null = null
@@ -19,15 +18,15 @@ let socket: TypeBoutSocket | null = null
 export interface BeforeGameComponentProps {
   socket: TypeBoutSocket
   user: Player
-  players: UserInformation[] | undefined
+  players: Player[] | undefined
 }
 
 export default function SocketGameComponentWrapper(
   BeforeGameComponent: React.FC<BeforeGameComponentProps>
 ) {
   return () => {
-    const { user, isGuest } = useAuth()
-    const [players, setPlayers] = useState<UserInformation[]>()
+    const { user } = useAuth()
+    const [players, setPlayers] = useState<Player[]>()
     const [count, setCount] = useState<number>()
     const [quote, setQuote] = useState<Quote>()
     const [gameInfoArr, setGameInfoArr] = useState<GameInformation[]>([])
@@ -40,7 +39,7 @@ export default function SocketGameComponentWrapper(
         if (!user) return
 
         if (!socket) {
-          socket = await createSocket(user, isGuest)
+          socket = await createSocket(user)
           setHasSocket(true)
 
           socket.on('roomInfo', (players) => {

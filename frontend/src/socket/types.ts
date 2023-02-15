@@ -2,20 +2,6 @@ import { Socket } from 'socket.io-client'
 
 export interface Player {
   username: string
-}
-
-export interface User extends Player {
-  id: number
-  password: string
-  createdAt: Date
-}
-
-export type Guest = Player
-
-// Information presented to users when joining
-// a room before the match has started
-export interface UserInformation {
-  username: string
   isGuest: boolean
 }
 
@@ -50,7 +36,7 @@ export interface Quote {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ServerToClientEvents {
-  roomInfo: (players: UserInformation[]) => void
+  roomInfo: (players: Player[]) => void
   sendWord: (word: string) => void
   // Telling client to set up the page for
   // the game
@@ -65,7 +51,6 @@ export interface ServerToClientEvents {
   // start typing
   gameStarted: () => void
 }
-
 export interface ClientToServerEvents {
   createRoom: (callback: (link: string) => void) => void
   joinRoom: (roomId: string, callback: (successful: boolean) => void) => void

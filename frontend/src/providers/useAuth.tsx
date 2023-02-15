@@ -16,7 +16,6 @@ interface AuthContextProps {
   loading: boolean
   error?: any
   user: Player | undefined
-  isGuest: boolean
   login: (username: string, password: string) => void
   logout: () => void
   becomeGuest: (username: string) => void
@@ -45,7 +44,6 @@ export const AuthProvider = ({
 }): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<Player>()
-  const [isGuest, setIsGuest] = useState<boolean>(false)
   const [loadingInitial, setLoadingInitial] = useState<boolean>(false)
   const [error, setError] = useState<any>({})
   const path = usePathname()
@@ -64,27 +62,15 @@ export const AuthProvider = ({
     if (user) {
       setUser(JSON.parse(user))
     }
-    const isGuest = localStorage.getItem(keys.isGuest)
-    console.log('retrieved, isguest', isGuest)
-    if (isGuest) {
-      console.log('setting isGuest', JSON.parse(isGuest))
-      setIsGuest(JSON.parse(isGuest))
-    }
   }, [])
 
   // Save user in localstorage whenever we update it
   useEffect(() => {
     user && localStorage.setItem(keys.user, JSON.stringify(user))
-  }, [user])
-
-  // Save if user is a guest in localstorage whenever we update it
-  useEffect(() => {
-    isGuest && localStorage.setItem(keys.isGuest, JSON.stringify(isGuest))
-  }, [isGuest])
+  }, [user?.username, user?.isGuest])
 
   const becomeGuest = (username: string) => {
-    setUser({ username })
-    setIsGuest(true)
+    setUser({ username, isGuest: true })
   }
 
   const login = async (username: string, password: string) => {
@@ -94,16 +80,11 @@ export const AuthProvider = ({
       console.log('res', response)
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
-      setUser(user)
+      setUser({ username: user.username, isGuest: false })
     } catch (error) {
       setError(error)
     } finally {
       setLoading(false)
-    }
-
-    if (isGuest) {
-      setIsGuest(false)
-      localStorage.removeItem(keys.isGuest)
     }
   }
 
@@ -125,7 +106,6 @@ export const AuthProvider = ({
       error,
       login,
       becomeGuest,
-      isGuest,
       logout
     }),
     [user, loading, error]

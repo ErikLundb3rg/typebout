@@ -1,22 +1,25 @@
-'use client';
-import './globals.css'
-import { AuthProvider } from '@/providers/useAuth';
+'use client'
+
+import { CacheProvider } from '@chakra-ui/next-js'
+import { ChakraProvider } from '@chakra-ui/react'
+import { AuthProvider } from '@/providers/useAuth'
+import { theme } from '@/theme'
 
 export default function RootLayout({
-  children,
+  children
 }: {
   children: React.ReactNode
 }) {
   return (
     <html lang="en">
-      {/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
-      <AuthProvider>
-        <head />
-        <body>{children}</body>
-      </AuthProvider>
+      <head />
+      <body>
+        <CacheProvider>
+          <ChakraProvider theme={theme}>
+            <AuthProvider>{children}</AuthProvider>
+          </ChakraProvider>
+        </CacheProvider>
+      </body>
     </html>
   )
 }
