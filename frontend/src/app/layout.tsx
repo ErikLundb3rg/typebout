@@ -4,6 +4,7 @@ import { CacheProvider } from '@chakra-ui/next-js'
 import { ChakraProvider } from '@chakra-ui/react'
 import { AuthProvider } from '@/providers/useAuth'
 import { theme } from '@/theme'
+import Header from '@/components/header'
 
 export default function RootLayout({
   children
@@ -16,7 +17,10 @@ export default function RootLayout({
       <body>
         <CacheProvider>
           <ChakraProvider theme={theme}>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              <Header />
+              {children}
+            </AuthProvider>
           </ChakraProvider>
         </CacheProvider>
       </body>
