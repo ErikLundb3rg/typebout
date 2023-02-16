@@ -6,10 +6,9 @@ import { useRouter } from 'next/navigation'
 import {
   Box,
   Button,
-  Checkbox,
   Container,
-  Divider,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   HStack,
@@ -18,20 +17,25 @@ import {
   Text
 } from '@chakra-ui/react'
 import { PasswordField } from './passwordField'
+import { Field, Form, Formik } from 'formik'
+
+interface FormTypes {
+  username: string
+  password: string
+}
 
 export default function Login() {
   const { login, loading, error } = useAuth()
   const router = useRouter()
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const initialValues: FormTypes = {
+    username: '',
+    password: ''
+  }
 
-    const formData = new FormData(event.currentTarget)
-
-    login(
-      formData.get('username') as string,
-      formData.get('password') as string
-    )
+  const handleSubmit = (values: FormTypes) => {
+    const { username, password } = values
+    login(username, password)
   }
 
   return (
@@ -61,20 +65,43 @@ export default function Login() {
               </HStack>
             </Stack>
           </Stack>
-          <Stack spacing="6">
-            <Stack spacing="5">
-              <FormControl>
-                <FormLabel htmlFor="email">Email</FormLabel>
-                <Input id="email" type="email" />
-              </FormControl>
-              <PasswordField />
-            </Stack>
-            <Stack spacing="6">
-              <Button variant="primary" backgroundColor="cyan">
-                Sign in
-              </Button>
-            </Stack>
-          </Stack>
+          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            {(props) => (
+              <Form>
+                <Stack spacing="6">
+                  <Stack spacing="5">
+                    <Field name="username">
+                      {({ field }: { field: typeof Field }) => (
+                        <FormControl isInvalid={error && true}>
+                          <FormLabel>Username</FormLabel>
+                          <Input {...field} placeholder="e.g username123" />
+                          <FormErrorMessage>
+                            {error && error.message}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="password">
+                      {({ field }: { field: typeof Field }) => (
+                        <FormControl>
+                          <PasswordField {...field} />
+                        </FormControl>
+                      )}
+                    </Field>
+                  </Stack>
+                  <Stack spacing="6">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      backgroundColor="cyan"
+                    >
+                      Sign in
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Stack>
     </Container>

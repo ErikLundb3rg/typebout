@@ -11,7 +11,7 @@ import * as api from '../apicalls/index'
 import { usePathname } from 'next/navigation'
 import { Player } from '@/socket/types'
 import { keys } from '@/util/localstoragekeys'
-
+import { useRouter } from 'next/navigation'
 interface AuthContextProps {
   loading: boolean
   error?: any
@@ -45,8 +45,9 @@ export const AuthProvider = ({
   const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<Player>()
   const [loadingInitial, setLoadingInitial] = useState<boolean>(false)
-  const [error, setError] = useState<any>({})
+  const [error, setError] = useState<any>(false)
   const path = usePathname()
+  const router = useRouter()
 
   // If we switch to another page we reset error
   useEffect(() => {
@@ -77,12 +78,13 @@ export const AuthProvider = ({
     setLoading(true)
     try {
       const response = (await api.login(username, password)).data
-      console.log('res', response)
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
       setUser({ username: user.username, isGuest: false })
-    } catch (error) {
-      setError(error)
+      router.push('/')
+    } catch (error: any) {
+      console.log(error.response.data.message)
+      setError(error.response.data)
     } finally {
       setLoading(false)
     }
