@@ -71,6 +71,17 @@ export const login = async (username: string, password: string) =>
     password
   })
 
+export const register = async (
+  username: string,
+  password: string,
+  confirmPassword: string
+) =>
+  await instance.post<BaseResponse>('/users/register', {
+    username,
+    password,
+    confirmPassword
+  })
+
 export const refreshToken = async () =>
   await instance.post<BaseResponse>('/users/refreshToken')
 

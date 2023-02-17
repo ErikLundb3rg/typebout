@@ -1,7 +1,6 @@
 'use client'
 
 import useAuth from '@/providers/useAuth'
-import { FormEvent, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Box,
@@ -16,8 +15,9 @@ import {
   Stack,
   Text
 } from '@chakra-ui/react'
-import { PasswordField } from './passwordField'
+import { PasswordField } from '@/components/passwordField'
 import { Field, Form, Formik } from 'formik'
+import { Link } from '@chakra-ui/next-js'
 
 interface FormTypes {
   username: string
@@ -59,9 +59,11 @@ export default function Login() {
               </Heading>
               <HStack spacing="1" justify="center">
                 <Text color="muted">Don't have an account?</Text>
-                <Button variant="link" colorScheme="blue">
-                  Sign up
-                </Button>
+                <Link href="/users/signup">
+                  <Button variant="link" colorScheme="blue">
+                    Sign up
+                  </Button>
+                </Link>
               </HStack>
             </Stack>
           </Stack>
@@ -75,16 +77,14 @@ export default function Login() {
                         <FormControl isInvalid={error && true}>
                           <FormLabel>Username</FormLabel>
                           <Input {...field} placeholder="e.g username123" />
-                          <FormErrorMessage>
-                            {error && error.message}
-                          </FormErrorMessage>
+                          <FormErrorMessage>{error && error}</FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
                     <Field name="password">
                       {({ field }: { field: typeof Field }) => (
                         <FormControl>
-                          <PasswordField {...field} />
+                          <PasswordField {...field} title="Password" />
                         </FormControl>
                       )}
                     </Field>

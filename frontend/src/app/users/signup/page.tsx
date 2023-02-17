@@ -6,10 +6,9 @@ import { useRouter } from 'next/navigation'
 import {
   Box,
   Button,
-  Checkbox,
   Container,
-  Divider,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   HStack,
@@ -17,21 +16,29 @@ import {
   Stack,
   Text
 } from '@chakra-ui/react'
+import { Field, Form, Formik } from 'formik'
+import { PasswordField } from '@/components/passwordField'
 import { Link } from '@chakra-ui/next-js'
 
+interface FormTypes {
+  username: string
+  password: string
+  confirmPassword: string
+}
+
 export default function SignUp() {
-  const { login, loading, error } = useAuth()
+  const { login, loading, error, register } = useAuth()
   const router = useRouter()
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const initialValues: FormTypes = {
+    username: '',
+    password: '',
+    confirmPassword: ''
+  }
 
-    const formData = new FormData(event.currentTarget)
-
-    login(
-      formData.get('username') as string,
-      formData.get('password') as string
-    )
+  const handleSubmit = (values: FormTypes) => {
+    const { username, password, confirmPassword } = values
+    register(username, password, confirmPassword)
   }
 
   return (
@@ -51,32 +58,63 @@ export default function SignUp() {
           <Stack spacing="6">
             <Stack spacing={{ base: '2', md: '4' }} textAlign="center">
               <Heading size={{ base: 'md', md: 'md' }}>
-                Log in to your account
+                Register an account
               </Heading>
               <HStack spacing="1" justify="center">
-                <Text color="muted">Don't have an account?</Text>
-                <Button variant="link" colorScheme="blue">
-                  Sign up
-                </Button>
+                <Text color="muted">Already have an account?</Text>
+                <Link href="/users/login">
+                  <Button variant="link" colorScheme="blue">
+                    Login
+                  </Button>
+                </Link>
               </HStack>
             </Stack>
           </Stack>
-          <Stack spacing="6">
-            <Stack spacing="5">
-              <FormControl>
-                <FormLabel htmlFor="email">Email</FormLabel>
-                <Input id="email" type="email" />
-              </FormControl>
-              <PasswordField />
-            </Stack>
-            <Stack spacing="6">
-              <Link href="/users/login">
-                <Button variant="primary" backgroundColor="cyan">
-                  Sign in
-                </Button>
-              </Link>
-            </Stack>
-          </Stack>
+          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            {(props) => (
+              <Form>
+                <Stack spacing="6">
+                  <Stack spacing="5">
+                    <Field name="username">
+                      {({ field }: { field: typeof Field }) => (
+                        <FormControl isInvalid={error && true}>
+                          <FormLabel>Username</FormLabel>
+                          <Input {...field} placeholder="e.g username123" />
+                          <FormErrorMessage>{error && error}</FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="password">
+                      {({ field }: { field: typeof Field }) => (
+                        <FormControl>
+                          <PasswordField {...field} title={'Password'} />
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="confirmPassword">
+                      {({ field }: { field: typeof Field }) => (
+                        <FormControl>
+                          <PasswordField
+                            {...field}
+                            title={'Confirm  password'}
+                          />
+                        </FormControl>
+                      )}
+                    </Field>
+                  </Stack>
+                  <Stack spacing="6">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      backgroundColor="cyan"
+                    >
+                      Sign up
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Stack>
     </Container>

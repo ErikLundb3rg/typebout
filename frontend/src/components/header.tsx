@@ -6,20 +6,11 @@ import {
   Flex,
   Text,
   IconButton,
-  Button,
-  Stack,
-  Collapse,
-  Icon,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  useColorModeValue,
-  useBreakpointValue,
-  useDisclosure,
   Highlight,
   Heading,
   Spacer,
-  useColorMode
+  useColorMode,
+  Button
 } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
@@ -35,18 +26,28 @@ export default function Header() {
   return (
     <Flex px="8" py="4" align="center">
       <Heading size="lg">
-        {' '}
-        <Link href="/"> TypeBout </Link>
+        <Link href="/" _hover={{ textDecoration: 'underline' }}>
+          {' '}
+          TypeBout{' '}
+        </Link>
       </Heading>
       <Spacer />
       <Spacer />
       <Spacer />
       {!isLoggedIn && (
         <Box>
-          <Link href="/users/login" px="10" _hover={{ color: 'blue.500' }}>
+          <Link
+            href="/users/login"
+            px="10"
+            _hover={{ color: 'blue.500', textDecoration: 'underline' }}
+          >
             Login
           </Link>
-          <Link href="/users/login" px="10" _hover={{ color: 'blue.500' }}>
+          <Link
+            href="/users/signup"
+            px="10"
+            _hover={{ color: 'blue.500', textDecoration: 'underline' }}
+          >
             Sign up
           </Link>
         </Box>

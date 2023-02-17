@@ -17,6 +17,11 @@ interface AuthContextProps {
   error?: any
   user: Player | undefined
   login: (username: string, password: string) => void
+  register: (
+    username: string,
+    password: string,
+    confirmPassword: string
+  ) => void
   logout: () => void
   becomeGuest: (username: string) => void
 }
@@ -83,8 +88,37 @@ export const AuthProvider = ({
       setUser({ username: user.username, isGuest: false })
       router.push('/')
     } catch (error: any) {
-      console.log(error.response.data.message)
-      setError(error.response.data)
+      const { response } = error
+      if (response) {
+        setError(response.data.message)
+      } else {
+        setError('Something went wrong')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const register = async (
+    username: string,
+    password: string,
+    confirmPassword: string
+  ) => {
+    setLoading(true)
+    try {
+      const response = (await api.register(username, password, confirmPassword))
+        .data
+      const { accessToken, user } = response.data
+      localStorage.setItem(keys.accessToken, accessToken)
+      setUser({ username: user.username, isGuest: false })
+      router.push('/')
+    } catch (error: any) {
+      const { response } = error
+      if (response) {
+        setError(response.data.message)
+      } else {
+        setError('Something went wrong')
+      }
     } finally {
       setLoading(false)
     }
@@ -108,7 +142,8 @@ export const AuthProvider = ({
       error,
       login,
       becomeGuest,
-      logout
+      logout,
+      register
     }),
     [user, loading, error]
   )
