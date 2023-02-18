@@ -1,47 +1,135 @@
 'use client'
-import styles from '../../page.module.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SocketGameComponentWrapper, {
   BeforeGameComponentProps
 } from '../socketGameComponentWrapper'
+import {
+  Grid,
+  GridItem,
+  Stack,
+  Heading,
+  HStack,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Text,
+  Button,
+  SimpleGrid,
+  Box,
+  Center,
+  Input,
+  VStack,
+  StackDivider,
+  Kbd,
+  Code,
+  useClipboard,
+  Editable,
+  EditableInput,
+  EditableTextarea,
+  EditablePreview,
+  Tag,
+  Spinner,
+  List,
+  ListItem,
+  ListIcon,
+  OrderedList,
+  UnorderedList,
+  Flex,
+  Divider,
+  Spacer
+} from '@chakra-ui/react'
 
 const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
-  const [link, setLink] = useState<string>()
+  const [roomCode, setRoomCode] = useState<string>('')
+  const [loading, setLoading] = useState(true)
+  const { hasCopied, onCopy, setValue: setLink, value: link } = useClipboard('')
 
-  const handleCreateRoom = () => {
+  useEffect(() => {
     socket.emit('createRoom', (link) => {
       setLink(link)
+      setRoomCode(link.slice(-6))
+      setLoading(false)
     })
-  }
+  }, [])
 
   const handleStartGame = () => {
     socket.emit('startGame')
   }
 
-  return (
-    <div className={styles.description}>
-      <h2> Hello {user.username} </h2>
-      <p> We create rooms here: </p>
-      {link ? (
-        <div>
-          <p> This is your link: </p>
-          <p> {link} </p>
-          <button onClick={handleStartGame}> Start game </button>
-        </div>
-      ) : (
-        <button onClick={handleCreateRoom}> Create room</button>
-      )}
-      {players?.map((player) => {
-        const { isGuest, username } = player
-        return (
-          <p key={username}>
-            {' '}
-            {username}: {isGuest && 'guest'}{' '}
-          </p>
-        )
-      })}
-    </div>
+  return loading ? (
+    <Spinner />
+  ) : (
+    <Flex justifyContent="space-evenly">
+      <VStack spacing={8}>
+        <Box border="3px solid gray" borderRadius="10px" p="4">
+          <Heading m="4" size="md" color="gray">
+            Joined players
+          </Heading>
+          <UnorderedList spacing={6} listStyleType="none">
+            {players?.map((player) => {
+              const { isGuest, username } = player
+              return (
+                <ListItem>
+                  <HStack paddingBottom="3">
+                    {isGuest ? (
+                      <Tag colorScheme="teal"> guest </Tag>
+                    ) : (
+                      <Tag colorScheme="blue"> user</Tag>
+                    )}
+                    <Text fontSize="xl"> {username}</Text>
+                  </HStack>
+                  <Divider />
+                </ListItem>
+              )
+            })}
+          </UnorderedList>
+        </Box>
+        <Button size="md" colorScheme="teal" onClick={handleStartGame}>
+          Start game
+        </Button>
+      </VStack>
+      <VStack spacing={8}>
+        <Heading size="lg" color="gray">
+          {' '}
+          Room #{roomCode}
+        </Heading>
+
+        <Heading size="sm" color="gray">
+          Share this link with your friends:
+        </Heading>
+        <HStack>
+          <Input value={link} onFocus={(e) => e.target.select()} />
+          <Button size="md" colorScheme="teal" onClick={onCopy}>
+            Copy
+          </Button>
+        </HStack>
+      </VStack>
+    </Flex>
   )
 }
+
+//<div className={styles.description}>
+//<h2> Hello {user.username} </h2>
+//<p> We create rooms here: </p>
+//{link ? (
+//<div>
+//<p> This is your link: </p>
+//<p> {link} </p>
+//<button onClick={handleStartGame}> Start game </button>
+//</div>
+//) : (
+//<button> Create room</button>
+//)}
+//{players?.map((player) => {
+//const { isGuest, username } = player
+//return (
+//<p key={username}>
+//{' '}
+//{username}: {isGuest && 'guest'}{' '}
+//</p>
+//)
+//})}
+//</div>
 
 export default SocketGameComponentWrapper(CreateRoom)
