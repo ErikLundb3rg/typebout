@@ -3,7 +3,7 @@ import useAuth from '@/providers/useAuth'
 import { useEffect, useState } from 'react'
 import { createSocket } from '@/socket/createSocket'
 import BecomeGuest from '@/components/becomeguest'
-import PlayGame from './play'
+import PlayGame from '../../components/play'
 import {
   EndGameStats,
   GameInformation,

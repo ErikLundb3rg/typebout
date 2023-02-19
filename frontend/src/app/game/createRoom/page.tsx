@@ -4,40 +4,21 @@ import SocketGameComponentWrapper, {
   BeforeGameComponentProps
 } from '../socketGameComponentWrapper'
 import {
-  Grid,
-  GridItem,
-  Stack,
   Heading,
   HStack,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Text,
   Button,
-  SimpleGrid,
   Box,
-  Center,
   Input,
   VStack,
-  StackDivider,
-  Kbd,
-  Code,
   useClipboard,
-  Editable,
-  EditableInput,
-  EditableTextarea,
-  EditablePreview,
   Tag,
   Spinner,
-  List,
   ListItem,
-  ListIcon,
-  OrderedList,
   UnorderedList,
   Flex,
   Divider,
-  Spacer
+  Center
 } from '@chakra-ui/react'
 
 const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
@@ -58,7 +39,9 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
   }
 
   return loading ? (
-    <Spinner />
+    <Center>
+      <Spinner />
+    </Center>
   ) : (
     <Flex justifyContent="space-evenly">
       <VStack spacing={8}>
@@ -71,7 +54,8 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
               const { isGuest, username } = player
               return (
                 <ListItem>
-                  <HStack paddingBottom="3">
+                  <Divider />
+                  <HStack paddingTop="3">
                     {isGuest ? (
                       <Tag colorScheme="teal"> guest </Tag>
                     ) : (
@@ -79,7 +63,6 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
                     )}
                     <Text fontSize="xl"> {username}</Text>
                   </HStack>
-                  <Divider />
                 </ListItem>
               )
             })}

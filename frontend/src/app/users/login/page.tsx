@@ -13,7 +13,8 @@ import {
   HStack,
   Input,
   Stack,
-  Text
+  Text,
+  Progress
 } from '@chakra-ui/react'
 import { PasswordField } from '@/components/passwordField'
 import { Field, Form, Formik } from 'formik'
