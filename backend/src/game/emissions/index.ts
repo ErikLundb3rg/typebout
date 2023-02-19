@@ -1,7 +1,6 @@
 import type { Room } from '../logic/roomDirector'
 import type { Group } from '../logic/gameDirector'
-import { TypeBoutSocket } from '../types'
-import { Quotes } from '@prisma/client'
+import { TypeBoutSocket, Quote } from '../types'
 
 // Laughable:
 const toSockets = (
@@ -56,7 +55,7 @@ export const sendGameStart = (group: Group) => {
   })
 }
 
-export const sendPrepareGame = (group: Group, quote: Quotes) => {
+export const sendPrepareGame = (group: Group, quote: Quote) => {
   toSockets(group.getSockets(), (user) => {
     user.emit('prepareGame', quote)
   })

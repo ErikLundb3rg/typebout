@@ -150,7 +150,7 @@ export class PersonalGame {
       username: this.user.data.username || 'unknown',
       color: this.color,
       progressPercentage: Math.round(
-        (this.currentWordIndex / this.quote.content.length) * 100
+        100 * (this.current / this.quote.content.length)
       )
     }
   }

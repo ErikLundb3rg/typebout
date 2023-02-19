@@ -56,7 +56,7 @@ export const register: AsyncController<RegisterProps> = async (req) => {
   if (await userExists(username)) {
     return defaultErrorResponse({
       message: 'A user with this username already exists',
-      status: errorCodes.UNAUTHENTICATED
+      status: errorCodes.BAD_REQUEST
     })
   }
 

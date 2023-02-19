@@ -30,13 +30,18 @@ export interface MistakeProps {
   mistakeWords: string[]
 }
 
+export interface Quote {
+  content: string
+  author: string
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ServerToClientEvents {
   roomInfo: (players: Player[]) => void
   sendWord: (word: string) => void
   // Telling client to set up the page for
   // the game
-  prepareGame: (quote: Quotes) => void
+  prepareGame: (quote: Quote) => void
   countdown: (count: number) => void
   // Info about users progress sent during
   // the game

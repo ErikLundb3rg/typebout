@@ -89,6 +89,7 @@ export const startGameHandler: SocketHandler<'startGame'> = (socket) => {
     roomDirector.removeRoom(roomID)
 
     const quote = await getRandomQuote()
+
     const group = Group.fromUsers(users, quote, onFinish)
     games.addGroup(group, room.id)
 
@@ -97,7 +98,8 @@ export const startGameHandler: SocketHandler<'startGame'> = (socket) => {
       personalGame.user.data.personalGame = personalGame
     })
 
-    sendPrepareGame(group, quote)
+    const { author, content } = quote
+    sendPrepareGame(group, { content, author: author.name })
 
     sendGameInfo(group)
     sendCountDown(5, group, () => {
