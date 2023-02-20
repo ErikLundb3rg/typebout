@@ -30,9 +30,7 @@ export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
   } // Verify that the user is actually logged in and not just saying "i'm not a guest"
   else {
     try {
-      const { id, username, createdAt } = verifyAccessToken(
-        accessToken
-      ) as Users
+      const { id, username } = verifyAccessToken(accessToken) as Users
       socket.data = {
         id,
         username,

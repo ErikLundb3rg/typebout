@@ -1,5 +1,5 @@
 'use client'
-
+import { useState } from 'react'
 import useAuth from '@/providers/useAuth'
 import { FormEvent, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -27,8 +27,26 @@ interface FormTypes {
 }
 
 export default function SignUp() {
-  const { login, loading, error, register } = useAuth()
+  const { register, error } = useAuth()
   const router = useRouter()
+  const [formErrors, setFormErrors] = useState<FormTypes>({
+    confirmPassword: '',
+    password: '',
+    username: ''
+  })
+
+  useEffect(() => {
+    if (error?.validationError) {
+      const { validationError } = error
+      validationError.details.forEach((detail: any) => {
+        const {
+          path: { key },
+          message
+        } = detail
+        formErrors[key as keyof FormTypes] = message
+      })
+    }
+  }, [error])
 
   const initialValues: FormTypes = {
     username: '',
@@ -68,6 +86,7 @@ export default function SignUp() {
                   </Button>
                 </Link>
               </HStack>
+              <Text color="red"> {error?.networkError}</Text>
             </Stack>
           </Stack>
           <Formik initialValues={initialValues} onSubmit={handleSubmit}>
@@ -80,7 +99,9 @@ export default function SignUp() {
                         <FormControl isInvalid={error && true}>
                           <FormLabel>Username</FormLabel>
                           <Input {...field} placeholder="e.g username123" />
-                          <FormErrorMessage>{error && error}</FormErrorMessage>
+                          <FormErrorMessage>
+                            {error?.networkError}
+                          </FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>

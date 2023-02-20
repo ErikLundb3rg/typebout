@@ -12,7 +12,10 @@ export const createSocket = async (user: Player) => {
       console.log('got new access token: ', accessToken)
       localStorage.setItem(keys.accessToken, accessToken)
     } catch (error) {
-      console.log('failing refreshed tokens on createSocket')
+      localStorage.removeItem(keys.accessToken)
+      localStorage.removeItem(keys.user)
+      location.href = '/users/login'
+      return
     }
   }
 

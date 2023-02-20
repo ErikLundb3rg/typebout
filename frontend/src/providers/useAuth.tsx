@@ -12,16 +12,21 @@ import { usePathname } from 'next/navigation'
 import { Player } from '@/socket/types'
 import { keys } from '@/util/localstoragekeys'
 import { useRouter } from 'next/navigation'
+
+interface ErrorProps {
+  validationError: any
+  networkError: string | undefined
+}
 interface AuthContextProps {
   loading: boolean
-  error?: any
+  error: ErrorProps | undefined
   user: Player | undefined
   login: (username: string, password: string) => void
   register: (
     username: string,
     password: string,
     confirmPassword: string
-  ) => void
+  ) => ErrorProps
   logout: () => void
   becomeGuest: (username: string) => void
 }
@@ -50,14 +55,14 @@ export const AuthProvider = ({
   const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<Player>()
   const [loadingInitial, setLoadingInitial] = useState<boolean>(false)
-  const [error, setError] = useState<any>(false)
+  const [error, setError] = useState<ErrorProps | undefined>(undefined)
   const path = usePathname()
   const router = useRouter()
 
   // If we switch to another page we reset error
   useEffect(() => {
     if (error) {
-      setError(false)
+      setError(undefined)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path])
@@ -67,6 +72,8 @@ export const AuthProvider = ({
     const user = localStorage.getItem(keys.user)
     if (user) {
       setUser(JSON.parse(user))
+    } else {
+      setUser(undefined)
     }
   }, [])
 
@@ -90,9 +97,15 @@ export const AuthProvider = ({
     } catch (error: any) {
       const { response } = error
       if (response) {
-        setError(response.data.message)
+        setError({
+          validationError: response.data,
+          networkError: undefined
+        })
       } else {
-        setError('Something went wrong')
+        setError({
+          validationError: undefined,
+          networkError: 'Could not fetch resource'
+        })
       }
     } finally {
       setLoading(false)
@@ -115,9 +128,15 @@ export const AuthProvider = ({
     } catch (error: any) {
       const { response } = error
       if (response) {
-        setError(response.data.message)
+        setError({
+          validationError: response.data,
+          networkError: undefined
+        })
       } else {
-        setError('Something went wrong')
+        setError({
+          validationError: undefined,
+          networkError: 'Could not fetch resource'
+        })
       }
     } finally {
       setLoading(false)
@@ -125,14 +144,12 @@ export const AuthProvider = ({
   }
 
   const logout = async () => {
+    localStorage.removeItem(keys.accessToken)
+    localStorage.removeItem(keys.user)
+    setUser(undefined)
     try {
       await api.logout()
-      localStorage.removeItem(keys.accessToken)
-      localStorage.removeItem(keys.user)
-      setUser(undefined)
-    } catch (error) {
-      setError(error)
-    }
+    } catch (error) {}
   }
 
   const memoedValue = useMemo(

@@ -6,6 +6,7 @@ import {
 import { registerUser, getUserByUsername } from '../../dal/user'
 import bcrypt from 'bcrypt'
 import { errorCodes } from '../../utils/error-codes'
+import Joi from 'joi'
 
 interface RegisterProps {
   username: string
@@ -41,12 +42,29 @@ const verifyRegistration = ({
   }
 }
 
-export const register: AsyncController<RegisterProps> = async (req) => {
-  const { ok, errors } = verifyRegistration(req.body)
+const registerSchema = Joi.object({
+  username: Joi.string().alphanum().min(3).max(20).required(),
+  password: Joi.string()
+    .pattern(new RegExp('^[a-zA-Z0-9]{7,30}$'))
+    .required()
+    .messages({
+      'string.pattern.base': `Password should be between 7 to 30 characters and contain letters or numbers only`,
+      'string.empty': `Password cannot be empty`,
+      'any.required': `Password is required`
+    }),
 
-  if (!ok) {
+  confirmPassword: Joi.valid('password').messages({
+    'any.only': 'The two passwords do not match',
+    'any.required': 'Please re-enter the password'
+  })
+})
+
+export const register: AsyncController<RegisterProps> = async (req) => {
+  const { error, value } = registerSchema.validate(req.body)
+
+  if (error) {
     return defaultErrorResponse({
-      data: errors,
+      data: error,
       status: errorCodes.BAD_REQUEST
     })
   }

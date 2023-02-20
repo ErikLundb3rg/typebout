@@ -61,7 +61,7 @@ const gameText = ({
           return <Text key={index}> {c} </Text>
         })}
       </Flex>
-      &nbsp;
+      {upComingContent.length > 0 && '\u00A0'}
       <Text>{upComingContent.join('')}</Text>
     </Flex>
   )
