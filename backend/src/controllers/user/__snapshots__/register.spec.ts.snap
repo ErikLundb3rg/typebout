@@ -17,7 +17,11 @@ exports[`Register Controller is successful with correct input 1`] = `
 exports[`Register Controller is unsuccessful with confirmedPassword not matching password 1`] = `
 {
   "data": {
-    "confirmPassword": "Confirmed password must be same as password",
+    "errors": {
+      "confirmPassword": "Confirm password does not match password",
+      "password": "",
+      "username": "",
+    },
   },
   "message": null,
   "ok": false,
@@ -28,8 +32,11 @@ exports[`Register Controller is unsuccessful with confirmedPassword not matching
 exports[`Register Controller is unsuccessful with empty input 1`] = `
 {
   "data": {
-    "password": "Password cannot be empty",
-    "username": "Username cannot be empty",
+    "errors": {
+      "confirmPassword": "",
+      "password": "",
+      "username": ""username" is not allowed to be empty",
+    },
   },
   "message": null,
   "ok": false,
@@ -39,9 +46,15 @@ exports[`Register Controller is unsuccessful with empty input 1`] = `
 
 exports[`Register Controller unsuccessful with already existing user 1`] = `
 {
-  "data": null,
-  "message": "A user with this username already exists",
+  "data": {
+    "errors": {
+      "confirmPassword": "",
+      "password": "",
+      "username": "A user with this username already exists",
+    },
+  },
+  "message": null,
   "ok": false,
-  "status": 401,
+  "status": 400,
 }
 `;
