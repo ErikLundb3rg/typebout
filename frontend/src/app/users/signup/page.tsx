@@ -19,44 +19,29 @@ import {
 import { Field, Form, Formik } from 'formik'
 import { PasswordField } from '@/components/passwordField'
 import { Link } from '@chakra-ui/next-js'
-
-interface FormTypes {
-  username: string
-  password: string
-  confirmPassword: string
-}
+import { SignUpProps } from '@/types'
 
 export default function SignUp() {
-  const { register, error } = useAuth()
+  const { register, networkError } = useAuth()
   const router = useRouter()
-  const [formErrors, setFormErrors] = useState<FormTypes>({
+  const [formErrors, setFormErrors] = useState<SignUpProps>({
     confirmPassword: '',
     password: '',
     username: ''
   })
 
-  useEffect(() => {
-    if (error?.validationError) {
-      const { validationError } = error
-      validationError.details.forEach((detail: any) => {
-        const {
-          path: { key },
-          message
-        } = detail
-        formErrors[key as keyof FormTypes] = message
-      })
-    }
-  }, [error])
-
-  const initialValues: FormTypes = {
+  const initialValues: SignUpProps = {
     username: '',
     password: '',
     confirmPassword: ''
   }
 
-  const handleSubmit = (values: FormTypes) => {
+  const handleSubmit = async (values: SignUpProps) => {
     const { username, password, confirmPassword } = values
-    register(username, password, confirmPassword)
+    const validationError = await register(username, password, confirmPassword)
+    if (validationError) {
+      setFormErrors(validationError)
+    }
   }
 
   return (
@@ -86,7 +71,7 @@ export default function SignUp() {
                   </Button>
                 </Link>
               </HStack>
-              <Text color="red"> {error?.networkError}</Text>
+              <Text color="red"> {networkError}</Text>
             </Stack>
           </Stack>
           <Formik initialValues={initialValues} onSubmit={handleSubmit}>
@@ -96,30 +81,31 @@ export default function SignUp() {
                   <Stack spacing="5">
                     <Field name="username">
                       {({ field }: { field: typeof Field }) => (
-                        <FormControl isInvalid={error && true}>
+                        <FormControl isInvalid={formErrors.username !== ''}>
                           <FormLabel>Username</FormLabel>
                           <Input {...field} placeholder="e.g username123" />
                           <FormErrorMessage>
-                            {error?.networkError}
+                            {formErrors.username}{' '}
                           </FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
                     <Field name="password">
                       {({ field }: { field: typeof Field }) => (
-                        <FormControl>
-                          <PasswordField {...field} title={'Password'} />
-                        </FormControl>
+                        <PasswordField
+                          {...field}
+                          title={'Password'}
+                          error={formErrors.password}
+                        />
                       )}
                     </Field>
                     <Field name="confirmPassword">
                       {({ field }: { field: typeof Field }) => (
-                        <FormControl>
-                          <PasswordField
-                            {...field}
-                            title={'Confirm  password'}
-                          />
-                        </FormControl>
+                        <PasswordField
+                          {...field}
+                          title={'Confirm  password'}
+                          error={formErrors.confirmPassword}
+                        />
                       )}
                     </Field>
                   </Stack>

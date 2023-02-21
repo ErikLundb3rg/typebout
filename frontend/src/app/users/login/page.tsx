@@ -19,6 +19,7 @@ import {
 import { PasswordField } from '@/components/passwordField'
 import { Field, Form, Formik } from 'formik'
 import { Link } from '@chakra-ui/next-js'
+import { useState } from 'react'
 
 interface FormTypes {
   username: string
@@ -26,7 +27,8 @@ interface FormTypes {
 }
 
 export default function Login() {
-  const { login, loading, error } = useAuth()
+  const { login, loading } = useAuth()
+  const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
 
   const initialValues: FormTypes = {
@@ -34,9 +36,12 @@ export default function Login() {
     password: ''
   }
 
-  const handleSubmit = (values: FormTypes) => {
+  const handleSubmit = async (values: FormTypes) => {
     const { username, password } = values
-    login(username, password)
+    const errorMessage = await login(username, password)
+    if (errorMessage) {
+      setErrorMessage(errorMessage)
+    }
   }
 
   return (
@@ -75,17 +80,17 @@ export default function Login() {
                   <Stack spacing="5">
                     <Field name="username">
                       {({ field }: { field: typeof Field }) => (
-                        <FormControl isInvalid={error && true}>
+                        <FormControl isInvalid={errorMessage !== ''}>
                           <FormLabel>Username</FormLabel>
                           <Input {...field} placeholder="e.g username123" />
-                          <FormErrorMessage>{error && error}</FormErrorMessage>
+                          <FormErrorMessage> {errorMessage} </FormErrorMessage>
                         </FormControl>
                       )}
                     </Field>
                     <Field name="password">
                       {({ field }: { field: typeof Field }) => (
                         <FormControl>
-                          <PasswordField {...field} title="Password" />
+                          <PasswordField {...field} title="Password" error="" />
                         </FormControl>
                       )}
                     </Field>

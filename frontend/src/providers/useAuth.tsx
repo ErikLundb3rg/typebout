@@ -12,21 +12,18 @@ import { usePathname } from 'next/navigation'
 import { Player } from '@/socket/types'
 import { keys } from '@/util/localstoragekeys'
 import { useRouter } from 'next/navigation'
+import { SignUpError } from '@/types'
 
-interface ErrorProps {
-  validationError: any
-  networkError: string | undefined
-}
 interface AuthContextProps {
   loading: boolean
-  error: ErrorProps | undefined
   user: Player | undefined
-  login: (username: string, password: string) => void
+  login: (username: string, password: string) => Promise<string | null>
+  networkError: string | undefined
   register: (
     username: string,
     password: string,
     confirmPassword: string
-  ) => ErrorProps
+  ) => Promise<SignUpError | null>
   logout: () => void
   becomeGuest: (username: string) => void
 }
@@ -55,14 +52,16 @@ export const AuthProvider = ({
   const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<Player>()
   const [loadingInitial, setLoadingInitial] = useState<boolean>(false)
-  const [error, setError] = useState<ErrorProps | undefined>(undefined)
+  const [networkError, setNetworkError] = useState<string | undefined>(
+    undefined
+  )
   const path = usePathname()
   const router = useRouter()
 
   // If we switch to another page we reset error
   useEffect(() => {
-    if (error) {
-      setError(undefined)
+    if (networkError) {
+      setNetworkError(undefined)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path])
@@ -86,7 +85,7 @@ export const AuthProvider = ({
     setUser({ username, isGuest: true })
   }
 
-  const login = async (username: string, password: string) => {
+  const login: AuthContextProps['login'] = async (username, password) => {
     setLoading(true)
     try {
       const response = (await api.login(username, password)).data
@@ -97,26 +96,22 @@ export const AuthProvider = ({
     } catch (error: any) {
       const { response } = error
       if (response) {
-        setError({
-          validationError: response.data,
-          networkError: undefined
-        })
+        return response.data.message
       } else {
-        setError({
-          validationError: undefined,
-          networkError: 'Could not fetch resource'
-        })
+        setNetworkError('Could not fetch resource')
       }
     } finally {
       setLoading(false)
     }
+    return null
   }
 
-  const register = async (
-    username: string,
-    password: string,
-    confirmPassword: string
+  const register: AuthContextProps['register'] = async (
+    username,
+    password,
+    confirmPassword
   ) => {
+    let validationError: SignUpError | null = null
     setLoading(true)
     try {
       const response = (await api.register(username, password, confirmPassword))
@@ -128,19 +123,14 @@ export const AuthProvider = ({
     } catch (error: any) {
       const { response } = error
       if (response) {
-        setError({
-          validationError: response.data,
-          networkError: undefined
-        })
+        validationError = response.data.data.errors
       } else {
-        setError({
-          validationError: undefined,
-          networkError: 'Could not fetch resource'
-        })
+        setNetworkError('Could not fetch resource')
       }
     } finally {
       setLoading(false)
     }
+    return validationError
   }
 
   const logout = async () => {
@@ -156,13 +146,13 @@ export const AuthProvider = ({
     () => ({
       user,
       loading,
-      error,
+      networkError,
       login,
       becomeGuest,
       logout,
       register
     }),
-    [user, loading, error]
+    [user, loading, networkError]
   )
 
   return (

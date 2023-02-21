@@ -7,13 +7,15 @@ import {
   InputProps,
   InputRightElement,
   useDisclosure,
-  useMergeRefs
+  useMergeRefs,
+  FormErrorMessage
 } from '@chakra-ui/react'
 import { forwardRef, useRef } from 'react'
 import { HiEye, HiEyeOff } from 'react-icons/hi'
 
 interface PasswordFieldProps {
   title: string
+  error: string
 }
 
 export const PasswordField = forwardRef<
@@ -22,6 +24,7 @@ export const PasswordField = forwardRef<
 >((props, ref) => {
   const { isOpen, onToggle } = useDisclosure()
   const inputRef = useRef<HTMLInputElement>(null)
+  const { title, error } = props
 
   const mergeRef = useMergeRefs(inputRef, ref)
   const onClickReveal = () => {
@@ -32,8 +35,8 @@ export const PasswordField = forwardRef<
   }
 
   return (
-    <FormControl>
-      <FormLabel htmlFor="password">{props.title}</FormLabel>
+    <FormControl isInvalid={error !== ''}>
+      <FormLabel htmlFor="password">{title}</FormLabel>
       <InputGroup>
         <InputRightElement>
           <IconButton
@@ -53,6 +56,7 @@ export const PasswordField = forwardRef<
           {...props}
         />
       </InputGroup>
+      <FormErrorMessage> {error} </FormErrorMessage>
     </FormControl>
   )
 })

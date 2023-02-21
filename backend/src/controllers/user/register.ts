@@ -19,29 +19,6 @@ const userExists = async (username: string) => {
   return user && true
 }
 
-const verifyRegistration = ({
-  username,
-  password,
-  confirmPassword
-}: RegisterProps) => {
-  const errors: { [Property in keyof RegisterProps]?: string } = {}
-
-  if (username.trim() === '') {
-    errors.username = 'Username cannot be empty'
-  }
-
-  if (password.trim() === '') {
-    errors.password = 'Password cannot be empty'
-  } else if (password != confirmPassword) {
-    errors.confirmPassword = 'Confirmed password must be same as password'
-  }
-
-  return {
-    ok: Object.keys(errors).length === 0,
-    errors
-  }
-}
-
 const registerSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(20).required(),
   password: Joi.string()
@@ -53,18 +30,36 @@ const registerSchema = Joi.object({
       'any.required': `Password is required`
     }),
 
-  confirmPassword: Joi.valid('password').messages({
-    'any.only': 'The two passwords do not match',
+  confirmPassword: Joi.any().equal(Joi.ref('password')).messages({
+    'any.only': 'Confirm password does not match password',
     'any.required': 'Please re-enter the password'
   })
 })
+
+const transformError = (error: Joi.ValidationError) => {
+  const errors: RegisterProps = {
+    username: '',
+    password: '',
+    confirmPassword: ''
+  }
+  error.details.forEach((detail) => {
+    const { message, context } = detail
+    if (context && context.key) {
+      const { key } = context
+      errors[key as keyof RegisterProps] = message
+    }
+  })
+  return errors
+}
 
 export const register: AsyncController<RegisterProps> = async (req) => {
   const { error, value } = registerSchema.validate(req.body)
 
   if (error) {
     return defaultErrorResponse({
-      data: error,
+      data: {
+        errors: transformError(error)
+      },
       status: errorCodes.BAD_REQUEST
     })
   }
@@ -72,8 +67,15 @@ export const register: AsyncController<RegisterProps> = async (req) => {
   const { username, password } = req.body
 
   if (await userExists(username)) {
+    const errors: RegisterProps = {
+      username: 'A user with this username already exists',
+      password: '',
+      confirmPassword: ''
+    }
     return defaultErrorResponse({
-      message: 'A user with this username already exists',
+      data: {
+        errors
+      },
       status: errorCodes.BAD_REQUEST
     })
   }
