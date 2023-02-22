@@ -3,10 +3,13 @@
 exports[`Register Controller is successful with correct input 1`] = `
 {
   "data": {
-    "createdAt": 2023-01-01T00:00:00.000Z,
-    "id": 1,
-    "password": "password",
-    "username": "username",
+    "accessToken": "accesstoken",
+    "user": {
+      "createdAt": 2023-01-01T00:00:00.000Z,
+      "id": 1,
+      "password": "password",
+      "username": "username",
+    },
   },
   "message": "User signup was successful",
   "ok": true,
@@ -48,8 +51,6 @@ exports[`Register Controller unsuccessful with already existing user 1`] = `
 {
   "data": {
     "errors": {
-      "confirmPassword": "",
-      "password": "",
       "username": "A user with this username already exists",
     },
   },
