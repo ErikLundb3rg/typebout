@@ -5,8 +5,14 @@ import {
 } from '../../middlewares/api-utils'
 import { registerUser, getUserByUsername } from '../../dal/user'
 import bcrypt from 'bcrypt'
-import { errorCodes } from '../../utils/error-codes'
+import { errorCodes } from '../../constants/error-codes'
 import Joi from 'joi'
+import { profanitiesSet } from '../../constants/profanities'
+import { trimStringRecord } from '../../utils/trim'
+import {
+  generateRefreshToken,
+  generateAccessToken
+} from '../../auth/util/verifyers'
 
 interface RegisterProps {
   username: string
@@ -52,8 +58,10 @@ const transformError = (error: Joi.ValidationError) => {
   return errors
 }
 
-export const register: AsyncController<RegisterProps> = async (req) => {
-  const { error, value } = registerSchema.validate(req.body)
+export const register: AsyncController<RegisterProps> = async (req, res) => {
+  const body = trimStringRecord({ ...req.body })
+  const { error, value } = registerSchema.validate(body)
+  console.log('value', value)
 
   if (error) {
     return defaultErrorResponse({
@@ -64,17 +72,25 @@ export const register: AsyncController<RegisterProps> = async (req) => {
     })
   }
 
-  const { username, password } = req.body
+  const { username, password } = body
 
-  if (await userExists(username)) {
-    const errors: RegisterProps = {
-      username: 'A user with this username already exists',
-      password: '',
-      confirmPassword: ''
-    }
+  if (profanitiesSet.has(username)) {
     return defaultErrorResponse({
       data: {
-        errors
+        errors: {
+          username: 'Please pick a username which is less profane'
+        },
+        status: errorCodes.BAD_REQUEST
+      }
+    })
+  }
+
+  if (await userExists(username)) {
+    return defaultErrorResponse({
+      data: {
+        errors: {
+          username: 'A user with this username already exists'
+        }
       },
       status: errorCodes.BAD_REQUEST
     })
@@ -91,8 +107,13 @@ export const register: AsyncController<RegisterProps> = async (req) => {
       password: hashedPassword
     })
 
+    res.cookie('jid', generateRefreshToken(user.id), { httpOnly: true })
+
     return defaultHappyResponse({
-      data: user,
+      data: {
+        user,
+        accessToken: generateAccessToken(user)
+      },
       message: 'User signup was successful'
     })
   } catch (error) {

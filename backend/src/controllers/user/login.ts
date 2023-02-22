@@ -9,7 +9,7 @@ import {
   generateRefreshToken,
   generateAccessToken
 } from '../../auth/util/verifyers'
-import { errorCodes } from '../../utils/error-codes'
+import { errorCodes } from '../../constants/error-codes'
 
 interface LoginProps {
   username: string

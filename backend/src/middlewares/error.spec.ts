@@ -2,7 +2,7 @@
 import { errorHandlingMiddleWare } from './error'
 import { sendBaseResponse } from './api-utils'
 import { BaseError } from '../utils/error'
-import { errorCodes } from '../utils/error-codes'
+import { errorCodes } from '../constants/error-codes'
 
 describe('Error handling middleware', () => {
   let req: any = {}

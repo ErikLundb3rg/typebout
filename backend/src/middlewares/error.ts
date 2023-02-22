@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { BaseResponse, sendBaseResponse } from './api-utils'
 import { BaseError } from '../utils/error'
-import { errorCodes } from '../utils/error-codes'
+import { errorCodes } from '../constants/error-codes'
 
 export const errorHandlingMiddleWare = (
   genericError: Error,

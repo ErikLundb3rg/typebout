@@ -11,7 +11,7 @@ import {
 import { JWTPayload } from '../../types'
 import { getUserById } from '../../dal/user'
 import { BaseError } from '../../utils/error'
-import { errorCodes } from '../../utils/error-codes'
+import { errorCodes } from '../../constants/error-codes'
 
 export const refreshToken: AsyncController<Record<string, never>> = async (
   req,

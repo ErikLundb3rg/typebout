@@ -3,7 +3,7 @@ import {
   defaultErrorResponse,
   defaultHappyResponse
 } from '../../middlewares/api-utils'
-import { errorCodes } from '../../utils/error-codes'
+import { errorCodes } from '../../constants/error-codes'
 
 export const logout: AsyncController<Record<string, never>> = async (
   req,

@@ -1,4 +1,4 @@
-import { errorCodes } from './error-codes'
+import { errorCodes } from '../constants/error-codes'
 
 export class BaseError extends Error {
   public status: number
