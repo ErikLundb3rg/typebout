@@ -1,4 +1,5 @@
 import users from './users'
+import races from './races'
 import { Application } from 'express'
 import { asyncHandler, defaultErrorResponse } from '../middlewares/api-utils'
 
@@ -7,6 +8,7 @@ export const addRoutes = (app: Application): void => {
     res.status(200).send('Server is up and running')
   })
   app.use('/users', users)
+  app.use('/races', races)
   app.use(
     asyncHandler(async (req, res) =>
       defaultErrorResponse({

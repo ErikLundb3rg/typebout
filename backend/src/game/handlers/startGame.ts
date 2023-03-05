@@ -45,9 +45,10 @@ const onFinish = async (personalGame: PersonalGame) => {
 
   // Log users result to database
   const personalGameFinalStats = personalGame.getEndGameStats()
+  // time in seconds
   const { correct, mistakes, time } = personalGameFinalStats
   const { raceId } = await addPerformance({
-    completed_in_ms: Math.round(time * 10),
+    completed_in_ms: time * 1000,
     correct,
     mistakes,
     quoteId: group.quote.id,
@@ -89,6 +90,7 @@ export const startGameHandler: SocketHandler<'startGame'> = (socket) => {
     roomDirector.removeRoom(roomID)
 
     const quote = await getRandomQuote()
+    quote.content = 'write this'
 
     const group = Group.fromUsers(users, quote, onFinish)
     games.addGroup(group, room.id)

@@ -41,6 +41,17 @@ export const addPerformance = async (performance: AddPerformanceProps) => {
       }
     }
   })
-  console.log(res)
   return res
+}
+
+export const getLatestPerformances = async (entries: number) => {
+  return await db.performances.findMany({
+    take: entries,
+    orderBy: {
+      createdAt: 'desc'
+    },
+    include: {
+      user: true
+    }
+  })
 }

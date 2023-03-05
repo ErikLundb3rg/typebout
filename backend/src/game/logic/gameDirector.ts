@@ -4,6 +4,7 @@ import {
   EndGameStats,
   MistakeProps
 } from '../types'
+import { getWPM } from '../../utils/calculations'
 import { Quotes } from '@prisma/client'
 
 const colors = ['green', 'purple', 'blue', 'black']
@@ -129,15 +130,13 @@ export class PersonalGame {
 
   private getWPM = () => {
     if (this.endTime !== null && this.startTime !== null) {
-      return Math.round(
-        this.current / 5 / ((this.endTime - this.startTime) / 60000)
-      )
+      const seconds = (this.endTime - this.startTime) / 1000
+      return getWPM(this.current, seconds)
     }
 
     if (this.startTime !== null) {
-      return Math.round(
-        this.current / 5 / ((Date.now() - this.startTime) / 60000)
-      )
+      const seconds = (Date.now() - this.startTime) / 1000
+      return getWPM(this.current, seconds)
     }
     return 0
   }
