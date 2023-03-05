@@ -13,7 +13,7 @@ import {
   TypeBoutSocket
 } from '@/socket/types'
 
-let socket: TypeBoutSocket | null = null
+let socket: TypeBoutSocket | undefined = undefined
 
 export interface BeforeGameComponentProps {
   socket: TypeBoutSocket
@@ -27,7 +27,7 @@ export default function SocketGameComponentWrapper(
   return () => {
     const { user } = useAuth()
     const [players, setPlayers] = useState<Player[]>()
-    const [count, setCount] = useState<number>()
+    const [count, setCount] = useState<number>(5)
     const [quote, setQuote] = useState<Quote>()
     const [gameInfoArr, setGameInfoArr] = useState<GameInformation[]>([])
     const [endGameStatsArr, setEndGameStatsArr] = useState<EndGameStats[]>([])
@@ -42,30 +42,30 @@ export default function SocketGameComponentWrapper(
           socket = await createSocket(user)
           setHasSocket(true)
 
-          socket.on('roomInfo', (players) => {
+          socket?.on('roomInfo', (players) => {
             setPlayers(players)
           })
-          socket.on('prepareGame', (quote) => {
+          socket?.on('prepareGame', (quote) => {
             console.log('quote', quote)
             setQuote(quote)
           })
-          socket.on('countdown', (count) => {
+          socket?.on('countdown', (count) => {
             setCount(count)
           })
-          socket.on('gameStarted', () => {
+          socket?.on('gameStarted', () => {
             setGameStarted(true)
           })
-          socket.on('gameInfo', (gameInfoArr) => {
+          socket?.on('gameInfo', (gameInfoArr) => {
             setGameInfoArr(gameInfoArr)
           })
-          socket.on('completedStats', (stats) => {
+          socket?.on('completedStats', (stats) => {
             setEndGameStatsArr(stats)
           })
         }
       })()
 
       return () => {
-        socket = null
+        socket = undefined
       }
     }, [user])
 

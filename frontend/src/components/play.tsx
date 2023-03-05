@@ -11,6 +11,7 @@ import {
 import {
   Heading,
   Center,
+  Stack,
   Flex,
   Spacer,
   HStack,
@@ -56,7 +57,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  ResponsiveContainer
 } from 'recharts'
 
 interface PlayGameProps {
@@ -106,6 +108,37 @@ const StatComponent = ({ content, title }: StatComponentProps) => {
         </Heading>
       </StatNumber>
     </Stat>
+  )
+}
+
+const UserTable = ({
+  gameInfoArr
+}: {
+  gameInfoArr: GameInfoListProps['gameInfoArr']
+}) => {
+  return (
+    <TableContainer>
+      <Table variant="simple" size="md">
+        <Tbody>
+          {gameInfoArr.map((gameInfo, index) => {
+            const { color, username, wpm, progressPercentage } = gameInfo
+            return (
+              <Tr>
+                <Td> {username} </Td>
+                <Td width={['100px', '400px']}>
+                  <Progress
+                    size="xs"
+                    value={progressPercentage}
+                    colorScheme={color}
+                  />
+                </Td>
+                <Td isNumeric>{wpm}</Td>
+              </Tr>
+            )
+          })}
+        </Tbody>
+      </Table>
+    </TableContainer>
   )
 }
 
@@ -229,40 +262,15 @@ export default function PlayGame({
 
   return (
     <VStack spacing="6">
-      <Heading
-        size="md"
-        color="gray"
-        visibility={count > 0 ? 'visible' : 'hidden'}
-      >
-        Race starting in {count} seconds
+      <Heading size="md" color="gray">
+        {count > 0 ? (
+          <Text>Race starting in {count} seconds</Text>
+        ) : (
+          <Text>Race!</Text>
+        )}
       </Heading>
-      <HStack>
-        <TableContainer>
-          <Table variant="simple" size="md">
-            <Tbody>
-              {gameInfoArr.map((gameInfo, index) => {
-                const { color, username, wpm, progressPercentage } = gameInfo
-                return (
-                  <Tr>
-                    <Td> {username} </Td>
-                    <Td>
-                      <Container width="300px">
-                        <Progress
-                          size="xs"
-                          value={progressPercentage}
-                          colorScheme={color}
-                        />
-                      </Container>
-                    </Td>
-                    <Td isNumeric>{wpm}</Td>
-                  </Tr>
-                )
-              })}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      </HStack>
-      <Box>
+      <UserTable gameInfoArr={gameInfoArr} />
+      <Box p={3}>
         <GameText
           {...{
             completedContent,
@@ -303,7 +311,7 @@ export default function PlayGame({
             </HStack>
             <Divider />
 
-            <Flex>
+            <Stack direction={['column', 'row']} spacing={6}>
               <VStack spacing={4}>
                 <SimpleGrid columns={[2]} spacing={8}>
                   <StatComponent title="wpm" content={chosenEndgameStats.wpm} />
@@ -320,35 +328,43 @@ export default function PlayGame({
                     content={chosenEndgameStats.mistakes}
                   />
                 </SimpleGrid>
-                <Heading> Mistakes </Heading>
-                <OrderedList>
-                  {chosenEndgameStats.mistakeWords.map((mistake) => (
-                    <ListItem> {mistake} </ListItem>
-                  ))}
-                </OrderedList>
               </VStack>
+              {chosenEndgameStats.mistakeWords.length > 0 && (
+                <VStack>
+                  <Heading> Mistakes </Heading>
+                  <OrderedList>
+                    {chosenEndgameStats.mistakeWords.map((mistake) => (
+                      <ListItem> {mistake} </ListItem>
+                    ))}
+                  </OrderedList>
+                </VStack>
+              )}
 
               <Spacer />
-              <LineChart
-                width={500}
-                height={300}
-                data={wpmHistories[chosenEndgameStats.username].map((wpm) => ({
-                  wpm
-                }))}
-              >
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  dot={false}
-                  type="monotone"
-                  dataKey="wpm"
-                  stroke="#8884d8"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </Flex>
+              {/*wpmHistories[chosenEndgameStats.username].length > 0 && (
+                <ResponsiveContainer width="95%" height={400}>
+                  <LineChart
+                    data={wpmHistories[chosenEndgameStats.username].map(
+                      (wpm) => ({
+                        wpm
+                      })
+                    )}
+                  >
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                      dot={false}
+                      type="monotone"
+                      dataKey="wpm"
+                      stroke="#8884d8"
+                      strokeWidth={2}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                    )*/}
+            </Stack>
           </VStack>
         </Fade>
       )}

@@ -43,8 +43,8 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
       <Spinner />
     </Center>
   ) : (
-    <Flex justifyContent="space-evenly">
-      <VStack spacing={8}>
+    <Flex flexDirection={['column', 'row']} justifyContent="space-evenly">
+      <VStack spacing={8} mb={8}>
         <Box border="3px solid gray" borderRadius="10px" p="4">
           <Heading m="4" size="md" color="gray">
             Joined players

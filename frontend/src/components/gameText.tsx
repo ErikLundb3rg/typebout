@@ -1,26 +1,7 @@
 import styles from '../page.module.css'
 import { FormEvent } from 'react'
 import useAuth from '@/providers/useAuth'
-import {
-  Grid,
-  GridItem,
-  Stack,
-  Heading,
-  HStack,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Text,
-  Button,
-  SimpleGrid,
-  Box,
-  Center,
-  Input,
-  VStack,
-  StackDivider,
-  Flex
-} from '@chakra-ui/react'
+import { Text, Box, Flex, HStack, Container } from '@chakra-ui/react'
 
 interface GameTextProps {
   completedContent: string
@@ -37,33 +18,44 @@ const gameText = ({
   wrongIndex
 }: GameTextProps) => {
   return (
-    <Flex>
-      <Text style={{ color: 'gray' }}>{completedContent}</Text>
-      {completedContent && <Box>&nbsp;</Box>}
-      <Flex>
+    <Box>
+      <Text as="span" style={{ color: 'gray' }}>
+        {completedContent}
+      </Text>
+      <span>
         {currentWord?.split('').map((c, index) => {
           if (correctIndex >= index) {
             return (
-              <Text key={index} style={{ color: 'green' }}>
+              <div
+                key={index}
+                style={{ color: 'green', display: 'inline-block' }}
+              >
                 {c}
-              </Text>
+              </div>
             )
           }
 
           if (wrongIndex >= index) {
             return (
-              <Text key={index} style={{ color: 'red' }}>
+              <div
+                key={index}
+                style={{ color: 'red', display: 'inline-block' }}
+              >
                 {c}
-              </Text>
+              </div>
             )
           }
 
-          return <Text key={index}> {c} </Text>
+          return (
+            <div key={index} style={{ display: 'inline-block' }}>
+              {c}
+            </div>
+          )
         })}
-      </Flex>
+      </span>
       {upComingContent.length > 0 && '\u00A0'}
-      <Text>{upComingContent.join('')}</Text>
-    </Flex>
+      <Text as="span">{upComingContent.join('')}</Text>
+    </Box>
   )
 }
 
