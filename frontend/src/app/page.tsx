@@ -15,7 +15,8 @@ import {
   Button,
   SimpleGrid,
   Box,
-  Center
+  Center,
+  Wrap
 } from '@chakra-ui/react'
 import TypeCard from '@/components/typeCard'
 
@@ -31,7 +32,7 @@ export default function Home() {
           <Heading m="7" size="md" color="gray">
             Play against your friends to see who is the fastest...{' '}
           </Heading>
-          <SimpleGrid columns={2}>
+          <Stack direction={['column', 'row']}>
             <TypeCard
               header="Create game"
               content="Create a game which gives you a link your friends can join"
@@ -42,7 +43,7 @@ export default function Home() {
               content="Join your friend's game through the room code"
               path="game/join"
             />
-          </SimpleGrid>
+          </Stack>
           <TypeCard
             header="Just released"
             content="Typebout was just released. This means you might find some bugs or other unintended things regarding the website. "
