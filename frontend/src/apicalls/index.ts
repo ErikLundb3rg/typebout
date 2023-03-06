@@ -89,3 +89,6 @@ export const refreshToken = async () =>
 
 export const logout = async () =>
   await instance.post<BaseResponse>('/users/logout')
+
+export const fetcherGet = (url: string) =>
+  instance.get<BaseResponse>(url).then((res) => res.data)

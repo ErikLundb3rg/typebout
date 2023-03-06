@@ -25,13 +25,13 @@ export const defaultHappyResponse = (
   ok: true
 })
 
-export type AsyncController<Body> = (
-  req: Request<object, object, Body>,
+export type AsyncController<Body = {}, QueryProps = {}> = (
+  req: Request<object, object, Body, QueryProps>,
   res: Response
 ) => Promise<BaseResponse>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const asyncHandler = (controller: AsyncController<any>) => {
+export const asyncHandler = (controller: AsyncController<any, any>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const response = await controller(req, res)

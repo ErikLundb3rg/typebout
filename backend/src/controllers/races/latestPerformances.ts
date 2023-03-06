@@ -5,20 +5,37 @@ import {
 } from '../../middlewares/api-utils'
 import { getLatestPerformances } from '../../dal/performances'
 import { getWPM } from '../../utils/calculations'
+import moment from 'moment'
+import { errorCodes } from '../../constants/error-codes'
 
-const entries = 10
+interface QueryProps {
+  entries: string
+}
 
-export const latestPerformances: AsyncController<{}> = async (req, res) => {
-  const performancesRaw = await getLatestPerformances(entries)
+export const latestPerformances: AsyncController<{}, QueryProps> = async (
+  req,
+  res
+) => {
+  const { entries } = req.query
+
+  if (!entries) {
+    return defaultErrorResponse({
+      message: 'Please provide a valid number of performances to request',
+      status: errorCodes.BAD_REQUEST
+    })
+  }
+
+  const nrEntries = Number(req.query.entries)
+  const performancesRaw = await getLatestPerformances(nrEntries)
 
   const performances = performancesRaw.map(
     ({ correct, mistakes, completed_in_ms, createdAt, user }) => {
       const total = correct + mistakes
-      console.log(completed_in_ms)
       const wpm = getWPM(total, completed_in_ms / 1000)
+      const diff = moment(createdAt).fromNow()
 
       return {
-        date: createdAt,
+        timeFromNow: diff,
         wpm,
         username: user.username
       }

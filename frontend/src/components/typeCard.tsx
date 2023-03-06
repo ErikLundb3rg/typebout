@@ -19,17 +19,20 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { Spinner } from '@chakra-ui/react'
-import { useState } from 'react'
+import { PropsWithChildren, useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
 interface TypeCardProps {
   header: string
-  content: string
   path?: string
 }
 
-export default function TypeCard({ header, content, path }: TypeCardProps) {
+export default function TypeCard({
+  header,
+  path,
+  children
+}: PropsWithChildren<TypeCardProps>) {
   const [loading, setLoading] = useState(false)
 
   return (
@@ -58,9 +61,7 @@ export default function TypeCard({ header, content, path }: TypeCardProps) {
           {loading && <Spinner />}
         </Flex>
       </CardHeader>
-      <CardBody>
-        <Text>{content}</Text>
-      </CardBody>
+      <CardBody>{children}</CardBody>
     </Card>
   )
 }
