@@ -3,7 +3,7 @@ import { Inter } from '@next/font/google'
 import useAuth from '@/providers/useAuth'
 import { Stack, Heading, Center, Skeleton, Text } from '@chakra-ui/react'
 import TypeCard from '@/components/typeCard'
-import LatestPerformancesTable from '@/components/latestPerformancesTable'
+import PerformancesTable from '@/components/performancesTable'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -35,14 +35,12 @@ export default function Home() {
           </TypeCard>
           <Stack direction={['column', 'row']}>
             <TypeCard header="Latest Races">
-              <LatestPerformancesTable
+              <PerformancesTable
                 path={'/races/getLatestPerformances?entries=10'}
               />
             </TypeCard>
             <TypeCard header="Top races">
-              <LatestPerformancesTable
-                path={'/races/topPerformances?entries=10'}
-              />
+              <PerformancesTable path={'/races/topPerformances?entries=10'} />
             </TypeCard>
           </Stack>
         </Stack>

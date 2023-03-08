@@ -17,11 +17,10 @@ interface PerformanceProps {
   timeFromNow: string
 }
 
-interface PerformancesTableProps {
-  path: string
-}
-const performancesTable = ({ path }: PerformancesTableProps) => {
-  const { data, error, isLoading } = useSWR(path, fetcherGet)
+const profile = () => {
+  // const { data, error, isLoading } = useSWR(path, fetcherGet)
+
+  const user 
 
   if (error || isLoading) {
     return <></>
@@ -54,4 +53,4 @@ const performancesTable = ({ path }: PerformancesTableProps) => {
   )
 }
 
-export default performancesTable
+export defaultprofile 

@@ -111,11 +111,22 @@ export default function Header() {
           spacing={8}
           align="center"
           justify={['center', 'space-between', 'flex-end', 'flex-end']}
+          alignItems="baseline"
           direction={['column', 'row', 'row', 'row']}
           pt={[4, 4, 0, 0]}
         >
           {user !== undefined ? (
-            <Username isGuest={user.isGuest} username={user.username} />
+            <>
+              <Link
+                href="/users/profile"
+                _hover={{ color: 'blue.500', textDecoration: 'underline' }}
+              >
+                <span>Account</span>
+              </Link>
+              <span>
+                <Username isGuest={user.isGuest} username={user.username} />
+              </span>
+            </>
           ) : (
             <>
               <Link
