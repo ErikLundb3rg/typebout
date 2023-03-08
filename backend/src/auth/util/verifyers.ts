@@ -1,17 +1,23 @@
 import jwt from 'jsonwebtoken'
 import { Users } from '@prisma/client'
+export interface JWTPayload {
+  userId: number
+  username: string
+  createdAt: Date
+}
 
 export const generateAccessToken = (user: Users) => {
   const { id, username, createdAt } = user
+  const payload: JWTPayload = {
+    userId: id,
+    username,
+    createdAt
+  }
   return jwt.sign(
-    {
-      id,
-      username,
-      createdAt
-    },
+    { ...payload },
     process.env.PRIVATE_KEY_JWT_ACCESS as string,
     {
-      expiresIn: '15s'
+      expiresIn: '30m'
     }
   )
 }

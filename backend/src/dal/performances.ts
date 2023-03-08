@@ -1,5 +1,6 @@
 import db from '../../prisma/client'
 import { getEnrichedPerformance, getWPM } from '../utils/calculations'
+import { Races, Users } from '@prisma/client'
 
 interface AddPerformanceProps {
   correct: number
@@ -75,26 +76,58 @@ export const getTopPerformances = async (entries: number) => {
   return enrichedPerformances.slice(0, entries)
 }
 
-export const nukeTopPerformances = async () => {
-  const allPerformances = await db.performances.findMany({
+export const getLatestPerformancesForUser = async (
+  userId: Users['id'],
+  entries: number
+) => {
+  return await db.performances.findMany({
+    take: entries,
+    orderBy: {
+      createdAt: 'desc'
+    },
     include: {
-      user: true
-    }
-  })
-
-  const enrichedPerformances = allPerformances.map((performance) =>
-    getEnrichedPerformance(performance)
-  )
-
-  enrichedPerformances.forEach(async (p) => {
-    const id = p.id
-
-    if (p.wpm > 120) {
-      await db.performances.delete({
-        where: {
-          id
+      user: true,
+      race: {
+        include: {
+          performances: {
+            include: {
+              user: true
+            }
+          },
+          quote: {
+            include: {
+              author: true
+            }
+          }
         }
-      })
+      }
+    },
+    where: {
+      userId
     }
   })
 }
+
+//export const nukeTopPerformances = async () => {
+//const allPerformances = await db.performances.findMany({
+//include: {
+//user: true
+//}
+//})
+
+//const enrichedPerformances = allPerformances.map((performance) =>
+//getEnrichedPerformance(performance)
+//)
+
+//enrichedPerformances.forEach(async (p) => {
+//const id = p.id
+
+//if (p.wpm > 120) {
+//await db.performances.delete({
+//where: {
+//id
+//}
+//})
+//}
+//})
+//}

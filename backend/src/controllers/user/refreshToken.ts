@@ -8,7 +8,7 @@ import {
   generateRefreshToken,
   generateAccessToken
 } from '../../auth/util/verifyers'
-import { JWTPayload } from '../../types'
+import { JWTPayload } from '../../auth/util/verifyers'
 import { getUserById } from '../../dal/user'
 import { BaseError } from '../../utils/error'
 import { errorCodes } from '../../constants/error-codes'

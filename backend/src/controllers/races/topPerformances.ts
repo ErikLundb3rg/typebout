@@ -3,7 +3,7 @@ import {
   defaultErrorResponse,
   defaultHappyResponse
 } from '../../middlewares/api-utils'
-import { getTopPerformances, nukeTopPerformances } from '../../dal/performances'
+import { getTopPerformances } from '../../dal/performances'
 import moment from 'moment'
 import { errorCodes } from '../../constants/error-codes'
 

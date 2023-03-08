@@ -1,6 +1,12 @@
 import { Router } from 'express'
 import { asyncHandler } from '../middlewares/api-utils'
-import { login, register, logout, refreshToken } from '../controllers/user'
+import {
+  login,
+  register,
+  logout,
+  refreshToken,
+  profile
+} from '../controllers/user'
 import passport from 'passport'
 
 const router = Router()
@@ -23,6 +29,12 @@ router.post(
   (req, res) => {
     res.send('Authenticated')
   }
+)
+
+router.get(
+  '/profile',
+  passport.authenticate('bearer', { session: false }),
+  asyncHandler(profile)
 )
 
 export default router
