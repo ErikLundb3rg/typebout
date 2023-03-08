@@ -3,8 +3,7 @@ import {
   defaultErrorResponse,
   defaultHappyResponse
 } from '../../middlewares/api-utils'
-import { getLatestPerformances } from '../../dal/performances'
-import { getEnrichedPerformance, getWPM } from '../../utils/calculations'
+import { getTopPerformances, nukeTopPerformances } from '../../dal/performances'
 import moment from 'moment'
 import { errorCodes } from '../../constants/error-codes'
 
@@ -12,7 +11,7 @@ interface QueryProps {
   entries: string
 }
 
-export const latestPerformances: AsyncController<{}, QueryProps> = async (
+export const topPerformances: AsyncController<{}, QueryProps> = async (
   req,
   res
 ) => {
@@ -26,11 +25,9 @@ export const latestPerformances: AsyncController<{}, QueryProps> = async (
   }
 
   const nrEntries = Number(req.query.entries)
-  const performancesRaw = await getLatestPerformances(nrEntries)
+  const performances = await getTopPerformances(nrEntries)
 
-  const performances = performancesRaw.map((performanceWithUser) => {
-    const enrichedPerformance = getEnrichedPerformance(performanceWithUser)
-    const { createdAt, wpm, user } = enrichedPerformance
+  const performanceResponse = performances.map(({ createdAt, wpm, user }) => {
     const diff = moment(createdAt).fromNow()
 
     return {
@@ -42,7 +39,7 @@ export const latestPerformances: AsyncController<{}, QueryProps> = async (
 
   return defaultHappyResponse({
     data: {
-      performances
+      performances: performanceResponse
     }
   })
 }

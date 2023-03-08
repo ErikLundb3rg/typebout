@@ -16,12 +16,11 @@ interface PerformanceProps {
   wpm: string
   timeFromNow: string
 }
-
-interface PerformancesTableProps {
-  path: string
-}
-const performancesTable = ({ path }: PerformancesTableProps) => {
-  const { data, error, isLoading } = useSWR(path, fetcherGet)
+const LatestPerformancesTable = () => {
+  const { data, error, isLoading } = useSWR(
+    '/races/getLatestPerformances?entries=10',
+    fetcherGet
+  )
 
   if (error || isLoading) {
     return <></>
@@ -54,4 +53,5 @@ const performancesTable = ({ path }: PerformancesTableProps) => {
   )
 }
 
-export default performancesTable
+export default LatestPerformancesTable
+

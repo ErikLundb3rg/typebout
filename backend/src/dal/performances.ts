@@ -1,4 +1,5 @@
 import db from '../../prisma/client'
+import { getEnrichedPerformance, getWPM } from '../utils/calculations'
 
 interface AddPerformanceProps {
   correct: number
@@ -52,6 +53,48 @@ export const getLatestPerformances = async (entries: number) => {
     },
     include: {
       user: true
+    }
+  })
+}
+
+export const getTopPerformances = async (entries: number) => {
+  const allPerformances = await db.performances.findMany({
+    include: {
+      user: true
+    }
+  })
+
+  const enrichedPerformances = allPerformances.map((performance) =>
+    getEnrichedPerformance(performance)
+  )
+
+  enrichedPerformances.sort((a, b) => {
+    return b.wpm - a.wpm
+  })
+
+  return enrichedPerformances.slice(0, entries)
+}
+
+export const nukeTopPerformances = async () => {
+  const allPerformances = await db.performances.findMany({
+    include: {
+      user: true
+    }
+  })
+
+  const enrichedPerformances = allPerformances.map((performance) =>
+    getEnrichedPerformance(performance)
+  )
+
+  enrichedPerformances.forEach(async (p) => {
+    const id = p.id
+
+    if (p.wpm > 120) {
+      await db.performances.delete({
+        where: {
+          id
+        }
+      })
     }
   })
 }

@@ -33,9 +33,18 @@ export default function Home() {
               other unintended things regarding the website.
             </Text>
           </TypeCard>
-          <TypeCard header="Latest Races">
-            <LatestPerformancesTable />
-          </TypeCard>
+          <Stack direction={['column', 'row']}>
+            <TypeCard header="Latest Races">
+              <LatestPerformancesTable
+                path={'/races/getLatestPerformances?entries=10'}
+              />
+            </TypeCard>
+            <TypeCard header="Top races">
+              <LatestPerformancesTable
+                path={'/races/topPerformances?entries=10'}
+              />
+            </TypeCard>
+          </Stack>
         </Stack>
       </Center>
     </main>

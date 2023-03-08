@@ -1,3 +1,4 @@
 import { latestPerformances } from './latestPerformances'
+import { topPerformances } from './topPerformances'
 
-export { latestPerformances }
+export { latestPerformances, topPerformances }
