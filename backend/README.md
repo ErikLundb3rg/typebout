@@ -9,7 +9,7 @@ The backend for TypeBout is written in Typescript and uses:
 Authentication is handled using JWT.
 
 ## Development
-**Docker**
+### Docker
 
 To build the docker container:
 
@@ -23,7 +23,7 @@ After this you can run the development server locally using:
 
 `npm run dev`
 
-**Testing**
+### Testing
 
 Tests are implemented using Jest.
 
@@ -35,7 +35,7 @@ Update tests:
 
 `npm run test:update`
 
-**Migrations**
+### Migrations
 
 Migrations are handled by Prisma with PostgreSQL as the underlying database. To perform a migration simply update the schema and run: 
 
