@@ -15,20 +15,23 @@ export const profile: AsyncController = async (req, res) => {
 
   const dataRaw = await getLatestPerformancesForUser(userId, nrOfRaces)
   const data = dataRaw.map((performance) => getEnrichedPerformance(performance))
+  const nrLatestPerformances = data.length
 
   const wpmHistory = data.map(({ wpm }) => wpm)
 
-  const wpmAverage = Math.round(
-    (wpmHistory.reduce((total, current) => total + current, 0) / data.length) *
-      100
-  )
+  const wpmAverage =
+    Math.round(
+      (wpmHistory.reduce((total, current) => total + current, 0) /
+        nrLatestPerformances) *
+        100
+    ) / nrLatestPerformances
 
   const highestWpm = Math.max(...wpmHistory)
 
   const accuracyAverage =
     data
       .map(({ total, correct }) => correct / total)
-      .reduce((total, current) => total + current, 0) / data.length
+      .reduce((total, current) => total + current, 0) / nrLatestPerformances
 
   const lastRaces = data.map((performance) => {
     const {
