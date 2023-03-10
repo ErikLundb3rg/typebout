@@ -10,25 +10,33 @@ Authentication is handled using JWT.
 
 ## Development
 **Docker**
+
 To build the docker container:
+
 `docker build .`
 
 To run the docker image:
+
 `docker compose --env-file .env up -d`
 
 After this you can run the development server locally using:
+
 `npm run dev`
 
 **Testing**
+
 Tests are implemented using Jest.
 
 To run the tests: 
+
 `npm run test`
 
 Update tests: 
+
 `npm run test:update`
 
 **Migrations**
+
 Migrations are handled by Prisma with PostgreSQL as the underlying database. To perform a migration simply update the schema and run: 
 
 `npm run prisma:mg`
