@@ -14,7 +14,7 @@ TypeBout is not yet deployed.
 ## Technical
 Using Next js 13, the frontend is written in Typescript and uses Chakra-ui for components and layout. The backend is also written in Typescript and uses Node, Express, Prisma-io and PostgreSQL. Authentication is handled using JWT. 
 
-To run the project and learn more, see the respective README's for frontend and backend subfolders.
+To run the project and learn more, see the respective README's for [frontend](https://github.com/ErikLundb3rg/typebout/tree/main/frontend) and [backend](https://github.com/ErikLundb3rg/typebout/tree/main/backend) subfolders.
 
 ### Bug report / feature request 
 If you encounter a bug or just want to request a new feature, please email me at: 
