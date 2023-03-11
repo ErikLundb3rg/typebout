@@ -39,27 +39,23 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
   Divider,
   OrderedList,
   ListItem
 } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
-
 import GameText from '@/components/gameText'
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from 'recharts'
+import StatComponent from './statComponent'
+// import {
+// LineChart,
+// Line,
+// XAxis,
+// YAxis,
+// CartesianGrid,
+// Tooltip,
+// Legend,
+// ResponsiveContainer
+// } from 'recharts'
 
 interface PlayGameProps {
   count: number
@@ -87,28 +83,6 @@ interface GameInfoListProps {
   gameInfoField: keyof GameInformation
   gameInfoArr: GameInformation[]
   component: JSX.Element
-}
-
-interface StatComponentProps {
-  title: string
-  content: string | number | undefined
-}
-
-const StatComponent = ({ content, title }: StatComponentProps) => {
-  return (
-    <Stat size="md">
-      <StatLabel>
-        <Heading color="gray" size="md">
-          {title}
-        </Heading>
-      </StatLabel>
-      <StatNumber>
-        <Heading color="gray" size="3xl">
-          {content}
-        </Heading>
-      </StatNumber>
-    </Stat>
-  )
 }
 
 const UserTable = ({
@@ -201,6 +175,10 @@ export default function PlayGame({
 
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
     if (completed) return
+
+    if (!gameStarted) {
+      event.currentTarget.value = ''
+    }
 
     const input = event.currentTarget.value
 

@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import useSWR from 'swr'
 import { fetcherGet } from '@/apicalls/index'
@@ -8,49 +9,40 @@ import {
   Td,
   TableContainer,
   Thead,
-  Th
+  Th,
+  VStack
 } from '@chakra-ui/react'
-
-interface PerformanceProps {
-  username: string
-  wpm: string
-  timeFromNow: string
-}
+import StatComponent from '@/components/statComponent'
 
 const profile = () => {
-  // const { data, error, isLoading } = useSWR(path, fetcherGet)
+  const { data, error, isLoading } = useSWR('users/profile', fetcherGet)
 
-  const user 
+  console.log('data', data)
 
-  if (error || isLoading) {
-    return <></>
+  if (isLoading) {
+    return <div></div>
   }
 
+  if (error) {
+    return <div></div>
+  }
+  //const user
+
+  //if (error || isLoading) {
+  //return <></>
+  //}
+  return <div></div>
   return (
-    <TableContainer>
-      <Table variant="striped" colorScheme="telegram" size="sm">
-        <Thead>
-          <Tr>
-            <Th>Time</Th>
-            <Th>Username</Th>
-            <Th isNumeric>wpm</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data?.data.performances.map((performance: PerformanceProps) => {
-            const { username, timeFromNow, wpm } = performance
-            return (
-              <Tr>
-                <Td> {timeFromNow} </Td>
-                <Td> {username} </Td>
-                <Td isNumeric>{wpm}</Td>
-              </Tr>
-            )
-          })}
-        </Tbody>
-      </Table>
-    </TableContainer>
+    <VStack spacing={4}>
+      <StatComponent title="wpm" content={chosenEndgameStats.wpm} />
+      <StatComponent title="Time" content={`${chosenEndgameStats.time}s`} />
+      <StatComponent
+        title="Accuracy"
+        content={`${chosenEndgameStats.accuracy}%`}
+      />
+      <StatComponent title="Errors" content={chosenEndgameStats.mistakes} />
+    </VStack>
   )
 }
 
-export defaultprofile 
+export default profile
