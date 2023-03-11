@@ -17,7 +17,7 @@ export const generateAccessToken = (user: Users) => {
     { ...payload },
     process.env.PRIVATE_KEY_JWT_ACCESS as string,
     {
-      expiresIn: '30m'
+      expiresIn: '1m'
     }
   )
 }

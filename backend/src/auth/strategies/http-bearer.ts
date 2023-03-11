@@ -15,7 +15,7 @@ export const initializeBearerStrategy = () => {
         const payload = verifyAccessToken(token)
         return done(null, payload)
       } catch (e) {
-        return done('Unauthorized', null)
+        return done(null, null)
       }
     })
   )

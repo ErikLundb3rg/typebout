@@ -19,12 +19,10 @@ export const profile: AsyncController = async (req, res) => {
 
   const wpmHistory = data.map(({ wpm }) => wpm)
 
-  const wpmAverage =
-    Math.round(
-      (wpmHistory.reduce((total, current) => total + current, 0) /
-        nrLatestPerformances) *
-        100
-    ) / nrLatestPerformances
+  const wpmAverage = Math.round(
+    wpmHistory.reduce((total, current) => total + current, 0) /
+      nrLatestPerformances
+  )
 
   const highestWpm = Math.max(...wpmHistory)
 
