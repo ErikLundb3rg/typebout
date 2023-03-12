@@ -5,7 +5,8 @@ import {
   StatHelpText,
   StatArrow,
   StatGroup,
-  Heading
+  Heading,
+  Center
 } from '@chakra-ui/react'
 
 interface StatComponentProps {

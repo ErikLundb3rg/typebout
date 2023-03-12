@@ -1,6 +1,5 @@
 'use client'
 import { Inter } from '@next/font/google'
-import useAuth from '@/providers/useAuth'
 import { Stack, Heading, Center, Skeleton, Text } from '@chakra-ui/react'
 import TypeCard from '@/components/typeCard'
 import PerformancesTable from '@/components/performancesTable'
@@ -8,8 +7,6 @@ import PerformancesTable from '@/components/performancesTable'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const { user, logout } = useAuth()
-
   return (
     <main>
       <Center>
