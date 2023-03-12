@@ -4,6 +4,7 @@ import {
 } from '../../middlewares/api-utils'
 import { getLatestPerformancesForUser } from '../../dal/performances'
 import { JWTPayload } from '../../auth/util/verifyers'
+import moment from 'moment'
 import { getEnrichedPerformance } from '../../utils/calculations'
 
 const nrOfRaces = 10
@@ -33,13 +34,15 @@ export const profile: AsyncController = async (req, res) => {
 
   const lastRaces = data.map((performance) => {
     const {
-      race: { performances, quote }
+      race: { performances, quote, createdAt }
     } = performance
     const participants = performances.map((p) => p.user.username).sort()
+    const timeFromNow = moment(createdAt).fromNow()
 
     return {
       participants,
-      quote: quote
+      quote: quote,
+      timeFromNow
     }
   })
 
