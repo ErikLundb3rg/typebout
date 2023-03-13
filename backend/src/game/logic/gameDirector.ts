@@ -4,7 +4,7 @@ import {
   EndGameStats,
   MistakeProps
 } from '../types'
-import { getWPM } from '../../utils/calculations'
+import { getWPM, round } from '../../utils/calculations'
 import { Quotes } from '@prisma/client'
 
 const colors = ['green', 'purple', 'blue', 'black']
@@ -20,11 +20,6 @@ const splitStringIncludeSpaces = (str: string) => {
     }
   }
   return res
-}
-
-const round = (value: number, precision: number) => {
-  const multiplier = Math.pow(10, precision || 0)
-  return Math.round(value * multiplier) / multiplier
 }
 
 class Games {

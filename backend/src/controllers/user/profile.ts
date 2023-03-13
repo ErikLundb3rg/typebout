@@ -6,6 +6,7 @@ import { getLatestPerformancesForUser } from '../../dal/performances'
 import { JWTPayload } from '../../auth/util/verifyers'
 import moment from 'moment'
 import { getEnrichedPerformance } from '../../utils/calculations'
+import { round } from '../../utils/calculations'
 
 const nrOfRaces = 10
 
@@ -27,10 +28,12 @@ export const profile: AsyncController = async (req, res) => {
 
   const highestWpm = Math.max(...wpmHistory)
 
-  const accuracyAverage =
+  const accuracyAverage = round(
     data
       .map(({ total, correct }) => correct / total)
-      .reduce((total, current) => total + current, 0) / nrLatestPerformances
+      .reduce((total, current) => total + current, 0) / nrLatestPerformances,
+    2
+  )
 
   const lastRaces = data.map((performance) => {
     const {
