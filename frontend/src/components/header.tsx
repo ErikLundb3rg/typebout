@@ -115,7 +115,7 @@ export default function Header() {
           direction={['column', 'row', 'row', 'row']}
           pt={[4, 4, 0, 0]}
         >
-          {user !== undefined ? (
+          {isLoggedIn ? (
             <>
               <Link
                 href="/users/profile"

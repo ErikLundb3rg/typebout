@@ -1,7 +1,6 @@
 import { ExtendedError } from 'socket.io/dist/namespace'
 import { Player } from '../types/index'
-import { verifyAccessToken } from '../../auth/util/verifyers'
-import { Users } from '@prisma/client'
+import { verifyAccessToken, JWTPayload } from '../../auth/util/verifyers'
 import { TypeBoutSocket } from '../types'
 
 // This middleware will check if the connecting
@@ -30,9 +29,9 @@ export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
   } // Verify that the user is actually logged in and not just saying "i'm not a guest"
   else {
     try {
-      const { id, username } = verifyAccessToken(accessToken) as Users
+      const { userId, username } = verifyAccessToken(accessToken) as JWTPayload
       socket.data = {
-        id,
+        id: userId,
         username,
         isGuest: false
       }
