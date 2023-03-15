@@ -6,13 +6,24 @@ import {
   VStack,
   Heading,
   Stack,
-  Flex,
+  Center,
   Box,
   Text,
-  HStack
+  HStack,
+  SimpleGrid
 } from '@chakra-ui/react'
 import StatComponent from '@/components/statComponent'
 import useAuth from '@/providers/useAuth'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts'
 
 const profile = () => {
   const { data, error, isLoading } = useSWR('users/profile', fetcherGet)
@@ -30,54 +41,147 @@ const profile = () => {
     data: { wpmAverage, highestWpm, accuracyAverage, wpmHistory, lastRaces }
   } = data
 
-  return (
-    <Flex
-      justifyContent={['space-evenly']}
-      alignItems={['center', 'flex-start']}
-      direction={['column', 'row']}
-    >
-      <VStack spacing={4} align="left">
-        <Box>
-          <Heading size="md"> Stats for: </Heading>
-          <Heading> {user?.username}</Heading>
-        </Box>
-        <Heading size="md"> Latest races: </Heading>
-        {lastRaces.map((race: any) => {
-          const { participants, timeFromNow, quote } = race
+  console.log(data)
 
-          return (
-            <Box p={4} borderRadius="5px" border="2px solid gray">
-              <Heading size="sm">{timeFromNow}</Heading>
-              <HStack>
-                <Text as="b">Participants:</Text>
-                {(participants as string[]).map(
-                  (participant: string, index) => (
-                    <Text>
-                      {participant}
-                      {index !== participant.length - 1 ? ',' : ''}
-                    </Text>
-                  )
-                )}
-              </HStack>
-              <HStack>
-                <Text as="b">Quote:</Text>
-                <Text as="i" isTruncated maxWidth={'140px'}>
-                  {' '}
-                  {quote.content}{' '}
-                </Text>
-                <Text noOfLines={1}> - {quote.author.name} </Text>
-              </HStack>
+  return (
+    <Center>
+      <VStack
+        w="container.md"
+        justifyContent="center"
+        spacing={2}
+        align="left"
+        direction={['column', 'row']}
+      >
+        <SimpleGrid columns={[1, 2]} spacing={6}>
+          <VStack>
+            <Box>
+              <Heading size="md">Stats for</Heading>
+              <Heading> {user?.username}</Heading>
             </Box>
-          )
-        })}
+
+            <Heading size="md" color="#8884d8" m={3}>
+              wpm history
+            </Heading>
+
+            <Box w="100%" pr={[3, 0]}>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={wpmHistory.map((wpm: number) => ({ wpm }))}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    dot={false}
+                    type="monotone"
+                    dataKey="wpm"
+                    stroke="#8884d8"
+                    strokeWidth={3}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Box>
+          </VStack>
+          <Center>
+            <VStack spacing={3} align="flex-start">
+              <StatComponent title="Average wpm " content={wpmAverage} />
+              <StatComponent title="Highest wpm" content={highestWpm} />
+              <StatComponent
+                title="Accuracy average"
+                content={accuracyAverage}
+              />
+            </VStack>
+          </Center>
+        </SimpleGrid>
+        <Heading size="md" textDecoration="underline">
+          {' '}
+          Latest races:{' '}
+        </Heading>
+        <VStack spacing={3} overflow="auto" maxHeight={500} pr={3}>
+          {lastRaces.map((race: any) => {
+            const { participants, timeFromNow, quote } = race
+
+            return (
+              <Box
+                p={2}
+                borderRadius="5px"
+                border="1px solid gray"
+                width="100%"
+              >
+                <Heading size="sm">{timeFromNow}</Heading>
+                <HStack>
+                  <Text as="b">Participants:</Text>
+                  {(participants as string[]).map(
+                    (participant: string, index) => (
+                      <Text>
+                        {participant}
+                        {index !== participant.length - 1 ? ',' : ''}
+                      </Text>
+                    )
+                  )}
+                </HStack>
+                <HStack>
+                  <Text as="b">Quote:</Text>
+                  <Text as="i" isTruncated maxWidth={'140px'}>
+                    {' '}
+                    {quote.content}{' '}
+                  </Text>
+                  <Text noOfLines={1}> - {quote.author.name} </Text>
+                </HStack>
+              </Box>
+            )
+          })}
+        </VStack>
       </VStack>
-      <VStack spacing={7}>
-        <StatComponent title="Average wpm " content={wpmAverage} />
-        <StatComponent title="Highest wpm" content={highestWpm} />
-        <StatComponent title="Accuracy average" content={accuracyAverage} />
-      </VStack>
-    </Flex>
+    </Center>
   )
 }
+/*<VStack spacing={4} align="left">
+          
+          
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={wpmHistory.map((wpm: number) => ({ wpm }))}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                dot={false}
+                type="monotone"
+                dataKey="wpm"
+                stroke="#8884d8"
+                strokeWidth={2}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </VStack>
+        <VStack spacing={7} overflow="auto" maxHeight="600px" p={3}>
+          <Heading size="md"> Latest races: </Heading>
+          {lastRaces.map((race: any) => {
+            const { participants, timeFromNow, quote } = race
 
+            return (
+              <Box p={4} borderRadius="5px" border="2px solid gray">
+                <Heading size="sm">{timeFromNow}</Heading>
+                <HStack>
+                  <Text as="b">Participants:</Text>
+                  {(participants as string[]).map(
+                    (participant: string, index) => (
+                      <Text>
+                        {participant}
+                        {index !== participant.length - 1 ? ',' : ''}
+                      </Text>
+                    )
+                  )}
+                </HStack>
+                <HStack>
+                  <Text as="b">Quote:</Text>
+                  <Text as="i" isTruncated maxWidth={'140px'}>
+                    {' '}
+                    {quote.content}{' '}
+                  </Text>
+                  <Text noOfLines={1}> - {quote.author.name} </Text>
+                </HStack>
+              </Box>
+            )
+          })}
+        </VStack>*/
 export default profile

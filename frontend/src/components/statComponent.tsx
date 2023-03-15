@@ -17,16 +17,16 @@ interface StatComponentProps {
 const StatComponent = ({ content, title }: StatComponentProps) => {
   return (
     <Stat size="md">
-      <StatLabel>
-        <Heading color="gray" size="md">
-          {title}
-        </Heading>
-      </StatLabel>
       <StatNumber>
         <Heading color="gray" size="3xl">
           {content}
         </Heading>
       </StatNumber>
+      <StatLabel>
+        <Heading color="gray" size="md">
+          {title}
+        </Heading>
+      </StatLabel>
     </Stat>
   )
 }
