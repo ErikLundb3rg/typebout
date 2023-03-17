@@ -90,7 +90,6 @@ export const startGameHandler: SocketHandler<'startGame'> = (socket) => {
     roomDirector.removeRoom(roomID)
 
     const quote = await getRandomQuote()
-    quote.content = 'write this'
 
     const group = Group.fromUsers(users, quote, onFinish)
     games.addGroup(group, room.id)

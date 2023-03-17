@@ -7,5 +7,6 @@ export const getRandomQuote = async () => {
     }
   })
   const randomIndex = Math.round(Math.random() * (res.length - 1))
-  return res[1]
+  const quote = res[randomIndex]
+  return quote
 }
