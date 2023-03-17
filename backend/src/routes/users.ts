@@ -8,14 +8,15 @@ import {
   profile
 } from '../controllers/user'
 import passport from 'passport'
+import { authLimiter } from '../middlewares/rate-limit'
 
 const router = Router()
 
-router.post('/register', asyncHandler(register))
+router.post('/register', authLimiter, asyncHandler(register))
 
-router.post('/login', asyncHandler(login))
+router.post('/login', authLimiter, asyncHandler(login))
 
-router.post('/logout', asyncHandler(logout))
+router.post('/logout', authLimiter, asyncHandler(logout))
 
 router.post(
   '/refreshToken',
