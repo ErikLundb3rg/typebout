@@ -24,9 +24,9 @@ model Performances {
   mistakes        Int
   completed_in_ms Int
   createdAt       DateTime @default(now())
-  user            Users    @relation(fields: [userId], references: [id])
+  user            Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          Int
-  race            Races    @relation(fields: [raceId], references: [id])
+  race            Races    @relation(fields: [raceId], references: [id], onDelete: Cascade)
   raceId          Int
 }
 
@@ -34,7 +34,7 @@ model Races {
   id           Int            @id @default(autoincrement())
   createdAt    DateTime       @default(now())
   performances Performances[]
-  quote        Quotes         @relation(fields: [quotesId], references: [id])
+  quote        Quotes         @relation(fields: [quotesId], references: [id], onDelete: Cascade)
   quotesId     Int
 }
 
@@ -42,7 +42,7 @@ model Quotes {
   id         Int          @id @default(autoincrement())
   content    String       @unique
   categories Categories[]
-  author     Authors      @relation(fields: [authorId], references: [id])
+  author     Authors      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId   Int
   Races      Races[]
 }

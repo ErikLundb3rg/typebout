@@ -4,6 +4,9 @@ import quoteFile from '../quotes/quotes.json'
 const prisma = new PrismaClient()
 
 const main = async () => {
+  // delete all quotes
+  await prisma.authors.deleteMany({})
+
   quoteFile.quotes.forEach(async (quote) => {
     await prisma.quotes.upsert({
       where: { content: quote.content },
