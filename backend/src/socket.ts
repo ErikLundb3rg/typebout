@@ -7,7 +7,7 @@ import {
 } from './game/types'
 import { verifyConnection } from './game/middlewares/verify'
 
-const LOCALHOST_URL = 'http://localhost:3000'
+const SOCKET_URL = 'http://localhost:3000'
 
 export const bootSocketIO = (socketPort: number) => {
   const io = new Server<
@@ -17,7 +17,7 @@ export const bootSocketIO = (socketPort: number) => {
     SocketData
   >({
     cors: {
-      origin: LOCALHOST_URL,
+      origin: SOCKET_URL,
       methods: ['GET', 'POST']
     }
   })
