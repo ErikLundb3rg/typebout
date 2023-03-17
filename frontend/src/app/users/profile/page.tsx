@@ -46,7 +46,7 @@ const profile = () => {
   return (
     <Center>
       <VStack
-        w="container.md"
+        w="container.lg"
         justifyContent="center"
         spacing={2}
         align="left"
@@ -81,7 +81,7 @@ const profile = () => {
             </Box>
           </VStack>
           <Center>
-            <VStack spacing={3} align="flex-start">
+            <VStack spacing={6} align="flex-start">
               <StatComponent title="Average wpm " content={wpmAverage} />
               <StatComponent title="Highest wpm" content={highestWpm} />
               <StatComponent
@@ -120,9 +120,8 @@ const profile = () => {
                 </HStack>
                 <HStack>
                   <Text as="b">Quote:</Text>
-                  <Text as="i" isTruncated maxWidth={'140px'}>
-                    {' '}
-                    {quote.content}{' '}
+                  <Text as="i" isTruncated maxWidth={'80%'}>
+                    {quote.content}
                   </Text>
                   <Text noOfLines={1}> - {quote.author.name} </Text>
                 </HStack>
@@ -134,54 +133,4 @@ const profile = () => {
     </Center>
   )
 }
-/*<VStack spacing={4} align="left">
-          
-          
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={wpmHistory.map((wpm: number) => ({ wpm }))}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                dot={false}
-                type="monotone"
-                dataKey="wpm"
-                stroke="#8884d8"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </VStack>
-        <VStack spacing={7} overflow="auto" maxHeight="600px" p={3}>
-          <Heading size="md"> Latest races: </Heading>
-          {lastRaces.map((race: any) => {
-            const { participants, timeFromNow, quote } = race
-
-            return (
-              <Box p={4} borderRadius="5px" border="2px solid gray">
-                <Heading size="sm">{timeFromNow}</Heading>
-                <HStack>
-                  <Text as="b">Participants:</Text>
-                  {(participants as string[]).map(
-                    (participant: string, index) => (
-                      <Text>
-                        {participant}
-                        {index !== participant.length - 1 ? ',' : ''}
-                      </Text>
-                    )
-                  )}
-                </HStack>
-                <HStack>
-                  <Text as="b">Quote:</Text>
-                  <Text as="i" isTruncated maxWidth={'140px'}>
-                    {' '}
-                    {quote.content}{' '}
-                  </Text>
-                  <Text noOfLines={1}> - {quote.author.name} </Text>
-                </HStack>
-              </Box>
-            )
-          })}
-        </VStack>*/
 export default profile
