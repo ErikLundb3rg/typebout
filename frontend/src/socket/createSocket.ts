@@ -22,7 +22,7 @@ export const createSocket = async (user: Player) => {
   const accessToken = localStorage.getItem(keys.accessToken)
 
   const socket: TypeBoutSocket = io(
-    process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:1400',
+    process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:1337',
     {
       auth: {
         accessToken,

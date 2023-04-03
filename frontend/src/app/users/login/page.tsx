@@ -29,7 +29,6 @@ interface FormTypes {
 export default function Login() {
   const { login, loading } = useAuth()
   const [errorMessage, setErrorMessage] = useState('')
-  const router = useRouter()
 
   const initialValues: FormTypes = {
     username: '',

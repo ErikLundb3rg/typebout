@@ -11,7 +11,11 @@ import {
   Spacer,
   useColorMode,
   Button,
-  Stack
+  Stack,
+  HStack,
+  Center,
+  StackDivider,
+  Divider
 } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 import MenuToggle from '@/components/MenuToggle'
@@ -39,7 +43,7 @@ const Username = ({
   isGuest: boolean
 }) => {
   return (
-    <Text fontSize="xl">
+    <Text fontSize="xl" display={['none', 'block']}>
       {username}
       {isGuest && (
         <Highlight
@@ -84,7 +88,7 @@ const MenuLinks = ({ isOpen }: { isOpen: boolean }) => {
 }
 
 export default function Header() {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const { colorMode, toggleColorMode } = useColorMode()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -123,9 +127,17 @@ export default function Header() {
               >
                 <span>Account</span>
               </Link>
-              <span>
-                <Username isGuest={user.isGuest} username={user.username} />
-              </span>
+              <Text
+                onClick={logout}
+                _hover={{
+                  color: 'blue.500',
+                  textDecoration: 'underline',
+                  cursor: 'pointer'
+                }}
+              >
+                Logout
+              </Text>
+              <Username isGuest={user.isGuest} username={user.username} />
             </>
           ) : (
             <>
@@ -143,9 +155,13 @@ export default function Header() {
               </Link>
             </>
           )}
-          <IconButton m="2" aria-label="Toggle Mode" onClick={toggleColorMode}>
-            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-          </IconButton>
+
+          <Button onClick={toggleColorMode}>
+            <Text> Theme </Text>
+            <Center m="1" ml="3">
+              {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            </Center>
+          </Button>
         </Stack>
       </Box>
     </Flex>

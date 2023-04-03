@@ -20,6 +20,7 @@ import {
   VStack,
   StackDivider
 } from '@chakra-ui/react'
+import { Link } from '@chakra-ui/next-js'
 
 const BecomeGuest = () => {
   const { becomeGuest } = useAuth()
@@ -54,6 +55,18 @@ const BecomeGuest = () => {
               </Button>
             </VStack>
           </form>
+          <Text>
+            or
+            <Link
+              color="blue.500"
+              href="/users/login"
+              _hover={{ textDecoration: 'underline' }}
+            >
+              {' '}
+              Login{' '}
+            </Link>
+            to your account
+          </Text>
         </Stack>
       </Center>
     </Box>

@@ -92,7 +92,7 @@ export const AuthProvider = ({
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
       setUser({ username: user.username, isGuest: false })
-      router.push('/')
+      router.back()
     } catch (error: any) {
       const { response } = error
       if (response) {

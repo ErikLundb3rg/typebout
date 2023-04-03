@@ -46,7 +46,7 @@ const profile = () => {
   return (
     <Center>
       <VStack
-        w="container.lg"
+        w={['100%', 'container.lg']}
         justifyContent="center"
         spacing={2}
         align="left"

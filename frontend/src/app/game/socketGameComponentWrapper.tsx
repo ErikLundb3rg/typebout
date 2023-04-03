@@ -12,6 +12,7 @@ import {
   Quote,
   TypeBoutSocket
 } from '@/socket/types'
+import { Spinner } from '@chakra-ui/spinner'
 
 let socket: TypeBoutSocket | undefined = undefined
 
@@ -25,7 +26,7 @@ export default function SocketGameComponentWrapper(
   BeforeGameComponent: React.FC<BeforeGameComponentProps>
 ) {
   return () => {
-    const { user } = useAuth()
+    const { user, loading } = useAuth()
     const [players, setPlayers] = useState<Player[]>()
     const [count, setCount] = useState<number>(5)
     const [quote, setQuote] = useState<Quote>()
@@ -68,6 +69,10 @@ export default function SocketGameComponentWrapper(
         socket = undefined
       }
     }, [user])
+
+    if (loading) {
+      return <Spinner />
+    }
 
     if (!user) {
       return <BecomeGuest />

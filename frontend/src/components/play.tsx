@@ -46,16 +46,16 @@ import {
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import GameText from '@/components/gameText'
 import StatComponent from './statComponent'
-// import {
-// LineChart,
-// Line,
-// XAxis,
-// YAxis,
-// CartesianGrid,
-// Tooltip,
-// Legend,
-// ResponsiveContainer
-// } from 'recharts'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts'
 
 interface PlayGameProps {
   count: number
@@ -239,113 +239,120 @@ export default function PlayGame({
   }
 
   return (
-    <VStack spacing="6">
-      <Heading size="md" color="gray">
-        {count > 0 ? (
-          <Text>Race starting in {count} seconds</Text>
-        ) : (
-          <Text>Race!</Text>
-        )}
-      </Heading>
-      <UserTable gameInfoArr={gameInfoArr} />
-      <Box p={3}>
-        <GameText
-          {...{
-            completedContent,
-            currentWord,
-            upComingContent,
-            correctIndex,
-            wrongIndex
-          }}
-        />
-        <Fade in>
-          <Text size="md" visibility={completed ? 'visible' : 'hidden'} m={2}>
-            - {quote.author}
-          </Text>
-        </Fade>
-      </Box>
-      <form id="input-form">
-        <Input onChange={handleInputChange} />
-      </form>
-      {completed && chosenEndgameStats && (
-        <Fade in>
-          <VStack spacing="6">
-            <HStack>
-              <Text size="md"> Showing stats for: </Text>
-              <Menu>
-                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                  {chosenEndgameStats.username}
-                </MenuButton>
-                <MenuList>
-                  {endGameStats.map((endGameStat) => (
-                    <MenuItem
-                      onClick={() => setChosenEndgameStats(endGameStat)}
-                    >
-                      {endGameStat.username}
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </Menu>
-            </HStack>
-            <Divider />
-
-            <Stack direction={['column', 'row']} spacing={6}>
-              <VStack spacing={4}>
-                <SimpleGrid columns={[2]} spacing={8}>
-                  <StatComponent title="wpm" content={chosenEndgameStats.wpm} />
-                  <StatComponent
-                    title="Time"
-                    content={`${chosenEndgameStats.time}s`}
-                  />
-                  <StatComponent
-                    title="Accuracy"
-                    content={`${chosenEndgameStats.accuracy}%`}
-                  />
-                  <StatComponent
-                    title="Errors"
-                    content={chosenEndgameStats.mistakes}
-                  />
-                </SimpleGrid>
-              </VStack>
-              {chosenEndgameStats.mistakeWords.length > 0 && (
-                <VStack>
-                  <Heading> Mistakes </Heading>
-                  <OrderedList>
-                    {chosenEndgameStats.mistakeWords.map((mistake) => (
-                      <ListItem> {mistake} </ListItem>
+    <Center>
+      <VStack spacing="6" w={['100%', 'container.lg']}>
+        <Heading size="md" color="gray">
+          {count > 0 ? (
+            <Text>Race starting in {count} seconds</Text>
+          ) : (
+            <Text>Race!</Text>
+          )}
+        </Heading>
+        <UserTable gameInfoArr={gameInfoArr} />
+        <Box p={3}>
+          <GameText
+            {...{
+              completedContent,
+              currentWord,
+              upComingContent,
+              correctIndex,
+              wrongIndex
+            }}
+          />
+          <Fade in>
+            <Text size="md" visibility={completed ? 'visible' : 'hidden'} m={2}>
+              - {quote.author}
+            </Text>
+          </Fade>
+        </Box>
+        <form id="input-form">
+          <Input onChange={handleInputChange} />
+        </form>
+        {completed && chosenEndgameStats && (
+          <Fade in>
+            <VStack spacing="6" w="100%">
+              <HStack>
+                <Text size="md"> Showing stats for: </Text>
+                <Menu>
+                  <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                    {chosenEndgameStats.username}
+                  </MenuButton>
+                  <MenuList>
+                    {endGameStats.map((endGameStat) => (
+                      <MenuItem
+                        onClick={() => setChosenEndgameStats(endGameStat)}
+                      >
+                        {endGameStat.username}
+                      </MenuItem>
                     ))}
-                  </OrderedList>
-                </VStack>
-              )}
+                  </MenuList>
+                </Menu>
+              </HStack>
+              <Divider />
 
-              <Spacer />
-              {/*wpmHistories[chosenEndgameStats.username].length > 0 && (
-                <ResponsiveContainer width="95%" height={400}>
-                  <LineChart
-                    data={wpmHistories[chosenEndgameStats.username].map(
-                      (wpm) => ({
-                        wpm
-                      })
-                    )}
-                  >
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line
-                      dot={false}
-                      type="monotone"
-                      dataKey="wpm"
-                      stroke="#8884d8"
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-                    )*/}
-            </Stack>
-          </VStack>
-        </Fade>
-      )}
-    </VStack>
+              <VStack spacing={10} w="100%">
+                <Stack direction={['column', 'row']} spacing={10}>
+                  <VStack spacing={4}>
+                    <SimpleGrid columns={[2]} spacing={8}>
+                      <StatComponent
+                        title="wpm"
+                        content={chosenEndgameStats.wpm}
+                      />
+                      <StatComponent
+                        title="Time"
+                        content={`${chosenEndgameStats.time}s`}
+                      />
+                      <StatComponent
+                        title="Accuracy"
+                        content={`${chosenEndgameStats.accuracy}%`}
+                      />
+                      <StatComponent
+                        title="Errors"
+                        content={chosenEndgameStats.mistakes}
+                      />
+                    </SimpleGrid>
+                  </VStack>
+                  {chosenEndgameStats.mistakeWords.length > 0 && (
+                    <VStack>
+                      <Heading> Mistakes </Heading>
+                      <OrderedList>
+                        {chosenEndgameStats.mistakeWords.map((mistake) => (
+                          <ListItem> {mistake} </ListItem>
+                        ))}
+                      </OrderedList>
+                    </VStack>
+                  )}
+                </Stack>
+                {wpmHistories[chosenEndgameStats.username].length > 0 && (
+                  <Box w="100%" pr={[3, 0]}>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart
+                        data={wpmHistories[chosenEndgameStats.username].map(
+                          (wpm) => ({
+                            wpm
+                          })
+                        )}
+                      >
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line
+                          dot={false}
+                          type="monotone"
+                          dataKey="wpm"
+                          stroke="#8884d8"
+                          strokeWidth={2}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </Box>
+                )}
+              </VStack>
+            </VStack>
+          </Fade>
+        )}
+      </VStack>
+    </Center>
   )
 }
