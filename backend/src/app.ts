@@ -8,13 +8,13 @@ import { defaultLimiter } from './middlewares/rate-limit'
 import cors from 'cors'
 import helmet from 'helmet'
 
-export const bootServer = (port: string | number) => {
+export const setupServer= (port: string | number) => {
   const app = express()
 
   app.use(
     cors({
       credentials: true,
-      origin: 'http://localhost:3000'
+      origin: "http://localhost:3000"
     })
   )
   app.use(helmet())
@@ -26,7 +26,5 @@ export const bootServer = (port: string | number) => {
   addRoutes(app)
   app.use(errorHandlingMiddleWare)
 
-  app.listen(port, () => {
-    return console.log(`Express is listening at http://localhost:${port}`)
-  })
+  return app
 }

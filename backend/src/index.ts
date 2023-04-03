@@ -1,22 +1,33 @@
 import dotenv from 'dotenv'
 import { initalizePassportStrategies } from './auth/strategies'
-import { bootServer } from './app'
+import { setupServer } from './app'
 import { bootSocketIO } from './socket'
+import http from 'http'
 
 const setup = () => {
-  dotenv.config()
+  if (process.env.NODE_ENV !== 'production') {
+    dotenv.config()
+  }
   initalizePassportStrategies()
 }
 
 const initialize = () => {
   // Needs to be run first as it initalizes environment variables and such
   setup()
+  console.log('Test reading .env' ,process.env.MODE)
 
-  const expressPort = process.env.EXPRESS_PORT || 1337
-  const socketIOPort = Number(process.env.SOCKET_PORT) || 1400
+  const port = process.env.SERVER_PORT || 1337
 
-  bootServer(expressPort)
-  bootSocketIO(socketIOPort)
+  const expressApp = setupServer(port)
+  const httpServer = http.createServer(expressApp)
+  bootSocketIO(httpServer, Number(port))
+
+  httpServer.listen(port, () => {
+    console.log(`Server listening on port ${port}`)
+  })
+  
+
+
 }
 
 initialize()

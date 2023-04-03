@@ -15,6 +15,6 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 8080
+EXPOSE 1337 
 
-CMD [ "npm", "run", "start"]
+CMD npm run prisma:mg && npm run prisma:seed && npm run start

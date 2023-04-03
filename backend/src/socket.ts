@@ -7,24 +7,22 @@ import {
 } from './game/types'
 import { verifyConnection } from './game/middlewares/verify'
 
-const SOCKET_URL = 'http://localhost:3000'
-
-export const bootSocketIO = (socketPort: number) => {
+export const bootSocketIO = (httpServer: any, port: number) => {
   const io = new Server<
     ClientToServerEvents,
     ServerToClientEvents,
     Record<string, never>,
     SocketData
-  >({
+  >(httpServer,{
+
     cors: {
-      origin: SOCKET_URL,
-      methods: ['GET', 'POST']
+      origin: "http://localhost:3000", 
+      methods: ["GET", "POST"],
+      credentials: true // Allow credentials
     }
   })
 
   io.use(verifyConnection)
   io.on('connection', onConnection)
-
-  io.listen(socketPort)
-  console.log(`Socket io server listening on ${socketPort}`)
+  console.log(`Socket io server listening on ${port}`)
 }

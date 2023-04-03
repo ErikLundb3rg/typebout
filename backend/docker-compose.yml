@@ -6,17 +6,11 @@ services:
       # - "1337:8080"
     # depends_on:
       # - db
-  redis:
-    image: "redis:alpine"
-    ports:
-      - 6379:6379
-    volumes:
-      - redis:/data
   database:
     image: "postgres"
     restart: always
     ports: 
-      - 5000:5432
+      - 5432:5432
     volumes: 
       - database:/data
     environment:
@@ -25,5 +19,4 @@ services:
       POSTGRES_DB: ${POSTGRES_DB} 
       
 volumes:
-  redis:
   database:
