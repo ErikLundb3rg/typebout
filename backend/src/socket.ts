@@ -16,7 +16,7 @@ export const bootSocketIO = (httpServer: any, port: number) => {
   >(httpServer,{
 
     cors: {
-      origin: "http://localhost:3000", 
+      origin: process.env.CORS_ORIGIN!,
       methods: ["GET", "POST"],
       credentials: true // Allow credentials
     }
