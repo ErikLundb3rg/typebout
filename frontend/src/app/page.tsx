@@ -1,6 +1,6 @@
 'use client'
 import { Inter } from '@next/font/google'
-import { Stack, Heading, Center, Skeleton, Text } from '@chakra-ui/react'
+import { Box, Stack, Heading, Center, Skeleton, Text } from '@chakra-ui/react'
 import TypeCard from '@/components/typeCard'
 import PerformancesTable from '@/components/performancesTable'
 
@@ -28,17 +28,23 @@ export default function Home() {
             <Text>
               Typebout was just released. This means you might find some bugs or
               other unintended things regarding the website.
+              <br /> <br />
+              Contact erik.lundberg32gmail.com for inquiries.
             </Text>
           </TypeCard>
           <Stack direction={['column', 'row']}>
-            <TypeCard header="Latest Races">
-              <PerformancesTable
-                path={'/races/getLatestPerformances?entries=10'}
-              />
-            </TypeCard>
-            <TypeCard header="Top races">
-              <PerformancesTable path={'/races/topPerformances?entries=10'} />
-            </TypeCard>
+            <Box maxHeight={600} overflow="auto" boxShadow="lg">
+              <TypeCard header="Latest Races">
+                <PerformancesTable
+                  path={'/races/getLatestPerformances?entries=10'}
+                />
+              </TypeCard>
+            </Box>
+            <Box maxHeight={600} overflow="auto" boxShadow="lg">
+              <TypeCard header="Top races">
+                <PerformancesTable path={'/races/topPerformances?entries=10'} />
+              </TypeCard>
+            </Box>
           </Stack>
         </Stack>
       </Center>
