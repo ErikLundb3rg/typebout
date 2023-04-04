@@ -3,7 +3,7 @@ import { SocketHandler } from '../middlewares/handlerutils'
 import { sendRoomInfo } from '../emissions'
 
 const createLink = (roomId: string) => {
-  return `http://localhost:3000/game/joinRoom?room=${roomId}`
+  return `${process.env.CORS_ORIGIN}/game/joinRoom?room=${roomId}`
 }
 
 export const createRoomHandler: SocketHandler<'createRoom'> = (socket) => {
