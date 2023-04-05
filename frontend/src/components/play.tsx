@@ -265,7 +265,12 @@ export default function PlayGame({
             </Text>
           </Fade>
         </Box>
-        <form id="input-form">
+        <form
+          id="input-form"
+          onSubmit={(e) => {
+            e.preventDefault()
+          }}
+        >
           <Input onChange={handleInputChange} />
         </form>
         {completed && chosenEndgameStats && (

@@ -29,7 +29,7 @@ export default function Home() {
               Typebout was just released. This means you might find some bugs or
               other unintended things regarding the website.
               <br /> <br />
-              Contact erik.lundberg32gmail.com for inquiries.
+              Contact erik.lundberg32@gmail.com for inquiries.
             </Text>
           </TypeCard>
           <Stack direction={['column', 'row']}>
