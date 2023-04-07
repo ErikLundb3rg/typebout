@@ -158,6 +158,7 @@ export default function Header() {
           <IconButton
             onClick={toggleColorMode}
             icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            aria-label="Toggle dark mode"
           />
         </Stack>
       </Box>
