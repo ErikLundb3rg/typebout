@@ -1,7 +1,7 @@
 import { Users, Performances } from '@prisma/client'
 
 export const getWPM = (letters: number, seconds: number) =>
-  Math.round(letters / 5 / (seconds / 60))
+  Math.round(letters / 6 / (seconds / 60))
 
 export const getEnrichedPerformance = <T extends Performances>(
   performance: T
