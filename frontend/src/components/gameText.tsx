@@ -9,6 +9,7 @@ interface GameTextProps {
   upComingContent: string[]
   correctIndex: number
   wrongIndex: number
+  splitContent: string[]
 }
 const gameText = ({
   completedContent,

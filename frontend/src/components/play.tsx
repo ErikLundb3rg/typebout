@@ -64,6 +64,7 @@ interface PlayGameProps {
   onCorrectWord: (word: string, mistakeWords?: MistakeProps) => void
   gameInfoArr: GameInformation[]
   endGameStats: EndGameStats[]
+  handlePlayAgain: () => void
 }
 
 const splitStringIncludeSpaces = (str: string) => {
@@ -97,7 +98,7 @@ const UserTable = ({
           {gameInfoArr.map((gameInfo, index) => {
             const { color, username, wpm, progressPercentage } = gameInfo
             return (
-              <Tr>
+              <Tr key={index}>
                 <Td> {username} </Td>
                 <Td width={['100px', '400px']}>
                   <Progress
@@ -122,9 +123,12 @@ export default function PlayGame({
   gameStarted,
   onCorrectWord,
   gameInfoArr,
-  endGameStats
+  endGameStats,
+  handlePlayAgain
 }: PlayGameProps) {
-  const splitContent = splitStringIncludeSpaces(quote.content)
+  const [splitContent, setSplitContent] = useState<string[]>(
+    splitStringIncludeSpaces(quote.content)
+  )
   const [completedContent, setCompletedContent] = useState('')
   const [currentWord, setCurrentWord] = useState(splitContent[0])
   const [upComingContent, setUpComingContent] = useState(
@@ -147,6 +151,10 @@ export default function PlayGame({
       )
     }
   }, [endGameStats])
+
+  useEffect(() => {
+    setSplitContent(splitStringIncludeSpaces(quote.content))
+  }, [])
 
   useEffect(() => {
     gameInfoArr.forEach((gameInfo) => {
@@ -172,6 +180,19 @@ export default function PlayGame({
       }))
     })
   }, [gameInfoArr])
+
+  const handlePlayAgainHandler = () => {
+    setCompleted(false)
+    handlePlayAgain()
+    mistakes.current = 0
+    mistakeWords.current = []
+    setSplitContent(splitStringIncludeSpaces(quote.content))
+    setCompletedContent('')
+    setCurrentWord(splitContent[0])
+    setUpComingContent(splitContent.filter((_, idx) => idx !== 0))
+    setCorrectIndex(-1)
+    setWrongIndex(-1)
+  }
 
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
     if (completed) return
@@ -256,26 +277,42 @@ export default function PlayGame({
               currentWord,
               upComingContent,
               correctIndex,
-              wrongIndex
+              wrongIndex,
+              splitContent
             }}
           />
           <Fade in>
-            <Text size="md" visibility={completed ? 'visible' : 'hidden'} m={2}>
+            <Text
+              size="md"
+              textAlign="right"
+              visibility={completed ? 'visible' : 'hidden'}
+              m={2}
+            >
               - {quote.author}
             </Text>
           </Fade>
         </Box>
-        <form
-          id="input-form"
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
-        >
-          <Input variant="flushed" onChange={handleInputChange} size="lg" />
-        </form>
+        {!completed && (
+          <form
+            id="input-form"
+            onSubmit={(e) => {
+              e.preventDefault()
+            }}
+          >
+            <Input
+              variant="flushed"
+              textAlign="center"
+              onChange={handleInputChange}
+              size="lg"
+            />
+          </form>
+        )}
         {completed && chosenEndgameStats && (
           <Fade in>
             <VStack spacing="6" w="100%">
+              <Button onClick={handlePlayAgainHandler} colorScheme="teal">
+                Play again
+              </Button>
               <HStack>
                 <Text size="md"> Showing stats for: </Text>
                 <Menu>
@@ -285,6 +322,7 @@ export default function PlayGame({
                   <MenuList>
                     {endGameStats.map((endGameStat) => (
                       <MenuItem
+                        key={endGameStat.username}
                         onClick={() => setChosenEndgameStats(endGameStat)}
                       >
                         {endGameStat.username}
@@ -322,7 +360,7 @@ export default function PlayGame({
                       <Heading> Mistakes </Heading>
                       <OrderedList>
                         {chosenEndgameStats.mistakeWords.map((mistake) => (
-                          <ListItem> {mistake} </ListItem>
+                          <ListItem key={mistake}> {mistake} </ListItem>
                         ))}
                       </OrderedList>
                     </VStack>
