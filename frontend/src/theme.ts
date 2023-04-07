@@ -10,7 +10,6 @@ const config: ThemeConfig = {
 export const theme = extendTheme({
   ...config,
   colors: {
-    gray: '#40514E',
     cyan: '#30E3CA'
   }
 })

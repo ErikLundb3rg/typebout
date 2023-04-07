@@ -18,7 +18,7 @@ const gameText = ({
   wrongIndex
 }: GameTextProps) => {
   return (
-    <Box>
+    <Box fontSize="larger">
       <Text as="span" style={{ color: 'gray' }}>
         {completedContent}
       </Text>

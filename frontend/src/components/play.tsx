@@ -106,7 +106,7 @@ const UserTable = ({
                     colorScheme={color}
                   />
                 </Td>
-                <Td isNumeric>{wpm}</Td>
+                <Td isNumeric>{wpm} wpm</Td>
               </Tr>
             )
           })}
@@ -271,7 +271,7 @@ export default function PlayGame({
             e.preventDefault()
           }}
         >
-          <Input onChange={handleInputChange} />
+          <Input variant="flushed" onChange={handleInputChange} size="lg" />
         </form>
         {completed && chosenEndgameStats && (
           <Fade in>
