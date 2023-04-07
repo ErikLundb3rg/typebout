@@ -43,7 +43,7 @@ const Username = ({
   isGuest: boolean
 }) => {
   return (
-    <Text fontSize="xl" display={['none', 'block']}>
+    <Text display={['none', 'block']}>
       {username}
       {isGuest && (
         <Highlight
@@ -115,8 +115,8 @@ export default function Header() {
           spacing={8}
           align="center"
           justify={['center', 'space-between', 'flex-end', 'flex-end']}
-          alignItems="baseline"
-          direction={['column', 'row', 'row', 'row']}
+          alignItems="center"
+          direction={['column', 'row']}
           pt={[4, 4, 0, 0]}
         >
           {isLoggedIn ? (
@@ -125,7 +125,7 @@ export default function Header() {
                 href="/users/profile"
                 _hover={{ color: 'blue.500', textDecoration: 'underline' }}
               >
-                <span>Account</span>
+                <Username isGuest={user.isGuest} username={user.username} />
               </Link>
               <Text
                 onClick={logout}
@@ -137,7 +137,6 @@ export default function Header() {
               >
                 Logout
               </Text>
-              <Username isGuest={user.isGuest} username={user.username} />
             </>
           ) : (
             <>
@@ -156,12 +155,10 @@ export default function Header() {
             </>
           )}
 
-          <Button onClick={toggleColorMode}>
-            <Text> Theme </Text>
-            <Center m="1" ml="3">
-              {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-            </Center>
-          </Button>
+          <IconButton
+            onClick={toggleColorMode}
+            icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+          />
         </Stack>
       </Box>
     </Flex>
