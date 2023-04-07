@@ -1,17 +1,26 @@
 'use client'
 import { Inter } from '@next/font/google'
-import { Box, Stack, Heading, Center, Skeleton, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Stack,
+  Heading,
+  Center,
+  Skeleton,
+  Text,
+  useColorModeValue
+} from '@chakra-ui/react'
 import TypeCard from '@/components/typeCard'
 import PerformancesTable from '@/components/performancesTable'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const textColor = useColorModeValue('gray', 'white')
   return (
     <main>
       <Center>
         <Stack maxWidth="600px" align="center" spacing={6}>
-          <Heading m="7" size="md" color="gray">
+          <Heading m={8} size="md" color={textColor}>
             Play against your friends to see who is the fastest...{' '}
           </Heading>
           <Stack direction={['column', 'row']}>
@@ -29,7 +38,11 @@ export default function Home() {
               Typebout was just released. This means you might find some bugs or
               other unintended things regarding the website.
               <br /> <br />
-              Contact erik.lundberg32@gmail.com for inquiries.
+              Contact{' '}
+              <a href="mailto:erik.lundberg32@gmail.com">
+                erik.lundberg32@gmail.com
+              </a>{' '}
+              for inquiries.
             </Text>
           </TypeCard>
           <Stack direction={['column', 'row']}>

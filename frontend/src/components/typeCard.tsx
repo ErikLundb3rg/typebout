@@ -36,32 +36,42 @@ export default function TypeCard({
   const [loading, setLoading] = useState(false)
 
   return (
-    <Card>
-      <CardHeader>
-        <Flex justifyContent="space-between">
-          {path ? (
-            <Link
-              href={path}
-              onClick={() => {
-                setLoading(true)
-              }}
-            >
-              <Heading
-                size="md"
-                textDecoration="underline"
-                textDecorationColor="cyan"
-                textDecorationThickness="2px"
-              >
-                {header}
-              </Heading>
-            </Link>
-          ) : (
-            <Heading size="md">{header}</Heading>
-          )}
-          {loading && <Spinner />}
-        </Flex>
-      </CardHeader>
-      <CardBody>{children}</CardBody>
-    </Card>
+    <>
+      {path ? (
+        <Link
+          href={path}
+          onClick={() => {
+            setLoading(true)
+          }}
+        >
+          <Card>
+            <CardHeader>
+              <Flex justifyContent="space-between">
+                <Heading
+                  size="md"
+                  textDecoration="underline"
+                  textDecorationColor="cyan"
+                  textDecorationThickness="2px"
+                >
+                  {header}
+                </Heading>
+                {loading && <Spinner />}
+              </Flex>
+            </CardHeader>
+            <CardBody>{children}</CardBody>
+          </Card>
+        </Link>
+      ) : (
+        <Card>
+          <CardHeader>
+            <Flex justifyContent="space-between">
+              <Heading size="md">{header}</Heading>
+              {loading && <Spinner />}
+            </Flex>
+          </CardHeader>
+          <CardBody>{children}</CardBody>
+        </Card>
+      )}
+    </>
   )
 }
