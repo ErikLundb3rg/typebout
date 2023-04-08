@@ -13,6 +13,7 @@ import { Player } from '@/socket/types'
 import { keys } from '@/util/localstoragekeys'
 import { useRouter } from 'next/navigation'
 import { SignUpError } from '@/types'
+import { useToast } from '@chakra-ui/react'
 
 interface AuthContextProps {
   loading: boolean
@@ -57,6 +58,7 @@ export const AuthProvider = ({
   )
   const path = usePathname()
   const router = useRouter()
+  const toast = useToast()
 
   // If we switch to another page we reset error
   useEffect(() => {
@@ -93,6 +95,12 @@ export const AuthProvider = ({
       localStorage.setItem(keys.accessToken, accessToken)
       setUser({ username: user.username, isGuest: false })
       router.back()
+      toast({
+        title: 'Login successful',
+        status: 'success',
+        duration: 1000,
+        isClosable: true
+      })
     } catch (error: any) {
       const { response } = error
       if (response) {
@@ -120,6 +128,13 @@ export const AuthProvider = ({
       localStorage.setItem(keys.accessToken, accessToken)
       setUser({ username: user.username, isGuest: false })
       router.push('/')
+      toast({
+        title: 'Signup successful',
+        description: "We've created your account for you.",
+        status: 'success',
+        duration: 3000,
+        isClosable: true
+      })
     } catch (error: any) {
       const { response } = error
       if (response) {

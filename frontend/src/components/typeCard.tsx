@@ -1,22 +1,5 @@
 import { Inter } from '@next/font/google'
-import styles from './page.module.css'
-import useAuth from '@/providers/useAuth'
-import {
-  Grid,
-  GridItem,
-  Stack,
-  Heading,
-  HStack,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Text,
-  Button,
-  SimpleGrid,
-  Progress,
-  Flex
-} from '@chakra-ui/react'
+import { Heading, Card, CardHeader, CardBody, Flex } from '@chakra-ui/react'
 import Link from 'next/link'
 import { Spinner } from '@chakra-ui/react'
 import { PropsWithChildren, useState } from 'react'

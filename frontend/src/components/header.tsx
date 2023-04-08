@@ -28,8 +28,7 @@ const Logo = () => {
   return (
     <Heading size="lg">
       <Link href="/" _hover={{ textDecoration: 'underline' }}>
-        {' '}
-        TypeBout{' '}
+        TypeBout⌨
       </Link>
     </Heading>
   )
