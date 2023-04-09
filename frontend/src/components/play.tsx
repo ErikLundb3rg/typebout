@@ -64,6 +64,7 @@ interface PlayGameProps {
   onCorrectWord: (word: string, mistakeWords?: MistakeProps) => void
   gameInfoArr: GameInformation[]
   endGameStats: EndGameStats[]
+  handlePlayAgain: () => void
 }
 
 const splitStringIncludeSpaces = (str: string) => {
@@ -97,7 +98,7 @@ const UserTable = ({
           {gameInfoArr.map((gameInfo, index) => {
             const { color, username, wpm, progressPercentage } = gameInfo
             return (
-              <Tr>
+              <Tr key={index}>
                 <Td> {username} </Td>
                 <Td width={['100px', '400px']}>
                   <Progress
@@ -122,9 +123,12 @@ export default function PlayGame({
   gameStarted,
   onCorrectWord,
   gameInfoArr,
-  endGameStats
+  endGameStats,
+  handlePlayAgain
 }: PlayGameProps) {
-  const splitContent = splitStringIncludeSpaces(quote.content)
+  const [splitContent, setSplitContent] = useState<string[]>(
+    splitStringIncludeSpaces(quote.content)
+  )
   const [completedContent, setCompletedContent] = useState('')
   const [currentWord, setCurrentWord] = useState(splitContent[0])
   const [upComingContent, setUpComingContent] = useState(
@@ -150,6 +154,10 @@ export default function PlayGame({
   }, [endGameStats])
 
   useEffect(() => {
+    setSplitContent(splitStringIncludeSpaces(quote.content))
+  }, [])
+
+  useEffect(() => {
     gameInfoArr.forEach((gameInfo) => {
       const { wpm, username } = gameInfo
       if (
@@ -173,6 +181,25 @@ export default function PlayGame({
       }))
     })
   }, [gameInfoArr])
+
+  useEffect(() => {
+    mistakes.current = 0
+    mistakeWords.current = []
+    const newSplitContent = splitStringIncludeSpaces(quote.content)
+    setSplitContent(newSplitContent)
+    setCompletedContent('')
+    setCurrentWord(newSplitContent[0])
+    setUpComingContent(newSplitContent.filter((_, idx) => idx !== 0))
+    setCorrectIndex(-1)
+    setWrongIndex(-1)
+    setChosenEndgameStats(undefined)
+    setWpmHistories({})
+  }, [quote])
+
+  const handlePlayAgainHandler = async () => {
+    setCompleted(false)
+    handlePlayAgain()
+  }
 
   useEffect(() => {
     gameStarted && inputRef.current?.focus()
@@ -256,19 +283,15 @@ export default function PlayGame({
         <UserTable gameInfoArr={gameInfoArr} />
         <Box p={3}>
           <GameText
-            {...{
-              completedContent,
-              currentWord,
-              upComingContent,
-              correctIndex,
-              wrongIndex
-            }}
+            completedContent={completedContent}
+            currentWord={currentWord}
+            upComingContent={upComingContent}
+            correctIndex={correctIndex}
+            wrongIndex={wrongIndex}
+            splitContent={splitContent}
+            completed={completed}
+            author={quote.author}
           />
-          <Fade in>
-            <Text size="md" visibility={completed ? 'visible' : 'hidden'} m={2}>
-              - {quote.author}
-            </Text>
-          </Fade>
         </Box>
         <form
           id="input-form"
@@ -308,7 +331,6 @@ export default function PlayGame({
               </Menu>
             </HStack>
             <Divider />
-
             <VStack spacing={10} w="100%">
               <Stack
                 w="100%"

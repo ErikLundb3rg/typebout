@@ -56,6 +56,7 @@ export interface ClientToServerEvents {
   joinRoom: (roomId: string, callback: (successful: boolean) => void) => void
   startGame: () => void
   sendWord: (word: string, mistakesObj?: MistakeProps) => void
+  playAgainGame: () => void
 }
 
 export type TypeBoutSocket = Socket<ServerToClientEvents, ClientToServerEvents>

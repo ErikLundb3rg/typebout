@@ -7,6 +7,7 @@ import {
   sendWordHandler
 } from './handlers'
 import { ClientToServerEvents } from './types'
+import { playAgainGameHandler } from './handlers/startGame'
 
 export const withErrorHandling = <T extends (...args: any) => any>(
   handler: T
@@ -35,6 +36,12 @@ export const onConnection = (socket: Socket) => {
     'startGame',
     withErrorHandling<ClientToServerEvents['startGame']>(
       startGameHandler(socket)
+    )
+  )
+  socket.on(
+    'playAgainGame',
+    withErrorHandling<ClientToServerEvents['playAgainGame']>(
+      playAgainGameHandler(socket)
     )
   )
   socket.on(

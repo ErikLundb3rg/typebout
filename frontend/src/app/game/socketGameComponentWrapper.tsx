@@ -43,33 +43,36 @@ export default function SocketGameComponentWrapper(
         if (!socket) {
           socket = await createSocket(user)
           setHasSocket(true)
-
-          socket?.on('roomInfo', (players) => {
-            setPlayers(players)
-          })
-          socket?.on('prepareGame', (quote) => {
-            console.log('quote', quote)
-            setQuote(quote)
-          })
-          socket?.on('countdown', (count) => {
-            setCount(count)
-          })
-          socket?.on('gameStarted', () => {
-            setGameStarted(true)
-          })
-          socket?.on('gameInfo', (gameInfoArr) => {
-            setGameInfoArr(gameInfoArr)
-          })
-          socket?.on('completedStats', (stats) => {
-            setEndGameStatsArr(stats)
-          })
         }
+        socket?.on('roomInfo', (players) => {
+          setPlayers(players)
+        })
+        socket?.on('prepareGame', (quote) => {
+          console.log('quote', quote)
+          setQuote(quote)
+        })
+        socket?.on('countdown', (count) => {
+          setCount(count)
+        })
+        socket?.on('gameStarted', () => {
+          setGameStarted(true)
+        })
+        socket?.on('gameInfo', (gameInfoArr) => {
+          setGameInfoArr(gameInfoArr)
+        })
+        socket?.on('completedStats', (stats) => {
+          setEndGameStatsArr(stats)
+        })
       })()
 
       return () => {
         socket = undefined
       }
     }, [user])
+
+    async function handlePlayAgain() {
+      socket?.emit('playAgainGame')
+    }
 
     if (loading) {
       return (
@@ -94,6 +97,7 @@ export default function SocketGameComponentWrapper(
           }}
           gameInfoArr={gameInfoArr}
           endGameStats={endGameStatsArr}
+          handlePlayAgain={handlePlayAgain}
         />
       )
     }

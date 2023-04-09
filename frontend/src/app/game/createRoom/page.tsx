@@ -50,10 +50,10 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
             Joined players
           </Heading>
           <UnorderedList spacing={6} listStyleType="none">
-            {players?.map((player) => {
+            {players?.map((player, index) => {
               const { isGuest, username } = player
               return (
-                <ListItem>
+                <ListItem key={index}>
                   <Divider />
                   <HStack paddingTop="3">
                     {isGuest ? (
@@ -82,7 +82,7 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
           Share this link with your friends:
         </Heading>
         <HStack>
-          <Input value={link} onFocus={(e) => e.target.select()} />
+          <Input value={link} readOnly onFocus={(e) => e.target.select()} />
           <Button size="md" colorScheme="teal" onClick={onCopy}>
             Copy
           </Button>
