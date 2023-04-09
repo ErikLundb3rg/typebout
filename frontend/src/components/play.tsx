@@ -272,24 +272,26 @@ export default function PlayGame({
             author={quote.author}
           />
         </Box>
-        <form
-          id="input-form"
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
-        >
-          <Input
-            variant="flushed"
-            onChange={handleInputChange}
-            size="lg"
-            disabled={!gameStarted}
-            ref={inputRef}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck="false"
-          />
-        </form>
+        {!completed && (
+          <form
+            id="input-form"
+            onSubmit={(e) => {
+              e.preventDefault()
+            }}
+          >
+            <Input
+              variant="flushed"
+              onChange={handleInputChange}
+              size="lg"
+              disabled={!gameStarted}
+              ref={inputRef}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
+            />
+          </form>
+        )}
         {completed && chosenEndgameStats && (
           <VStack spacing="6" w="100%">
             {canRestartGame && (

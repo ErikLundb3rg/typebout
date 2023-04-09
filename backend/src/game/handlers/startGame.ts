@@ -1,64 +1,14 @@
 import { SocketHandler } from '../middlewares/handlerutils'
 import roomDirector from '../logic/roomDirector'
-import games, { Group, PersonalGame } from '../logic/gameDirector'
+import games, { Group } from '../logic/gameDirector'
 import {
   sendCountDown,
-  sendEndGameStats,
   sendGameInfo,
   sendGameStart,
   sendPrepareGame
 } from '../emissions'
 import { getRandomQuote } from '../../dal/quotes'
-import { addPerformance } from '../../dal/performances'
-
-const sendGameInfoRepeatedly = (
-  group: Group,
-  intervalTimeMS: number,
-  maxSeconds: number
-) => {
-  // Only allow for game to run for maxSeconds
-  const maxSendTimes = maxSeconds / (intervalTimeMS / 1000)
-  let times = 0
-
-  const interval = setInterval(() => {
-    sendGameInfo(group)
-    times += 1
-    if (group.allFinished() || times > maxSendTimes) {
-      clearInterval(interval)
-    }
-  }, intervalTimeMS)
-}
-
-const onFinish = async (personalGame: PersonalGame) => {
-  const { group } = personalGame
-
-  if (!group) {
-    throw new Error('PersonalGame has no attached group')
-  }
-  sendGameInfo(group)
-  // Send final users data to user
-  sendEndGameStats(group)
-
-  if (personalGame.user.data.isGuest) {
-    return
-  }
-
-  // Log users result to database
-  const personalGameFinalStats = personalGame.getEndGameStats()
-  // time in seconds
-  const { correct, mistakes, time } = personalGameFinalStats
-  const { raceId } = await addPerformance({
-    completed_in_ms: time * 1000,
-    correct,
-    mistakes,
-    quoteId: group.quote.id,
-    userId: personalGame.user.data.id!,
-    raceId: group.raceId
-  })
-  if (!group.raceId) {
-    group.raceId = raceId
-  }
-}
+import { onFinish, sendGameInfoRepeatedly } from '../service/play'
 
 // Here we move the users connected to the room
 // from the roomDirector to the game logic classes
@@ -107,49 +57,6 @@ export const startGameHandler: SocketHandler<'startGame'> = (socket) => {
       group.startGames()
       sendGameInfoRepeatedly(group, 500, 140)
       sendGameStart(group)
-    })
-  }
-}
-
-export const playAgainGameHandler: SocketHandler<'playAgainGame'> = (
-  socket
-) => {
-  return async () => {
-    const { roomID, group } = socket.data
-
-    if (roomID === null || roomID === undefined) {
-      console.error('Cannot start game with this user as it is not in a room')
-      return
-    }
-
-    if (group === null || group === undefined) {
-      console.error('Cannot start game without group')
-      return
-    }
-
-    const users = group.personalGames.map((game) => game.user)
-
-    const quote = await getRandomQuote()
-    const newGroup = Group.fromUsers(
-      group.personalGames.map((game) => game.user),
-      quote,
-      onFinish
-    )
-    games.addGroup(newGroup, roomID)
-
-    newGroup.personalGames.forEach((personalGame) => {
-      personalGame.user.data.group = newGroup
-      personalGame.user.data.personalGame = personalGame
-    })
-
-    const { author, content } = quote
-    sendPrepareGame(newGroup, { content, author: author.name })
-
-    sendGameInfo(newGroup)
-    sendCountDown(5, newGroup, () => {
-      newGroup.startGames()
-      sendGameInfoRepeatedly(newGroup, 500, 140)
-      sendGameStart(newGroup)
     })
   }
 }
