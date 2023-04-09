@@ -56,7 +56,8 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   createRoom: (callback: (link: string) => void) => void
   joinRoom: (roomId: string, callback: (successful: boolean) => void) => void
-  startGame: () => Promise<void>
+  startGame: () => void
+  playAgainGame: () => void
   sendWord: (word: string, mistakesObj?: MistakeProps) => void
 }
 

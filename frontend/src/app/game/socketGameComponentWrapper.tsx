@@ -24,7 +24,8 @@ export interface BeforeGameComponentProps {
 }
 
 export default function SocketGameComponentWrapper(
-  BeforeGameComponent: React.FC<BeforeGameComponentProps>
+  BeforeGameComponent: React.FC<BeforeGameComponentProps>,
+  isAdmin: boolean
 ) {
   return () => {
     const { user, loading } = useAuth()
@@ -35,6 +36,7 @@ export default function SocketGameComponentWrapper(
     const [endGameStatsArr, setEndGameStatsArr] = useState<EndGameStats[]>([])
     const [gameStarted, setGameStarted] = useState<boolean>(false)
     const [hasSocket, setHasSocket] = useState<boolean>(false)
+    const [restartGameCounter, setRestartGameCounter] = useState<number>(0)
 
     useEffect(() => {
       ;(async () => {
@@ -43,27 +45,31 @@ export default function SocketGameComponentWrapper(
         if (!socket) {
           socket = await createSocket(user)
           setHasSocket(true)
-
-          socket?.on('roomInfo', (players) => {
-            setPlayers(players)
-          })
-          socket?.on('prepareGame', (quote) => {
-            console.log('quote', quote)
-            setQuote(quote)
-          })
-          socket?.on('countdown', (count) => {
-            setCount(count)
-          })
-          socket?.on('gameStarted', () => {
-            setGameStarted(true)
-          })
-          socket?.on('gameInfo', (gameInfoArr) => {
-            setGameInfoArr(gameInfoArr)
-          })
-          socket?.on('completedStats', (stats) => {
-            setEndGameStatsArr(stats)
-          })
         }
+        socket?.on('roomInfo', (players) => {
+          setPlayers(players)
+        })
+        socket?.on('prepareGame', (quote) => {
+          setQuote(quote)
+          // I reset state here in order to prepare for restarting of the game
+          setCount(5)
+          setGameInfoArr([])
+          setEndGameStatsArr([])
+          setGameStarted(false)
+          setRestartGameCounter((prev) => prev + 1)
+        })
+        socket?.on('countdown', (count) => {
+          setCount(count)
+        })
+        socket?.on('gameStarted', () => {
+          setGameStarted(true)
+        })
+        socket?.on('gameInfo', (gameInfoArr) => {
+          setGameInfoArr(gameInfoArr)
+        })
+        socket?.on('completedStats', (stats) => {
+          setEndGameStatsArr(stats)
+        })
       })()
 
       return () => {
@@ -94,6 +100,11 @@ export default function SocketGameComponentWrapper(
           }}
           gameInfoArr={gameInfoArr}
           endGameStats={endGameStatsArr}
+          handlePlayAgain={() => {
+            socket?.emit('playAgainGame')
+          }}
+          canRestartGame={isAdmin && players?.length === endGameStatsArr.length}
+          key={restartGameCounter}
         />
       )
     }

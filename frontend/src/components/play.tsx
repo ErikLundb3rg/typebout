@@ -64,6 +64,8 @@ interface PlayGameProps {
   onCorrectWord: (word: string, mistakeWords?: MistakeProps) => void
   gameInfoArr: GameInformation[]
   endGameStats: EndGameStats[]
+  canRestartGame: boolean
+  handlePlayAgain: () => void
 }
 
 const splitStringIncludeSpaces = (str: string) => {
@@ -97,7 +99,7 @@ const UserTable = ({
           {gameInfoArr.map((gameInfo, index) => {
             const { color, username, wpm, progressPercentage } = gameInfo
             return (
-              <Tr>
+              <Tr key={index}>
                 <Td> {username} </Td>
                 <Td width={['100px', '400px']}>
                   <Progress
@@ -122,9 +124,13 @@ export default function PlayGame({
   gameStarted,
   onCorrectWord,
   gameInfoArr,
-  endGameStats
+  endGameStats,
+  handlePlayAgain,
+  canRestartGame
 }: PlayGameProps) {
-  const splitContent = splitStringIncludeSpaces(quote.content)
+  const [splitContent, setSplitContent] = useState<string[]>(
+    splitStringIncludeSpaces(quote.content)
+  )
   const [completedContent, setCompletedContent] = useState('')
   const [currentWord, setCurrentWord] = useState(splitContent[0])
   const [upComingContent, setUpComingContent] = useState(
@@ -256,40 +262,43 @@ export default function PlayGame({
         <UserTable gameInfoArr={gameInfoArr} />
         <Box p={3}>
           <GameText
-            {...{
-              completedContent,
-              currentWord,
-              upComingContent,
-              correctIndex,
-              wrongIndex
-            }}
+            completedContent={completedContent}
+            currentWord={currentWord}
+            upComingContent={upComingContent}
+            correctIndex={correctIndex}
+            wrongIndex={wrongIndex}
+            splitContent={splitContent}
+            completed={completed}
+            author={quote.author}
           />
-          <Fade in>
-            <Text size="md" visibility={completed ? 'visible' : 'hidden'} m={2}>
-              - {quote.author}
-            </Text>
-          </Fade>
         </Box>
-        <form
-          id="input-form"
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
-        >
-          <Input
-            variant="flushed"
-            onChange={handleInputChange}
-            size="lg"
-            disabled={!gameStarted}
-            ref={inputRef}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck="false"
-          />
-        </form>
+        {!completed && (
+          <form
+            id="input-form"
+            onSubmit={(e) => {
+              e.preventDefault()
+            }}
+          >
+            <Input
+              variant="flushed"
+              onChange={handleInputChange}
+              size="lg"
+              disabled={!gameStarted}
+              ref={inputRef}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
+            />
+          </form>
+        )}
         {completed && chosenEndgameStats && (
           <VStack spacing="6" w="100%">
+            {canRestartGame && (
+              <Button onClick={handlePlayAgain} colorScheme="teal">
+                Play again
+              </Button>
+            )}
             <HStack>
               <Text size="md"> Showing stats for: </Text>
               <Menu>
@@ -308,7 +317,6 @@ export default function PlayGame({
               </Menu>
             </HStack>
             <Divider />
-
             <VStack spacing={10} w="100%">
               <Stack
                 w="100%"

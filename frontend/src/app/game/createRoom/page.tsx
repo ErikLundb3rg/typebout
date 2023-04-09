@@ -50,10 +50,10 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
             Joined players
           </Heading>
           <UnorderedList spacing={6} listStyleType="none">
-            {players?.map((player) => {
+            {players?.map((player, index) => {
               const { isGuest, username } = player
               return (
-                <ListItem>
+                <ListItem key={index}>
                   <Divider />
                   <HStack paddingTop="3">
                     {isGuest ? (
@@ -82,7 +82,7 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
           Share this link with your friends:
         </Heading>
         <HStack>
-          <Input value={link} onFocus={(e) => e.target.select()} />
+          <Input value={link} readOnly onFocus={(e) => e.target.select()} />
           <Button size="md" colorScheme="teal" onClick={onCopy}>
             Copy
           </Button>
@@ -92,27 +92,4 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
   )
 }
 
-//<div className={styles.description}>
-//<h2> Hello {user.username} </h2>
-//<p> We create rooms here: </p>
-//{link ? (
-//<div>
-//<p> This is your link: </p>
-//<p> {link} </p>
-//<button onClick={handleStartGame}> Start game </button>
-//</div>
-//) : (
-//<button> Create room</button>
-//)}
-//{players?.map((player) => {
-//const { isGuest, username } = player
-//return (
-//<p key={username}>
-//{' '}
-//{username}: {isGuest && 'guest'}{' '}
-//</p>
-//)
-//})}
-//</div>
-
-export default SocketGameComponentWrapper(CreateRoom)
+export default SocketGameComponentWrapper(CreateRoom, true)
