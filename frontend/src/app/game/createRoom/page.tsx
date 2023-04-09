@@ -92,27 +92,4 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
   )
 }
 
-//<div className={styles.description}>
-//<h2> Hello {user.username} </h2>
-//<p> We create rooms here: </p>
-//{link ? (
-//<div>
-//<p> This is your link: </p>
-//<p> {link} </p>
-//<button onClick={handleStartGame}> Start game </button>
-//</div>
-//) : (
-//<button> Create room</button>
-//)}
-//{players?.map((player) => {
-//const { isGuest, username } = player
-//return (
-//<p key={username}>
-//{' '}
-//{username}: {isGuest && 'guest'}{' '}
-//</p>
-//)
-//})}
-//</div>
-
-export default SocketGameComponentWrapper(CreateRoom)
+export default SocketGameComponentWrapper(CreateRoom, true)

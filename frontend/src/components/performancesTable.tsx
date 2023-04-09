@@ -39,17 +39,18 @@ const performancesTable = ({ path }: PerformancesTableProps) => {
           </Tr>
         </Thead>
         <Tbody>
-          {data?.data.performances.map((performance: PerformanceProps) => {
-            const { username, timeFromNow, wpm } = performance
-            const randomKey = Math.random() * 1000000
-            return (
-              <Tr key={randomKey}>
-                <Td> {timeFromNow} </Td>
-                <Td> {username} </Td>
-                <Td isNumeric>{wpm}</Td>
-              </Tr>
-            )
-          })}
+          {data?.data.performances.map(
+            (performance: PerformanceProps, index: number) => {
+              const { username, timeFromNow, wpm } = performance
+              return (
+                <Tr key={index}>
+                  <Td> {timeFromNow} </Td>
+                  <Td> {username} </Td>
+                  <Td isNumeric>{wpm}</Td>
+                </Tr>
+              )
+            }
+          )}
         </Tbody>
       </Table>
     </TableContainer>

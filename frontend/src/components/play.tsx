@@ -64,6 +64,7 @@ interface PlayGameProps {
   onCorrectWord: (word: string, mistakeWords?: MistakeProps) => void
   gameInfoArr: GameInformation[]
   endGameStats: EndGameStats[]
+  canRestartGame: boolean
   handlePlayAgain: () => void
 }
 
@@ -124,7 +125,8 @@ export default function PlayGame({
   onCorrectWord,
   gameInfoArr,
   endGameStats,
-  handlePlayAgain
+  handlePlayAgain,
+  canRestartGame
 }: PlayGameProps) {
   const [splitContent, setSplitContent] = useState<string[]>(
     splitStringIncludeSpaces(quote.content)
@@ -154,10 +156,6 @@ export default function PlayGame({
   }, [endGameStats])
 
   useEffect(() => {
-    setSplitContent(splitStringIncludeSpaces(quote.content))
-  }, [])
-
-  useEffect(() => {
     gameInfoArr.forEach((gameInfo) => {
       const { wpm, username } = gameInfo
       if (
@@ -181,25 +179,6 @@ export default function PlayGame({
       }))
     })
   }, [gameInfoArr])
-
-  useEffect(() => {
-    mistakes.current = 0
-    mistakeWords.current = []
-    const newSplitContent = splitStringIncludeSpaces(quote.content)
-    setSplitContent(newSplitContent)
-    setCompletedContent('')
-    setCurrentWord(newSplitContent[0])
-    setUpComingContent(newSplitContent.filter((_, idx) => idx !== 0))
-    setCorrectIndex(-1)
-    setWrongIndex(-1)
-    setChosenEndgameStats(undefined)
-    setWpmHistories({})
-  }, [quote])
-
-  const handlePlayAgainHandler = async () => {
-    setCompleted(false)
-    handlePlayAgain()
-  }
 
   useEffect(() => {
     gameStarted && inputRef.current?.focus()
@@ -313,6 +292,11 @@ export default function PlayGame({
         </form>
         {completed && chosenEndgameStats && (
           <VStack spacing="6" w="100%">
+            {canRestartGame && (
+              <Button onClick={handlePlayAgain} colorScheme="teal">
+                Play again
+              </Button>
+            )}
             <HStack>
               <Text size="md"> Showing stats for: </Text>
               <Menu>

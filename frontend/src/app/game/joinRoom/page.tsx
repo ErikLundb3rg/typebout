@@ -103,4 +103,4 @@ const JoinRoom = ({ players, socket, user }: BeforeGameComponentProps) => {
   )
 }
 
-export default SocketGameComponent(JoinRoom)
+export default SocketGameComponent(JoinRoom, false)
