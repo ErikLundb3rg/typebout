@@ -28,8 +28,7 @@ const Logo = () => {
   return (
     <Heading size="lg">
       <Link href="/" _hover={{ textDecoration: 'underline' }}>
-        {' '}
-        TypeBout{' '}
+        TypeBout⌨
       </Link>
     </Heading>
   )
@@ -158,6 +157,7 @@ export default function Header() {
           <IconButton
             onClick={toggleColorMode}
             icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            aria-label="Toggle dark mode"
           />
         </Stack>
       </Box>

@@ -140,6 +140,7 @@ export default function PlayGame({
   const { user } = useAuth()
   const [chosenEndgameStats, setChosenEndgameStats] = useState<EndGameStats>()
   const [wpmHistories, setWpmHistories] = useState<Record<string, number[]>>({})
+  const inputRef = useRef<HTMLInputElement>(null)
 
   let mistakes = useRef(0)
   let mistakeWords = useRef<string[]>([])
@@ -182,7 +183,6 @@ export default function PlayGame({
   }, [gameInfoArr])
 
   useEffect(() => {
-    console.log('received new quote :DDDD')
     mistakes.current = 0
     mistakeWords.current = []
     const newSplitContent = splitStringIncludeSpaces(quote.content)
@@ -200,6 +200,10 @@ export default function PlayGame({
     setCompleted(false)
     handlePlayAgain()
   }
+
+  useEffect(() => {
+    gameStarted && inputRef.current?.focus()
+  }, [gameStarted])
 
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
     if (completed) return
@@ -289,108 +293,112 @@ export default function PlayGame({
             author={quote.author}
           />
         </Box>
-        {!completed && (
-          <form
-            id="input-form"
-            onSubmit={(e) => {
-              e.preventDefault()
-            }}
-          >
-            <Input
-              variant="flushed"
-              textAlign="center"
-              onChange={handleInputChange}
-              size="lg"
-            />
-          </form>
-        )}
+        <form
+          id="input-form"
+          onSubmit={(e) => {
+            e.preventDefault()
+          }}
+        >
+          <Input
+            variant="flushed"
+            onChange={handleInputChange}
+            size="lg"
+            disabled={!gameStarted}
+            ref={inputRef}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
+          />
+        </form>
         {completed && chosenEndgameStats && (
-          <Fade in>
-            <VStack spacing="6" w="100%">
-              <Button onClick={handlePlayAgainHandler} colorScheme="teal">
-                Play again
-              </Button>
-              <HStack>
-                <Text size="md"> Showing stats for: </Text>
-                <Menu>
-                  <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                    {chosenEndgameStats.username}
-                  </MenuButton>
-                  <MenuList>
-                    {endGameStats.map((endGameStat) => (
-                      <MenuItem
-                        key={endGameStat.username}
-                        onClick={() => setChosenEndgameStats(endGameStat)}
-                      >
-                        {endGameStat.username}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </Menu>
-              </HStack>
-              <Divider />
-
-              <VStack spacing={10} w="100%">
-                <Stack direction={['column', 'row']} spacing={10}>
-                  <VStack spacing={4}>
-                    <SimpleGrid columns={[2]} spacing={8}>
-                      <StatComponent
-                        title="wpm"
-                        content={chosenEndgameStats.wpm}
-                      />
-                      <StatComponent
-                        title="Time"
-                        content={`${chosenEndgameStats.time}s`}
-                      />
-                      <StatComponent
-                        title="Accuracy"
-                        content={`${chosenEndgameStats.accuracy}%`}
-                      />
-                      <StatComponent
-                        title="Errors"
-                        content={chosenEndgameStats.mistakes}
-                      />
-                    </SimpleGrid>
+          <VStack spacing="6" w="100%">
+            <HStack>
+              <Text size="md"> Showing stats for: </Text>
+              <Menu>
+                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                  {chosenEndgameStats.username}
+                </MenuButton>
+                <MenuList>
+                  {endGameStats.map((endGameStat) => (
+                    <MenuItem
+                      onClick={() => setChosenEndgameStats(endGameStat)}
+                    >
+                      {endGameStat.username}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+            </HStack>
+            <Divider />
+            <VStack spacing={10} w="100%">
+              <Stack
+                w="100%"
+                direction={['column', 'row']}
+                justify="center"
+                spacing={[8, 20]}
+              >
+                <VStack spacing={4}>
+                  <SimpleGrid columns={[2]} spacing={8}>
+                    <StatComponent
+                      title="wpm"
+                      content={chosenEndgameStats.wpm}
+                    />
+                    <StatComponent
+                      title="Time"
+                      content={`${chosenEndgameStats.time}s`}
+                    />
+                    <StatComponent
+                      title="Accuracy"
+                      content={`${chosenEndgameStats.accuracy}%`}
+                    />
+                    <StatComponent
+                      title="Errors"
+                      content={chosenEndgameStats.mistakes}
+                    />
+                  </SimpleGrid>
+                </VStack>
+                {chosenEndgameStats.mistakeWords.length > 0 && (
+                  <VStack maxH={250} overflowY="scroll" pr={4}>
+                    <Heading> Mistakes </Heading>
+                    <OrderedList>
+                      {chosenEndgameStats.mistakeWords.map((mistake) => (
+                        <ListItem> {mistake} </ListItem>
+                      ))}
+                    </OrderedList>
                   </VStack>
-                  {chosenEndgameStats.mistakeWords.length > 0 && (
-                    <VStack>
-                      <Heading> Mistakes </Heading>
-                      <OrderedList>
-                        {chosenEndgameStats.mistakeWords.map((mistake) => (
-                          <ListItem key={mistake}> {mistake} </ListItem>
-                        ))}
-                      </OrderedList>
-                    </VStack>
-                  )}
-                </Stack>
-                {wpmHistories[chosenEndgameStats.username].length > 0 && (
-                  <Box w="100%" pr={[3, 0]}>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <LineChart
-                        data={wpmHistories[chosenEndgameStats.username].map(
-                          (wpm) => ({
-                            wpm
-                          })
-                        )}
-                      >
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line
-                          dot={false}
-                          type="monotone"
-                          dataKey="wpm"
-                          stroke="#8884d8"
-                          strokeWidth={2}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </Box>
                 )}
-              </VStack>
+              </Stack>
+              {wpmHistories[chosenEndgameStats.username].length > 0 && (
+                <VStack w={['100%', '70%']} pr={[3, 0]}>
+                  <Heading as="h4" size="md" mb={4}>
+                    WPM History
+                  </Heading>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <LineChart
+                      data={wpmHistories[chosenEndgameStats.username].map(
+                        (wpm) => ({
+                          wpm
+                        })
+                      )}
+                    >
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line
+                        dot={false}
+                        type="monotone"
+                        dataKey="wpm"
+                        stroke="#8884d8"
+                        strokeWidth={2}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </VStack>
+              )}
             </VStack>
-          </Fade>
+          </VStack>
         )}
       </VStack>
     </Center>

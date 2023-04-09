@@ -1,22 +1,13 @@
-import styles from '../page.module.css'
 import { FormEvent } from 'react'
 import useAuth from '@/providers/useAuth'
 import {
-  Grid,
-  GridItem,
   Stack,
   Heading,
-  HStack,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Text,
   Button,
-  SimpleGrid,
-  Box,
   Center,
   Input,
+  Fade,
   VStack,
   StackDivider
 } from '@chakra-ui/react'
@@ -36,7 +27,7 @@ const BecomeGuest = () => {
   }
 
   return (
-    <Box>
+    <Fade in>
       <Center>
         <Stack align="center">
           <Heading m="7" size="md" color="gray">
@@ -69,7 +60,7 @@ const BecomeGuest = () => {
           </Text>
         </Stack>
       </Center>
-    </Box>
+    </Fade>
   )
 }
 

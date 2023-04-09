@@ -9,7 +9,7 @@ TypeBout is a typeracing website in which you can challenge your friends in typi
 More features are on the way, and as TypeBout is in its infancy you might find a bug or two.
 
 
-TypeBout is not yet deployed.
+TypeBout is available at: [Typebout.com](https://typebout.com)
 
 ## Technical
 Using Next js 13, the frontend is written in Typescript and uses Chakra-ui for components and layout. The backend is also written in Typescript and uses Node, Express, Prisma-io and PostgreSQL. Authentication is handled using JWT. 

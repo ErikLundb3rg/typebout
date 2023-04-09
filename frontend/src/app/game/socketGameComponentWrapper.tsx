@@ -13,6 +13,7 @@ import {
   TypeBoutSocket
 } from '@/socket/types'
 import { Spinner } from '@chakra-ui/spinner'
+import { Center } from '@chakra-ui/react'
 
 let socket: TypeBoutSocket | undefined = undefined
 
@@ -74,7 +75,11 @@ export default function SocketGameComponentWrapper(
     }
 
     if (loading) {
-      return <Spinner />
+      return (
+        <Center>
+          <Spinner />
+        </Center>
+      )
     }
 
     if (!user) {
@@ -103,6 +108,10 @@ export default function SocketGameComponentWrapper(
       )
     }
 
-    return <p> loading ...</p>
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    )
   }
 }
