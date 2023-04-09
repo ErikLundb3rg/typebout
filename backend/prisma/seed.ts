@@ -5,8 +5,6 @@ const prisma = new PrismaClient()
 
 const main = async () => {
   // delete all quotes
-  await prisma.quotes.deleteMany({})
-
   quoteFile.forEach(async (quote) => {
     await prisma.quotes.upsert({
       where: { content: quote.content },
