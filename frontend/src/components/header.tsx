@@ -20,7 +20,8 @@ import {
 import { Link } from '@chakra-ui/next-js'
 import MenuToggle from '@/components/MenuToggle'
 import { useState } from 'react'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { AddIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { useRouter } from 'next/router'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -111,7 +112,7 @@ export default function Header() {
         flexBasis={{ base: '100%', md: 'auto' }}
       >
         <Stack
-          spacing={8}
+          spacing={4}
           align="center"
           justify={['center', 'space-between', 'flex-end', 'flex-end']}
           alignItems="center"
@@ -154,7 +155,17 @@ export default function Header() {
             </>
           )}
 
+          <Link href="/game/createRoom">
+            <IconButton
+              size="sm"
+              colorScheme="teal"
+              icon={<AddIcon />}
+              aria-label="Toggle dark mode"
+            />
+          </Link>
+
           <IconButton
+            size="sm"
             onClick={toggleColorMode}
             icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             aria-label="Toggle dark mode"
