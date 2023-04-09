@@ -69,7 +69,7 @@ export default function SocketGameComponentWrapper(
       }
     }, [user])
 
-    const handlePlayAgain = () => {
+    async function handlePlayAgain() {
       socket?.emit('playAgainGame')
     }
 

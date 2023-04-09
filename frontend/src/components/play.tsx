@@ -181,17 +181,24 @@ export default function PlayGame({
     })
   }, [gameInfoArr])
 
-  const handlePlayAgainHandler = () => {
-    setCompleted(false)
-    handlePlayAgain()
+  useEffect(() => {
+    console.log('received new quote :DDDD')
     mistakes.current = 0
     mistakeWords.current = []
-    setSplitContent(splitStringIncludeSpaces(quote.content))
+    const newSplitContent = splitStringIncludeSpaces(quote.content)
+    setSplitContent(newSplitContent)
     setCompletedContent('')
-    setCurrentWord(splitContent[0])
-    setUpComingContent(splitContent.filter((_, idx) => idx !== 0))
+    setCurrentWord(newSplitContent[0])
+    setUpComingContent(newSplitContent.filter((_, idx) => idx !== 0))
     setCorrectIndex(-1)
     setWrongIndex(-1)
+    setChosenEndgameStats(undefined)
+    setWpmHistories({})
+  }, [quote])
+
+  const handlePlayAgainHandler = async () => {
+    setCompleted(false)
+    handlePlayAgain()
   }
 
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -272,25 +279,15 @@ export default function PlayGame({
         <UserTable gameInfoArr={gameInfoArr} />
         <Box p={3}>
           <GameText
-            {...{
-              completedContent,
-              currentWord,
-              upComingContent,
-              correctIndex,
-              wrongIndex,
-              splitContent
-            }}
+            completedContent={completedContent}
+            currentWord={currentWord}
+            upComingContent={upComingContent}
+            correctIndex={correctIndex}
+            wrongIndex={wrongIndex}
+            splitContent={splitContent}
+            completed={completed}
+            author={quote.author}
           />
-          <Fade in>
-            <Text
-              size="md"
-              textAlign="right"
-              visibility={completed ? 'visible' : 'hidden'}
-              m={2}
-            >
-              - {quote.author}
-            </Text>
-          </Fade>
         </Box>
         {!completed && (
           <form
