@@ -15,12 +15,16 @@ import {
   HStack,
   Center,
   StackDivider,
-  Divider
+  Divider,
+  MenuButton,
+  MenuList,
+  Menu,
+  MenuItem
 } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 import MenuToggle from '@/components/MenuToggle'
 import { useState } from 'react'
-import { AddIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { AddIcon, ChevronDownIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useRouter } from 'next/router'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -103,7 +107,7 @@ export default function Header() {
       justify="space-between"
       wrap="wrap"
       w="100%"
-      p={8}
+      p={4}
     >
       <Logo />
       <MenuToggle toggle={toggle} isOpen={isOpen} />
@@ -155,17 +159,26 @@ export default function Header() {
             </>
           )}
 
-          <Link href="/game/createRoom">
-            <IconButton
-              size="sm"
+          <Menu size="sm">
+            <MenuButton
+              as={Button}
               colorScheme="teal"
-              icon={<AddIcon />}
-              aria-label="Toggle dark mode"
-            />
-          </Link>
+              rightIcon={<ChevronDownIcon />}
+            >
+              Play
+            </MenuButton>
+            <MenuList>
+              <MenuItem>
+                <Link href="/game/createRoom">Create a new game</Link>
+              </MenuItem>
+              <MenuItem>
+                <Link href="/game/join">Join a game</Link>
+              </MenuItem>
+            </MenuList>
+          </Menu>
 
           <IconButton
-            size="sm"
+            size="md"
             onClick={toggleColorMode}
             icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             aria-label="Toggle dark mode"
