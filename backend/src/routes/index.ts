@@ -5,7 +5,7 @@ import { asyncHandler, defaultErrorResponse } from '../middlewares/api-utils'
 
 export const addRoutes = (app: Application): void => {
   app.get(['/', '/healthcheck'], (req, res) => {
-    res.status(200).send('Backend for TypeBout is up and running')
+    res.status(200).send('Backend for TypeBout is up and running, v1')
   })
 
   app.use('/users', users)
