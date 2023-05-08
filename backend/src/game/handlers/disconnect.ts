@@ -9,7 +9,6 @@ export const disconnectHandler = (socket: TypeBoutSocket) => {
     const { roomID } = socket.data
 
     if (roomID === undefined || roomID === null) {
-      console.log(`User: ${socket.data.username} was not connected to a room`)
       return
     }
 

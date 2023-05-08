@@ -25,7 +25,6 @@ class RoomDirector {
   public createRoom = (user: TypeBoutSocket) => {
     const id = this.roomIDGenerator.getID()
     this.rooms.set(id, new Room(user, id))
-    console.log(`Creating room with roomID: ${id}`)
     return id
   }
 
