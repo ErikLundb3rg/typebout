@@ -14,7 +14,7 @@ const setup = () => {
 const initialize = () => {
   // Needs to be run first as it initalizes environment variables and such
   setup()
-  console.log('Test reading .env' ,process.env.MODE)
+  console.log('Server running in mode:', process.env.MODE)
 
   const port = process.env.SERVER_PORT || 1337
 
@@ -25,9 +25,6 @@ const initialize = () => {
   httpServer.listen(port, () => {
     console.log(`Server listening on port ${port}`)
   })
-  
-
-
 }
 
 initialize()

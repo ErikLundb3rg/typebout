@@ -7,7 +7,6 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-
 RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
@@ -15,6 +14,6 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 1337 
+EXPOSE 1337
 
-CMD npm run prisma:mg && npm run start
+CMD npm run prisma:mg && npm run prisma:seed && npm run start

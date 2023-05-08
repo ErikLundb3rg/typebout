@@ -61,7 +61,6 @@ const transformError = (error: Joi.ValidationError) => {
 export const register: AsyncController<RegisterProps> = async (req, res) => {
   const body = trimStringRecord({ ...req.body })
   const { error, value } = registerSchema.validate(body)
-  console.log('value', value)
 
   if (error) {
     return defaultErrorResponse({
@@ -117,7 +116,6 @@ export const register: AsyncController<RegisterProps> = async (req, res) => {
       message: 'User signup was successful'
     })
   } catch (error) {
-    console.log(error)
     return defaultErrorResponse({
       message: 'Something went wrong',
       status: errorCodes.INTERNAL_SERVER_ERROR

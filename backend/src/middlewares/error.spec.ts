@@ -20,7 +20,6 @@ describe('Error handling middleware', () => {
   test('should return a error response on Syntax', async () => {
     errorHandlingMiddleWare(new SyntaxError(), req, res)
     const response = (sendBaseResponse as jest.Mock).mock.calls[0][0]
-    console.log('response', response)
     expect(response).toMatchSnapshot()
   })
   test('should return a error response on URI error', async () => {
