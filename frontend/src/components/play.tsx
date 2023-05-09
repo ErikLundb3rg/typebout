@@ -308,7 +308,9 @@ export default function PlayGame({
               <Menu>
                 <MenuButton
                   as={Button}
-                  rightIcon={endGameStats.length > 1 && <ChevronDownIcon />}
+                  rightIcon={
+                    endGameStats.length > 1 ? <ChevronDownIcon /> : undefined
+                  }
                 >
                   {chosenEndgameStats.username}
                 </MenuButton>
