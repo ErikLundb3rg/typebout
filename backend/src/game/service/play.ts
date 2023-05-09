@@ -27,6 +27,8 @@ export const onFinish = async (personalGame: PersonalGame) => {
     throw new Error('PersonalGame has no attached group')
   }
   sendGameInfo(group)
+
+  personalGame.setEndGameStats()
   // Send final users data to user
   sendEndGameStats(group)
 
@@ -35,9 +37,8 @@ export const onFinish = async (personalGame: PersonalGame) => {
   }
 
   // Log users result to database
-  const personalGameFinalStats = personalGame.getEndGameStats()
   // time in seconds
-  const { correct, mistakes, time } = personalGameFinalStats
+  const { correct, mistakes, time } = personalGame.endGameStats!
   const { raceId } = await addPerformance({
     completed_in_ms: time * 1000,
     correct,
