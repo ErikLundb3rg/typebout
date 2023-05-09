@@ -27,9 +27,7 @@ const inter = Inter({ subsets: ['latin'] })
 const Logo = () => {
   return (
     <Heading size="lg">
-      <Link href="/" _hover={{ textDecoration: 'underline' }}>
-        TypeBout⌨
-      </Link>
+      <Link href="/">TypeBout⌨</Link>
     </Heading>
   )
 }

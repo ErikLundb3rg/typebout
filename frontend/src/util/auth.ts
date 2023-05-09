@@ -1,16 +1,18 @@
-import jwtDecode, { JwtPayload } from "jwt-decode";    
-import { refreshToken  } from "@/apicalls";
+import jwtDecode, { JwtPayload } from 'jwt-decode'
+import { refreshToken } from '@/apicalls'
 import { keys } from './localstoragekeys'
-    
+
 interface TokenProps {
-  exp: number 
+  exp: number
 }
 
-const setAccessToken = (token: string) => localStorage.setItem(keys.accessToken, token)
-const getAccessToken = () => localStorage.getItem('accessToken') as string | undefined
+const setAccessToken = (token: string) =>
+  localStorage.setItem(keys.accessToken, token)
+const getAccessToken = () =>
+  localStorage.getItem('accessToken') as string | undefined
 
 const accessTokenIsValid = () => {
-  const token = getAccessToken() 
+  const token = getAccessToken()
 
   if (!token) {
     return false
@@ -18,9 +20,8 @@ const accessTokenIsValid = () => {
 
   try {
     const { exp } = jwtDecode<TokenProps>(token)
-    console.log("Decoded token: ", jwtDecode<TokenProps>(token))
 
-    if (Date.now() >= exp*1000) {
+    if (Date.now() >= exp * 1000) {
       return false
     }
 

@@ -9,7 +9,6 @@ export const createSocket = async (user: Player) => {
     try {
       const res = await refreshToken()
       const { accessToken } = res.data.data
-      console.log('got new access token: ', accessToken)
       localStorage.setItem(keys.accessToken, accessToken)
     } catch (error) {
       localStorage.removeItem(keys.accessToken)

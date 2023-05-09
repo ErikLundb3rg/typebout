@@ -42,8 +42,6 @@ const profile = () => {
     data: { wpmAverage, highestWpm, accuracyAverage, wpmHistory, lastRaces }
   } = data
 
-  console.log(data)
-
   return (
     <Center>
       <Fade in>
