@@ -65,6 +65,7 @@ export const getTopPerformances = async (entries: number) => {
     }
   })
 
+  // TODO: all this sorting and filtering should be done in the database
   const enrichedPerformances = allPerformances.map((performance) =>
     getEnrichedPerformance(performance)
   )
@@ -72,8 +73,18 @@ export const getTopPerformances = async (entries: number) => {
   enrichedPerformances.sort((a, b) => {
     return b.wpm - a.wpm
   })
+  
+  const uniqueUsers = new Set()
+  const uniquePerformances = enrichedPerformances.filter((performance) => {
+    if (uniqueUsers.has(performance.user.id)) {
+      return false
+    } else {
+      uniqueUsers.add(performance.user.id)
+      return true
+    }
+  })
 
-  return enrichedPerformances.slice(0, entries)
+  return uniquePerformances.slice(0, entries)
 }
 
 export const getLatestPerformancesForUser = async (
