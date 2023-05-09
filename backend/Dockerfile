@@ -16,4 +16,4 @@ COPY . .
 
 EXPOSE 1337
 
-CMD npm run prisma:mg && npm run prisma:seed && npm run start
+CMD npm run prisma:migrate && npm run prisma:seed && npm run start
