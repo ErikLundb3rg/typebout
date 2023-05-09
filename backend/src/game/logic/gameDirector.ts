@@ -72,7 +72,8 @@ export class Group {
   public endGameStats = () =>
     this.personalGames
       .filter((pg) => pg.hasFinished())
-      .map((pg) => pg.getEndGameStats())
+      .map((pg) => pg.endGameStats)
+      .filter((egs): egs is EndGameStats => egs !== null)
 
   public allFinished = () =>
     this.personalGames.every((personalGame) => personalGame.hasFinished())
@@ -101,6 +102,7 @@ export class PersonalGame {
   private current: number = 0
   private mistakes: number = 0
   private mistakeWords: string[] = []
+  public endGameStats: null | EndGameStats = null
 
   private finishedCallback: (personalGame: PersonalGame) => Promise<void>
 
@@ -149,21 +151,24 @@ export class PersonalGame {
     }
   }
 
-  public getEndGameStats = (): EndGameStats => {
+  public setEndGameStats = () => {
     if (this.endTime === null || this.startTime === null) {
       throw new Error('Cannot retrieve end of game stats')
     }
     const { username, wpm } = this.getInformation()
     const { current, mistakes, mistakeWords } = this
     const correct = current - mistakes
-    return {
+    this.endGameStats = {
       username,
       wpm,
       time: round((this.endTime - this.startTime) / 1000, 1),
       accuracy: round(100 * (correct / current), 0),
       correct,
       mistakes,
-      mistakeWords
+      mistakeWords,
+      placement: this.group!.personalGames.filter((personalGame) =>
+        personalGame.hasFinished()
+      ).length
     }
   }
 

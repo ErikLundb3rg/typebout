@@ -24,6 +24,7 @@ export interface EndGameStats {
   correct: number
   mistakes: number
   mistakeWords: string[]
+  placement: number
 }
 export interface MistakeProps {
   mistakes: number

@@ -54,7 +54,6 @@ instance.interceptors.response.use(
 
           return instance(originalConfig)
         } catch (error) {
-          console.log('refresh token failed, logging out...')
           localStorage.removeItem(keys.accessToken)
           localStorage.removeItem(keys.user)
           location.href = '/'

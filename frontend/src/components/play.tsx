@@ -41,7 +41,8 @@ import {
   MenuItem,
   Divider,
   OrderedList,
-  ListItem
+  ListItem,
+  Tag
 } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import GameText from '@/components/gameText'
@@ -81,17 +82,12 @@ const splitStringIncludeSpaces = (str: string) => {
   return res
 }
 
-interface GameInfoListProps {
-  gameInfoField: keyof GameInformation
+interface UserTableProps {
   gameInfoArr: GameInformation[]
-  component: JSX.Element
+  endgameStats: EndGameStats[]
 }
 
-const UserTable = ({
-  gameInfoArr
-}: {
-  gameInfoArr: GameInfoListProps['gameInfoArr']
-}) => {
+const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
   return (
     <TableContainer>
       <Table variant="simple" size="md">
@@ -109,6 +105,14 @@ const UserTable = ({
                   />
                 </Td>
                 <Td isNumeric>{wpm} wpm</Td>
+                <Td isNumeric>
+                  <Tag>
+                    {
+                      endgameStats.find((eg) => eg.username === username)
+                        ?.placement
+                    }
+                  </Tag>
+                </Td>
               </Tr>
             )
           })}
@@ -259,7 +263,7 @@ export default function PlayGame({
             <Text>Race!</Text>
           )}
         </Heading>
-        <UserTable gameInfoArr={gameInfoArr} />
+        <UserTable gameInfoArr={gameInfoArr} endgameStats={endGameStats} />
         <Box p={3}>
           <GameText
             completedContent={completedContent}
@@ -302,18 +306,23 @@ export default function PlayGame({
             <HStack>
               <Text size="md"> Showing stats for: </Text>
               <Menu>
-                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                <MenuButton
+                  as={Button}
+                  rightIcon={endGameStats.length > 1 && <ChevronDownIcon />}
+                >
                   {chosenEndgameStats.username}
                 </MenuButton>
-                <MenuList>
-                  {endGameStats.map((endGameStat) => (
-                    <MenuItem
-                      onClick={() => setChosenEndgameStats(endGameStat)}
-                    >
-                      {endGameStat.username}
-                    </MenuItem>
-                  ))}
-                </MenuList>
+                {endGameStats.length > 1 && (
+                  <MenuList>
+                    {endGameStats.map((endGameStat) => (
+                      <MenuItem
+                        onClick={() => setChosenEndgameStats(endGameStat)}
+                      >
+                        {endGameStat.username}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                )}
               </Menu>
             </HStack>
             <Divider />
@@ -346,7 +355,11 @@ export default function PlayGame({
                 </VStack>
                 {chosenEndgameStats.mistakeWords.length > 0 && (
                   <VStack maxH={250} overflowY="scroll" pr={4}>
-                    <Heading> Mistakes </Heading>
+                    {chosenEndgameStats.mistakeWords.length === 0 ? (
+                      <Heading> No mistakes </Heading>
+                    ) : (
+                      <Heading> Mistakes </Heading>
+                    )}
                     <OrderedList>
                       {chosenEndgameStats.mistakeWords.map((mistake) => (
                         <ListItem> {mistake} </ListItem>

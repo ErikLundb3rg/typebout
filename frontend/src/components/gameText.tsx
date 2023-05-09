@@ -24,7 +24,7 @@ const gameText = ({
 }: GameTextProps) => {
   return (
     <>
-      <Box fontSize="larger">
+      <Box fontSize="larger" userSelect="none">
         <Text as="span" style={{ color: 'gray' }}>
           {completedContent}
         </Text>
