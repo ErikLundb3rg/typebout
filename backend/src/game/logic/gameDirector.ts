@@ -200,7 +200,7 @@ export class PersonalGame {
     const wasLastWord = this.currentWordIndex === this.splitQuoteContent.length
     if (wasLastWord) {
       this.endTime = Date.now()
-      this.finishedCallback(this)
+      this.finishedCallback(this).catch((error) => console.error(error))
     }
 
     return true
