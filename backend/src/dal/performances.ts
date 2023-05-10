@@ -19,7 +19,7 @@ export const addPerformance = async (performance: AddPerformanceProps) => {
 
   const res = await db.performances.create({
     data: {
-      completed_in_ms,
+      completed_in_ms: Math.round(completed_in_ms),
       correct,
       mistakes,
       user: {
@@ -73,7 +73,7 @@ export const getTopPerformances = async (entries: number) => {
   enrichedPerformances.sort((a, b) => {
     return b.wpm - a.wpm
   })
-  
+
   const uniqueUsers = new Set()
   const uniquePerformances = enrichedPerformances.filter((performance) => {
     if (uniqueUsers.has(performance.user.id)) {
