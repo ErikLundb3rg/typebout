@@ -23,6 +23,7 @@ export interface EndGameStats {
   mistakes: number
   mistakeWords: string[]
   placement: number
+  wpmHistory: { wpm: number, time: number }[]
 }
 
 export interface MistakeProps {

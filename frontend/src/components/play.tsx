@@ -1,9 +1,8 @@
 'use client'
-import { useEffect, useRef, useState, PropsWithChildren } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useAuth from '@/providers/useAuth'
 import {
   Quote,
-  TypeBoutSocket,
   GameInformation,
   EndGameStats,
   MistakeProps
@@ -11,9 +10,6 @@ import {
 import {
   Heading,
   Center,
-  Stack,
-  Flex,
-  Spacer,
   HStack,
   Text,
   Button,
@@ -21,20 +17,11 @@ import {
   Input,
   VStack,
   Progress,
-  Container,
   Table,
   Tbody,
   Tr,
   Td,
-  Fade,
   TableContainer,
-  SimpleGrid,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  StatArrow,
-  StatGroup,
   Menu,
   MenuButton,
   MenuList,
@@ -46,17 +33,7 @@ import {
 } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import GameText from '@/components/gameText'
-import StatComponent from './statComponent'
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from 'recharts'
+import { PostGameStats } from './PostGameStats'
 
 interface PlayGameProps {
   count: number
@@ -132,6 +109,7 @@ export default function PlayGame({
   handlePlayAgain,
   canRestartGame
 }: PlayGameProps) {
+  // I don't get this part, splitContent is never changed so why is it a state?
   const [splitContent, setSplitContent] = useState<string[]>(
     splitStringIncludeSpaces(quote.content)
   )
@@ -328,77 +306,7 @@ export default function PlayGame({
               </Menu>
             </HStack>
             <Divider />
-            <VStack spacing={10} w="100%">
-              <Stack
-                w="100%"
-                direction={['column', 'row']}
-                justify="center"
-                spacing={[8, 20]}
-              >
-                <VStack spacing={4}>
-                  <SimpleGrid columns={[2]} spacing={8}>
-                    <StatComponent
-                      title="wpm"
-                      content={chosenEndgameStats.wpm}
-                    />
-                    <StatComponent
-                      title="Time"
-                      content={`${chosenEndgameStats.time}s`}
-                    />
-                    <StatComponent
-                      title="Accuracy"
-                      content={`${chosenEndgameStats.accuracy}%`}
-                    />
-                    <StatComponent
-                      title="Errors"
-                      content={chosenEndgameStats.mistakes}
-                    />
-                  </SimpleGrid>
-                </VStack>
-                {chosenEndgameStats.mistakeWords.length > 0 && (
-                  <VStack maxH={250} overflowY="scroll" pr={4}>
-                    {chosenEndgameStats.mistakeWords.length === 0 ? (
-                      <Heading> No mistakes </Heading>
-                    ) : (
-                      <Heading> Mistakes </Heading>
-                    )}
-                    <OrderedList>
-                      {chosenEndgameStats.mistakeWords.map((mistake) => (
-                        <ListItem> {mistake} </ListItem>
-                      ))}
-                    </OrderedList>
-                  </VStack>
-                )}
-              </Stack>
-              {wpmHistories[chosenEndgameStats.username].length > 0 && (
-                <VStack w={['100%', '70%']} pr={[3, 0]}>
-                  <Heading as="h4" size="md" mb={4}>
-                    WPM History
-                  </Heading>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart
-                      data={wpmHistories[chosenEndgameStats.username].map(
-                        (wpm) => ({
-                          wpm
-                        })
-                      )}
-                    >
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Line
-                        dot={false}
-                        type="monotone"
-                        dataKey="wpm"
-                        stroke="#8884d8"
-                        strokeWidth={2}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </VStack>
-              )}
-            </VStack>
+            <PostGameStats chosenEndgameStats={chosenEndgameStats} />
           </VStack>
         )}
       </VStack>

@@ -96,6 +96,7 @@ export class PersonalGame {
   public user: TypeBoutSocket
   public group: Group | undefined
 
+  private wpmHistory: { wpm: number, time: number }[] = []
   private quote: Quotes
   private splitQuoteContent: string[]
   private currentWordIndex = 0
@@ -156,7 +157,7 @@ export class PersonalGame {
       throw new Error('Cannot retrieve end of game stats')
     }
     const { username, wpm } = this.getInformation()
-    const { current, mistakes, mistakeWords } = this
+    const { current, mistakes, mistakeWords, wpmHistory } = this
     const correct = current - mistakes
     this.endGameStats = {
       username,
@@ -168,7 +169,8 @@ export class PersonalGame {
       mistakeWords,
       placement: this.group!.personalGames.filter((personalGame) =>
         personalGame.hasFinished()
-      ).length
+      ).length,
+      wpmHistory
     }
   }
 
@@ -196,6 +198,7 @@ export class PersonalGame {
 
     this.currentWordIndex += 1
     this.current += currentWord.length
+    this.wpmHistory.push({ wpm: this.getWPM(), time: (Date.now() - (this.startTime ?? 0)) })
 
     const wasLastWord = this.currentWordIndex === this.splitQuoteContent.length
     if (wasLastWord) {
