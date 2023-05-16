@@ -86,7 +86,7 @@ export function PostGameStats(props: PostGameStatsProps) {
           <Heading as="h4" size="md" mb={4}>
             WPM History
           </Heading>
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer width="100%" height={250}>
             <LineChart data={chosenEndgameStats.graphData}>
               <XAxis
                 dataKey="time"
