@@ -8,6 +8,7 @@ import { getWPM, round } from '../../utils/calculations'
 import { Quotes } from '@prisma/client'
 
 const colors = ['green', 'purple', 'blue', 'black']
+const RAW_WPM_LOOKBACK = 3
 
 const splitStringIncludeSpaces = (str: string) => {
   const res: string[] = []
@@ -96,7 +97,10 @@ export class PersonalGame {
   public user: TypeBoutSocket
   public group: Group | undefined
 
-  private wpmHistory: { wpm: number, time: number }[] = []
+  private graphData: { wpm: number, rawWpm: number, time: number }[] = []
+  private wpmHistory: number[] = []
+  private averageRawWpmHistory: number[] = []
+  private wordCompletionTimes: number[] = []
   private quote: Quotes
   private splitQuoteContent: string[]
   private currentWordIndex = 0
@@ -157,7 +161,12 @@ export class PersonalGame {
       throw new Error('Cannot retrieve end of game stats')
     }
     const { username, wpm } = this.getInformation()
-    const { current, mistakes, mistakeWords, wpmHistory } = this
+    const {
+      current,
+      mistakes,
+      mistakeWords,
+      graphData
+    } = this
     const correct = current - mistakes
     this.endGameStats = {
       username,
@@ -170,7 +179,7 @@ export class PersonalGame {
       placement: this.group!.personalGames.filter((personalGame) =>
         personalGame.hasFinished()
       ).length,
-      wpmHistory
+      graphData
     }
   }
 
@@ -186,7 +195,7 @@ export class PersonalGame {
     if (receivedWord !== currentWord) {
       this.mistakes++
 
-      // If we have not Aalready hade a mistake on this word,
+      // If we have not Already hade a mistake on this word,
       // add it to the list of mistaken words
       const lastMistakenWord = this.mistakeWords[this.mistakeWords.length - 1]
       if (lastMistakenWord !== currentWord) {
@@ -198,7 +207,29 @@ export class PersonalGame {
 
     this.currentWordIndex += 1
     this.current += currentWord.length
-    this.wpmHistory.push({ wpm: this.getWPM(), time: (Date.now() - (this.startTime ?? 0)) })
+    const wpm = this.getWPM()
+    const now = (Date.now() - this.startTime!) / 1000
+    const averageRawWpm =
+      this.wordCompletionTimes.length < RAW_WPM_LOOKBACK
+        ? wpm
+        : getWPM(
+            this.splitQuoteContent
+              .filter(
+                (_word, i) =>
+                  i <= this.currentWordIndex &&
+                  i > this.currentWordIndex - RAW_WPM_LOOKBACK
+              )
+              .map((s) => s.length)
+              .reduce((a, b) => a + b, 0),
+            now -
+              this.wordCompletionTimes[
+                this.wordCompletionTimes.length - RAW_WPM_LOOKBACK
+              ]
+          )
+    this.graphData.push({ wpm: wpm, rawWpm: averageRawWpm, time: now })
+    this.wpmHistory.push(wpm)
+    this.averageRawWpmHistory.push(averageRawWpm)
+    this.wordCompletionTimes.push(now)
 
     const wasLastWord = this.currentWordIndex === this.splitQuoteContent.length
     if (wasLastWord) {

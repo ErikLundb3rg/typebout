@@ -6,9 +6,7 @@ import {
   VStack,
   SimpleGrid,
   OrderedList,
-  ListItem,
-  HStack,
-  Text
+  ListItem
 } from '@chakra-ui/react'
 import StatComponent from './statComponent'
 import {
@@ -28,16 +26,20 @@ interface PostGameStatsProps {
 
 export function PostGameStats(props: PostGameStatsProps) {
   const { chosenEndgameStats } = props
-  const wpmHistoryTime = chosenEndgameStats.wpmHistory
-  const wpmHistory = chosenEndgameStats.wpmHistory.map((wpm) => wpm.wpm)
-  const rawWpmHistory = wpmHistoryTime.map(({ wpm, time }, i) => {
-    const lookback = 2
-    if (i < lookback) return wpm
-    const words = wpm * time
-    const earlierWpm = wpmHistory[i - lookback]
-    const earlierWords = earlierWpm * wpmHistoryTime[i - lookback].time
-    return (words - earlierWords) / (time - wpmHistoryTime[i - lookback].time)
-  })
+  const wpmHistory = chosenEndgameStats.graphData.map((data) => data.wpm)
+  const rawWpmHistory = chosenEndgameStats.graphData.map((data) => data.rawWpm)
+  const completionTimes = chosenEndgameStats.graphData.map((data) => data.time)
+
+  const maxWpm = Math.max(...wpmHistory, ...rawWpmHistory)
+  const minWpm = Math.min(...wpmHistory, ...rawWpmHistory)
+  const timeTicks = Array.from(
+    { length: Math.ceil(completionTimes[completionTimes.length - 1] / 5) - 1 },
+    (_, i) => (i + 1) * 5
+  )
+  const wpmTicks = Array.from(
+    { length: Math.ceil((maxWpm - minWpm) / 10) },
+    (_, i) => (i + Math.floor(minWpm / 10)) * 10
+  )
 
   return (
     <VStack spacing={10} w="100%">
@@ -80,25 +82,28 @@ export function PostGameStats(props: PostGameStatsProps) {
         )}
       </Stack>
       {wpmHistory.length > 0 && (
-        <VStack w={['100%', '70%']} pr={[3, 0]}>
+        <VStack w={['100%', '80%']} pr={[3, 0]}>
           <Heading as="h4" size="md" mb={4}>
             WPM History
           </Heading>
           <ResponsiveContainer width="100%" height={400}>
-            <LineChart
-              data={wpmHistoryTime.map(({ wpm, time }, i) => ({
-                wpm,
-                rawWpm: rawWpmHistory[i].toFixed(0)
-              }))}
-            >
-              <XAxis dataKey="name" />
-              <YAxis domain={['dataMin - 10', 'auto']} />
+            <LineChart data={chosenEndgameStats.graphData}>
+              <XAxis
+                dataKey="time"
+                type="number"
+                ticks={timeTicks}
+                domain={[
+                  completionTimes[0],
+                  completionTimes[completionTimes.length - 1]
+                ]}
+              />
+              <YAxis domain={[minWpm - 5, maxWpm]} ticks={wpmTicks} />
               <Tooltip />
               <CartesianGrid stroke="#70707010" />
               <Legend />
               <Line
                 dot={false}
-                type="monotone"
+                type="basis"
                 dataKey="rawWpm"
                 stroke="#82ca9d60"
                 strokeWidth={2}
