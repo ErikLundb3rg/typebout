@@ -98,8 +98,6 @@ export class PersonalGame {
   public group: Group | undefined
 
   private graphData: { wpm: number, rawWpm: number, time: number }[] = []
-  private wpmHistory: number[] = []
-  private averageRawWpmHistory: number[] = []
   private wordCompletionTimes: number[] = []
   private quote: Quotes
   private splitQuoteContent: string[]
@@ -161,12 +159,7 @@ export class PersonalGame {
       throw new Error('Cannot retrieve end of game stats')
     }
     const { username, wpm } = this.getInformation()
-    const {
-      current,
-      mistakes,
-      mistakeWords,
-      graphData
-    } = this
+    const { current, mistakes, mistakeWords, graphData } = this
     const correct = current - mistakes
     this.endGameStats = {
       username,
@@ -227,8 +220,6 @@ export class PersonalGame {
               ]
           )
     this.graphData.push({ wpm: wpm, rawWpm: averageRawWpm, time: now })
-    this.wpmHistory.push(wpm)
-    this.averageRawWpmHistory.push(averageRawWpm)
     this.wordCompletionTimes.push(now)
 
     const wasLastWord = this.currentWordIndex === this.splitQuoteContent.length
