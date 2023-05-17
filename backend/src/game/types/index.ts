@@ -7,7 +7,7 @@ export interface Player {
   isGuest: boolean
 }
 
-// Information about the game sent continuosly
+// Information about the game sent continuously
 // to the clients
 export interface GameInformation {
   wpm: number
@@ -25,6 +25,7 @@ export interface EndGameStats {
   mistakes: number
   mistakeWords: string[]
   placement: number
+  graphData: { wpm: number; rawWpm: number; time: number }[]
 }
 export interface MistakeProps {
   mistakes: number
