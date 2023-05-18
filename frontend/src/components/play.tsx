@@ -10,7 +10,6 @@ import {
 import {
   Heading,
   Center,
-  HStack,
   Text,
   Button,
   Box,
@@ -22,16 +21,8 @@ import {
   Tr,
   Td,
   TableContainer,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Divider,
-  OrderedList,
-  ListItem,
   Tag
 } from '@chakra-ui/react'
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import GameText from '@/components/gameText'
 import { PostGameStats } from './PostGameStats'
 
@@ -121,21 +112,11 @@ export default function PlayGame({
   const [correctIndex, setCorrectIndex] = useState<number>(-1)
   const [wrongIndex, setWrongIndex] = useState<number>(-1)
   const [completed, setCompleted] = useState(false)
-  const { user } = useAuth()
-  const [chosenEndgameStats, setChosenEndgameStats] = useState<EndGameStats>()
   const [wpmHistories, setWpmHistories] = useState<Record<string, number[]>>({})
   const inputRef = useRef<HTMLInputElement>(null)
 
   let mistakes = useRef(0)
   let mistakeWords = useRef<string[]>([])
-
-  useEffect(() => {
-    if (!chosenEndgameStats) {
-      setChosenEndgameStats(
-        endGameStats.find((eg) => eg.username === user?.username)
-      )
-    }
-  }, [endGameStats])
 
   useEffect(() => {
     gameInfoArr.forEach((gameInfo) => {
@@ -274,39 +255,17 @@ export default function PlayGame({
             />
           </form>
         )}
-        {completed && chosenEndgameStats && (
+        {completed && (
           <VStack spacing="6" w="100%">
             {canRestartGame && (
               <Button onClick={handlePlayAgain} colorScheme="teal">
                 Play again
               </Button>
             )}
-            <HStack>
-              <Text size="md"> Showing stats for: </Text>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rightIcon={
-                    endGameStats.length > 1 ? <ChevronDownIcon /> : undefined
-                  }
-                >
-                  {chosenEndgameStats.username}
-                </MenuButton>
-                {endGameStats.length > 1 && (
-                  <MenuList>
-                    {endGameStats.map((endGameStat) => (
-                      <MenuItem
-                        onClick={() => setChosenEndgameStats(endGameStat)}
-                      >
-                        {endGameStat.username}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                )}
-              </Menu>
-            </HStack>
-            <Divider />
-            <PostGameStats chosenEndgameStats={chosenEndgameStats} />
+            <PostGameStats
+              endGameStats={endGameStats}
+              gameInfoArr={gameInfoArr}
+            />
           </VStack>
         )}
       </VStack>
