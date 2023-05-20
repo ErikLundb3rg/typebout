@@ -17,19 +17,10 @@ import {
   Text
 } from '@chakra-ui/react'
 import StatComponent from './statComponent'
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  CartesianGrid
-} from 'recharts'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { useEffect, useState } from 'react'
 import useAuth from '@/providers/useAuth'
+import { SingleGraph, MultiGraph } from './graphComponents'
 
 interface PostGameStatsProps {
   endGameStats: EndGameStats[]
@@ -158,92 +149,29 @@ export function PostGameStats({
             <Heading as="h4" size="md" mb={4}>
               WPM History
             </Heading>
-            {showSingleGraph ? <SingleGraph /> : <MultiGraph />}
+            {showSingleGraph ? (
+              <SingleGraph
+                chosenEndgameStats={chosenEndgameStats}
+                timeTicks={timeTicks}
+                wpmTicks={wpmTicks}
+                minWpm={minWpm}
+                maxWpm={maxWpm}
+                completionTimes={completionTimes}
+              />
+            ) : (
+              <MultiGraph
+                endGameStats={endGameStats}
+                gameInfoArr={gameInfoArr}
+                timeTicks={timeTicks}
+                wpmTicks={wpmTicks}
+                minWpm={minWpm}
+                maxWpm={maxWpm}
+                completionTimes={completionTimes}
+              />
+            )}
           </VStack>
         )}
       </VStack>
     </>
   )
-
-  function SingleGraph() {
-    if (!chosenEndgameStats) {
-      return null
-    }
-    return (
-      <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={chosenEndgameStats.graphData}>
-          <XAxis
-            dataKey="time"
-            type="number"
-            ticks={timeTicks}
-            domain={[
-              Math.min(...completionTimes),
-              Math.max(...completionTimes)
-            ]}
-          />
-          <YAxis domain={[minWpm - 5, maxWpm + 5]} ticks={wpmTicks} />
-          <Tooltip />
-          <CartesianGrid stroke="#70707010" />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="rawWpm"
-            stroke="#82ca9d60"
-            strokeWidth={2}
-            dot={false}
-            name="WPM"
-          />
-          <Line
-            type="monotone"
-            dataKey="wpm"
-            stroke="#8884d8"
-            strokeWidth={2}
-            dot={false}
-            name="Raw WPM"
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    )
-  }
-
-  function MultiGraph() {
-    const multiGraphData = endGameStats.map((stat) => ({
-      username: stat.username,
-      data: stat.graphData
-    }))
-    return (
-      <ResponsiveContainer width="100%" height={250}>
-        <LineChart>
-          <XAxis
-            dataKey="time"
-            type="number"
-            ticks={timeTicks}
-            domain={[
-              Math.min(...completionTimes),
-              Math.max(...completionTimes)
-            ]}
-          />
-          <YAxis domain={[minWpm - 5, maxWpm + 5]} ticks={wpmTicks} />
-          <Tooltip />
-          <CartesianGrid stroke="#70707010" />
-          <Legend />
-          {multiGraphData.map((data) => (
-            <Line
-              data={data.data}
-              type="monotone"
-              dataKey="wpm"
-              stroke={
-                gameInfoArr.find(
-                  (gameInfo) => gameInfo.username === data.username
-                )?.color ?? '#82ca9d60'
-              }
-              strokeWidth={2}
-              dot={false}
-              name={data.username}
-            />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
-    )
-  }
 }
