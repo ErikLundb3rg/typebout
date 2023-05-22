@@ -47,7 +47,7 @@ export const SingleGraph: React.FC<SingleGraphProps> = ({
           stroke="#82ca9d60"
           strokeWidth={2}
           dot={false}
-          name="WPM"
+          name="Raw WPM"
         />
         <Line
           type="monotone"
@@ -55,7 +55,7 @@ export const SingleGraph: React.FC<SingleGraphProps> = ({
           stroke="#8884d8"
           strokeWidth={2}
           dot={false}
-          name="Raw WPM"
+          name="WPM"
         />
       </LineChart>
     </ResponsiveContainer>
