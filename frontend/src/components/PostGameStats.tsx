@@ -34,7 +34,7 @@ export function PostGameStats({
   const [chosenEndgameStats, setChosenEndgameStats] = useState<
     EndGameStats | undefined
   >()
-  const [showSingleGraph, setShowSingleGraph] = useState(false)
+  const [showSingleGraph, setShowSingleGraph] = useState(true)
   const { user } = useAuth()
 
   useEffect(() => {
