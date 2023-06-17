@@ -89,7 +89,7 @@ export const getTopPerformances = async (entries: number) => {
 
 export const getLatestPerformancesForUser = async (
   userId: Users['id'],
-  entries: number
+  entries?: number
 ) => {
   return await db.performances.findMany({
     take: entries,

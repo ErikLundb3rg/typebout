@@ -1,9 +1,9 @@
 import { keys } from '@/util/localstoragekeys'
 import axios from 'axios'
 
-export interface BaseResponse {
+export interface BaseResponse<T> {
   message: string | null
-  data: any
+  data: T
   status: number
   ok: boolean
 }
@@ -67,7 +67,7 @@ instance.interceptors.response.use(
 )
 
 export const login = async (username: string, password: string) =>
-  await instance.post<BaseResponse>('/users/login', {
+  await instance.post<BaseResponse<any>>('/users/login', {
     username,
     password
   })
@@ -77,17 +77,17 @@ export const register = async (
   password: string,
   confirmPassword: string
 ) =>
-  await instance.post<BaseResponse>('/users/register', {
+  await instance.post<BaseResponse<any>>('/users/register', {
     username,
     password,
     confirmPassword
   })
 
 export const refreshToken = async () =>
-  await instance.post<BaseResponse>('/users/refreshToken')
+  await instance.post<BaseResponse<any>>('/users/refreshToken')
 
 export const logout = async () =>
-  await instance.post<BaseResponse>('/users/logout')
+  await instance.post<BaseResponse<any>>('/users/logout')
 
-export const fetcherGet = (url: string) =>
-  instance.get<BaseResponse>(url).then((res) => res.data)
+export const fetcherGet = <T>(url: string) =>
+  instance.get<BaseResponse<T>>(url).then((res) => res.data)

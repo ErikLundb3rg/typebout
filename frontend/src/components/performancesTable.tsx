@@ -22,7 +22,7 @@ interface PerformancesTableProps {
 }
 
 const performancesTable = ({ path }: PerformancesTableProps) => {
-  const { data, error, isLoading } = useSWR(path, fetcherGet)
+  const { data, error, isLoading } = useSWR(path, (url) => fetcherGet<any>(url))
 
   if (error || isLoading) {
     return <></>
