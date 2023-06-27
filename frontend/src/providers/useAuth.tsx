@@ -98,7 +98,7 @@ export const AuthProvider = ({
       toast({
         title: 'Login successful',
         status: 'success',
-        duration: 1000,
+        duration: 3000,
         isClosable: true
       })
     } catch (error: any) {
