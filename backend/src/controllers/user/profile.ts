@@ -15,7 +15,7 @@ const nrOfRaces = 10
 export const profile: AsyncController = async (req, res) => {
   const { userId } = req.user as JWTPayload
 
-  const dataRaw = await getLatestPerformancesForUser(userId, nrOfRaces)
+  const dataRaw = await getLatestPerformancesForUser(userId)
   const data = dataRaw.map((performance) => getEnrichedPerformance(performance))
   const nrLatestPerformances = data.length
 
