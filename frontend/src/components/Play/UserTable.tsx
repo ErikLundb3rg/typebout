@@ -41,12 +41,12 @@ export const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
     'typeboutGray.600'
   )
   return (
-    <TableContainer>
-      <Card variant="filled" align="center" gap={0}>
-        <CardHeader pb={0}>
-          <Heading size="md">Players</Heading>
-        </CardHeader>
-        <CardBody overflow="auto">
+    <Card variant="filled" align="center" maxW="100%">
+      <CardHeader pb={0}>
+        <Heading size="md">Players</Heading>
+      </CardHeader>
+      <CardBody maxW="100%">
+        <TableContainer>
           <Table variant="simple" size="sm">
             <Tbody>
               {gameInfoArr.map((gameInfo, index) => {
@@ -60,11 +60,9 @@ export const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
                       textOverflow="ellipsis"
                       overflow="hidden"
                       whiteSpace="nowrap"
+                      maxW={[100, 200, 300]}
                     >
-                      {' '}
-                      {username} super long name super long name super long name
-                      super long name super long name super long name super long
-                      name super long name
+                      {username}
                     </Td>
                     <Td>
                       <Progress
@@ -72,21 +70,20 @@ export const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
                         value={progressPercentage}
                         background={defaultProgressBackgroundColor}
                         colorScheme={progressPercentage > 0 ? color : undefined}
+                        width="10vw"
                       />
                     </Td>
                     <Td isNumeric>{wpm} wpm</Td>
-                    {placement && (
-                      <Td isNumeric>
-                        <Tag>{placement}</Tag>
-                      </Td>
-                    )}
+                    <Td isNumeric visibility={placement ? 'visible' : 'hidden'}>
+                      <Tag>{placement}</Tag>
+                    </Td>
                   </Tr>
                 )
               })}
             </Tbody>
           </Table>
-        </CardBody>
-      </Card>
-    </TableContainer>
+        </TableContainer>
+      </CardBody>
+    </Card>
   )
 }
