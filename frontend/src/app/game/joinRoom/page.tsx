@@ -3,7 +3,7 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import SocketGameComponent, {
   BeforeGameComponentProps
-} from '../socketGameComponentWrapper'
+} from '../SocketGameComponentWrapper.tsx'
 import {
   Heading,
   HStack,
@@ -22,6 +22,7 @@ import {
   Center
 } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
+import TypeCard from '@/components/TypeCard'
 
 const JoinRoom = ({ players, socket, user }: BeforeGameComponentProps) => {
   const searchParams = useSearchParams()
@@ -48,56 +49,55 @@ const JoinRoom = ({ players, socket, user }: BeforeGameComponentProps) => {
 
   if (error) {
     body = (
-      <VStack spacing="3">
-        <Heading size="md"> Could not find room </Heading>
-        <Text>
-          {' '}
-          Are you sure you entered the correct roomID?{' '}
-          <Link
-            href="/game/join"
-            _hover={{ textDecoration: 'underline' }}
-            color="blue.500"
-          >
-            Try again{' '}
-          </Link>{' '}
-        </Text>
-      </VStack>
+      <TypeCard
+        header="Failed to join room"
+        path="join"
+        buttonTitle="Try again"
+      >
+        <Text> Are you sure you entered the correct Room ID? </Text>
+      </TypeCard>
     )
   } else if (loading) {
-    body = <Spinner />
+    body = (
+      <>
+        <Spinner />
+      </>
+    )
   } else {
     body = (
-      <Box border="3px solid gray" borderRadius="10px" p="4">
-        <Heading m="4" size="md" color="gray">
-          Joined players
-        </Heading>
-        <UnorderedList spacing={6} listStyleType="none">
-          {players?.map((player) => {
-            const { isGuest, username } = player
-            return (
-              <ListItem>
-                <Divider />
-                <HStack paddingTop="3">
-                  {isGuest ? (
-                    <Tag colorScheme="teal"> guest </Tag>
-                  ) : (
-                    <Tag colorScheme="blue"> user</Tag>
-                  )}
-                  <Text fontSize="xl"> {username}</Text>
-                </HStack>
-              </ListItem>
-            )
-          })}
-        </UnorderedList>
+      <Box minWidth={['100%', '400px']}>
+        <TypeCard header="Joined Players">
+          <UnorderedList spacing={6} listStyleType="none">
+            {players?.map((player, index) => {
+              const { isGuest, username } = player
+              return (
+                <ListItem key={index}>
+                  <Divider />
+                  <HStack paddingTop="3">
+                    {isGuest ? (
+                      <Tag colorScheme="sandyBrown"> guest </Tag>
+                    ) : (
+                      <Tag colorScheme="burntSienna"> user</Tag>
+                    )}
+                    <Text fontSize="xl"> {username}</Text>
+                  </HStack>
+                </ListItem>
+              )
+            })}
+          </UnorderedList>
+        </TypeCard>
       </Box>
     )
   }
 
   return (
-    <VStack spacing={8}>
-      <Heading size="lg" color="gray">
-        Room #{roomID}
-      </Heading>
+    <VStack spacing={8} p={3}>
+      <Box>
+        <Heading size="md">Room</Heading>
+        <Heading size="2xl" letterSpacing={2}>
+          # {roomID}
+        </Heading>
+      </Box>
       {body}
     </VStack>
   )

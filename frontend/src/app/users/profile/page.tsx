@@ -24,23 +24,29 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts'
-import TypeCard from '@/components/typeCard'
+import TypeCard from '@/components/TypeCard'
+import { Spinner } from '@chakra-ui/spinner'
+import { LoadingPage } from '@/components/LoadingPage'
 
 const profile = () => {
   const { data, error, isLoading } = useSWR('users/profile', fetcherGet)
   const { user } = useAuth()
 
   if (error) {
-    return <div></div>
+    return (
+      <Center>
+        <Heading size="lg">Error fetching profile statistics </Heading>
+      </Center>
+    )
   }
 
-  if (isLoading || !data) {
-    return <div></div>
+  if (isLoading) {
+    return <LoadingPage text="Fetching profile..." />
   }
 
   const {
     data: { wpmAverage, highestWpm, accuracyAverage, wpmHistory, lastRaces }
-  } = data
+  } = data!
 
   return (
     <Center>
@@ -58,7 +64,11 @@ const profile = () => {
                 <Heading size="md">No stats available for</Heading>
                 <Heading> {user?.username}</Heading>
               </Box>
-              <TypeCard header="Play your first game" path="game/createRoom">
+              <TypeCard
+                header="Play your first game"
+                path="game/createRoom"
+                buttonTitle="Play game"
+              >
                 <Text>
                   Create a game which gives you a link your friends can join
                 </Text>

@@ -127,7 +127,7 @@ const gameText = ({
 }: GameTextProps) => {
   return (
     <>
-      <Box fontSize="larger" userSelect="none">
+      <Box fontSize="larger" userSelect="none" lineHeight={8}>
         <span style={{ color: 'gray' }}>{completedContent}</span>
         <CurrentWord
           correctIndex={correctIndex}

@@ -14,7 +14,8 @@ import {
   Input,
   Stack,
   Text,
-  Fade
+  Fade,
+  useColorModeValue
 } from '@chakra-ui/react'
 import { PasswordField } from '@/components/passwordField'
 import { Field, Form, Formik } from 'formik'
@@ -27,7 +28,7 @@ interface FormTypes {
 }
 
 export default function Login() {
-  const { login, loading } = useAuth()
+  const { login, networkError } = useAuth()
   const [errorMessage, setErrorMessage] = useState('')
 
   const initialValues: FormTypes = {
@@ -57,20 +58,20 @@ export default function Login() {
             bg={{ base: 'transparent', sm: 'bg-surface' }}
             boxShadow={{ base: 'none', sm: 'md' }}
             borderRadius={{ base: 'none', sm: 'xl' }}
+            backgroundColor={['none', useColorModeValue('gray.50', 'gray.700')]}
           >
             <Stack spacing="6">
               <Stack spacing={{ base: '2', md: '4' }} textAlign="center">
-                <Heading size={{ base: 'md', md: 'md' }}>
-                  Log in to your account
-                </Heading>
+                <Heading size="lg">Log in to your account</Heading>
                 <HStack spacing="1" justify="center">
                   <Text color="muted">Don't have an account?</Text>
                   <Link href="/users/signup">
-                    <Button variant="link" colorScheme="blue">
+                    <Button variant="link" colorScheme="saffron">
                       Sign up
                     </Button>
                   </Link>
                 </HStack>
+                <Text color="red"> {networkError}</Text>
               </Stack>
             </Stack>
             <Formik initialValues={initialValues} onSubmit={handleSubmit}>
@@ -103,11 +104,7 @@ export default function Login() {
                       </Field>
                     </Stack>
                     <Stack spacing="6">
-                      <Button
-                        type="submit"
-                        variant="primary"
-                        backgroundColor="cyan"
-                      >
+                      <Button type="submit" colorScheme="persianGreen">
                         Sign in
                       </Button>
                     </Stack>

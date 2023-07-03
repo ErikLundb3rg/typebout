@@ -27,7 +27,7 @@ import {
 } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 import MenuToggle from '@/components/MenuToggle'
-import { useState } from 'react'
+import { JSXElementConstructor, ReactElement, useState } from 'react'
 import {
   ArrowLeftIcon,
   HamburgerIcon,
@@ -42,8 +42,6 @@ import { MdCreate, MdOutlineLogin } from 'react-icons/md'
 import { FaUserPlus, FaUserCircle } from 'react-icons/fa'
 import { BiLogOutCircle } from 'react-icons/bi'
 
-const inter = Inter({ subsets: ['latin'] })
-
 const HeadText = () => {
   return (
     <Heading size="lg">
@@ -51,7 +49,8 @@ const HeadText = () => {
         href="/"
         _hover={{
           color: useColorModeValue('typeboutGray.800', 'typeboutGray.50'),
-          textDecoration: 'none'
+          textDecoration: 'none',
+          opacity: 0.6
         }}
       >
         <span>
@@ -65,40 +64,28 @@ const HeadText = () => {
   )
 }
 
-const Username = ({
-  username,
-  isGuest
-}: {
-  username: string
-  isGuest: boolean
-}) => {
-  return (
-    <Text>
-      {username}
-      {isGuest && (
-        <Highlight
-          query="guest"
-          styles={{ px: '2', py: '0', rounded: 'full', bg: 'teal.100' }}
-        >
-          guest
-        </Highlight>
-      )}
-    </Text>
-  )
+interface NavProps {
+  isLoggedIn: boolean
+  logout: () => void
+  toggleColorMode: () => void
+  colorMode: 'light' | 'dark'
 }
 
-const RegularNav = () => {
-  const { colorMode, toggleColorMode } = useColorMode()
-  const { user, logout } = useAuth()
-  const isLoggedIn = user && !user.isGuest!
-
+const RegularNav = ({
+  isLoggedIn,
+  logout,
+  toggleColorMode,
+  colorMode
+}: NavProps) => {
+  const color = useColorModeValue('blackAlpha.800', 'whiteAlpha.900')
+  const hoverColor = useColorModeValue('typeboutGray.300', 'typeboutGray.200')
   return (
     <HStack spacing={20} fontSize="1.2rem">
       {isLoggedIn ? (
         <>
           <Tooltip label="Profile">
             <Link
-              href="/users/signup"
+              href="/users/profile"
               _hover={{
                 textDecoration: 'none'
               }}
@@ -107,7 +94,10 @@ const RegularNav = () => {
                 icon={<FaUserCircle fontSize="1.5rem" />}
                 aria-label="Logout"
                 variant="ghost"
-                color={useColorModeValue('blackAlpha.800', 'whiteAlpha.900')}
+                color={color}
+                _hover={{
+                  color: hoverColor
+                }}
               />
             </Link>
           </Tooltip>
@@ -122,7 +112,10 @@ const RegularNav = () => {
               }
               aria-label="Logout"
               variant="ghost"
-              color={useColorModeValue('blackAlpha.800', 'whiteAlpha.900')}
+              color={color}
+              _hover={{
+                color: hoverColor
+              }}
             />
           </Tooltip>
         </>
@@ -136,21 +129,31 @@ const RegularNav = () => {
       <Tooltip label="Toggle theme">
         <IconButton
           onClick={toggleColorMode}
-          icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+          icon={
+            colorMode === 'light' ? (
+              <MoonIcon fontSize="1.5rem" />
+            ) : (
+              <SunIcon fontSize="1.5rem" />
+            )
+          }
           aria-label="Toggle dark mode"
           variant="ghost"
-          color={useColorModeValue('blackAlpha.800', 'whiteAlpha.900')}
+          color={color}
+          _hover={{
+            color: hoverColor
+          }}
         />
       </Tooltip>
     </HStack>
   )
 }
 
-const MobileNav = () => {
-  const { user, logout } = useAuth()
-  const { colorMode, toggleColorMode } = useColorMode()
-  const isLoggedIn = user && !user.isGuest!
-
+const MobileNav = ({
+  isLoggedIn,
+  logout,
+  toggleColorMode,
+  colorMode
+}: NavProps) => {
   return (
     <Menu autoSelect={false}>
       <MenuButton
@@ -200,6 +203,9 @@ const MobileNav = () => {
 }
 
 export default function Header() {
+  const { user, logout } = useAuth()
+  const { colorMode, toggleColorMode } = useColorMode()
+  const isLoggedIn = (user || false) && !user.isGuest!
   return (
     <Flex
       as="nav"
@@ -211,10 +217,20 @@ export default function Header() {
     >
       <HeadText />
       <Box display={{ base: 'block', md: 'none' }}>
-        <MobileNav />
+        <MobileNav
+          isLoggedIn={isLoggedIn}
+          colorMode={colorMode}
+          toggleColorMode={toggleColorMode}
+          logout={logout}
+        />
       </Box>
       <Box display={{ base: 'none', md: 'block' }}>
-        <RegularNav />
+        <RegularNav
+          isLoggedIn={isLoggedIn}
+          colorMode={colorMode}
+          toggleColorMode={toggleColorMode}
+          logout={logout}
+        />
       </Box>
     </Flex>
   )

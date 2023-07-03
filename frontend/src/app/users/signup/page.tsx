@@ -16,7 +16,8 @@ import {
   Stack,
   Text,
   Fade,
-  useToast
+  useToast,
+  useColorModeValue
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 import { PasswordField } from '@/components/passwordField'
@@ -25,7 +26,7 @@ import { SignUpProps } from '@/types'
 
 export default function SignUp() {
   const { register, networkError, loading } = useAuth()
-  const router = useRouter()
+
   const [formErrors, setFormErrors] = useState<SignUpProps>({
     confirmPassword: '',
     password: '',
@@ -60,16 +61,15 @@ export default function SignUp() {
             bg={{ base: 'transparent', sm: 'bg-surface' }}
             boxShadow={{ base: 'none', sm: 'md' }}
             borderRadius={{ base: 'none', sm: 'xl' }}
+            backgroundColor={['none', useColorModeValue('gray.50', 'gray.700')]}
           >
             <Stack spacing="6">
               <Stack spacing={{ base: '2', md: '4' }} textAlign="center">
-                <Heading size={{ base: 'md', md: 'md' }}>
-                  Register an account
-                </Heading>
+                <Heading size="lg">Register an account</Heading>
                 <HStack spacing="1" justify="center">
                   <Text color="muted">Already have an account?</Text>
                   <Link href="/users/login">
-                    <Button variant="link" colorScheme="blue">
+                    <Button variant="link" colorScheme="saffron">
                       Login
                     </Button>
                   </Link>
@@ -113,11 +113,7 @@ export default function SignUp() {
                       </Field>
                     </Stack>
                     <Stack spacing="6">
-                      <Button
-                        type="submit"
-                        variant="primary"
-                        backgroundColor="cyan"
-                      >
+                      <Button type="submit" colorScheme="persianGreen">
                         Sign up
                       </Button>
                     </Stack>

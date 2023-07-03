@@ -21,10 +21,17 @@ import {
   Tr,
   Td,
   TableContainer,
-  Tag
+  Tag,
+  Flex,
+  Fade
 } from '@chakra-ui/react'
 import GameText from '@/components/gameText'
-import { PostGameStats } from './PostGameStats'
+import { PostGameStats } from '../PostGameStats'
+import { UserTable } from './UserTable'
+import TypeCard from '../TypeCard'
+import { TypeButtonCard } from '../TypeButtonCard'
+import { CountDownCard } from './CountDownCard'
+import { PlayAgainCard } from './PlayAgainCard'
 
 interface PlayGameProps {
   count: number
@@ -48,46 +55,6 @@ const splitStringIncludeSpaces = (str: string) => {
     }
   }
   return res
-}
-
-interface UserTableProps {
-  gameInfoArr: GameInformation[]
-  endgameStats: EndGameStats[]
-}
-
-const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
-  return (
-    <TableContainer>
-      <Table variant="simple" size="md">
-        <Tbody>
-          {gameInfoArr.map((gameInfo, index) => {
-            const { color, username, wpm, progressPercentage } = gameInfo
-            return (
-              <Tr key={index}>
-                <Td> {username} </Td>
-                <Td width={['100px', '400px']}>
-                  <Progress
-                    size="xs"
-                    value={progressPercentage}
-                    colorScheme={color}
-                  />
-                </Td>
-                <Td isNumeric>{wpm} wpm</Td>
-                <Td isNumeric>
-                  <Tag>
-                    {
-                      endgameStats.find((eg) => eg.username === username)
-                        ?.placement
-                    }
-                  </Tag>
-                </Td>
-              </Tr>
-            )
-          })}
-        </Tbody>
-      </Table>
-    </TableContainer>
-  )
 }
 
 export default function PlayGame({
@@ -213,17 +180,11 @@ export default function PlayGame({
   }
 
   return (
-    <Center>
-      <VStack spacing="6" w={['100%', 'container.lg']}>
-        <Heading size="md" color="gray">
-          {count > 0 ? (
-            <Text>Race starting in {count} seconds</Text>
-          ) : (
-            <Text>Race!</Text>
-          )}
-        </Heading>
-        <UserTable gameInfoArr={gameInfoArr} endgameStats={endGameStats} />
-        <Box p={3}>
+    <VStack p={3} gap={2}>
+      <UserTable gameInfoArr={gameInfoArr} endgameStats={endGameStats} />
+
+      {/* <Box maxW={700}>
+        <TypeCard header="">
           <GameText
             completedContent={completedContent}
             currentWord={currentWord}
@@ -234,41 +195,39 @@ export default function PlayGame({
             completed={completed}
             author={quote.author}
           />
-        </Box>
-        {!completed && (
-          <form
-            id="input-form"
-            onSubmit={(e) => {
-              e.preventDefault()
-            }}
-          >
-            <Input
-              variant="flushed"
-              onChange={handleInputChange}
-              size="lg"
-              disabled={!gameStarted}
-              ref={inputRef}
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck="false"
-            />
-          </form>
-        )}
-        {completed && (
-          <VStack spacing="6" w="100%">
-            {canRestartGame && (
-              <Button onClick={handlePlayAgain} colorScheme="teal">
-                Play again
-              </Button>
-            )}
-            <PostGameStats
-              endGameStats={endGameStats}
-              gameInfoArr={gameInfoArr}
-            />
-          </VStack>
-        )}
-      </VStack>
-    </Center>
+          <Box maxW={300}>
+            <form
+              id="input-form"
+              onSubmit={(e) => {
+                e.preventDefault()
+              }}
+            >
+              <Input
+                variant="flushed"
+                placeholder="Type here when the game begins"
+                onChange={handleInputChange}
+                size="lg"
+                disabled={!gameStarted || completed}
+                ref={inputRef}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck="false"
+              />
+            </form>
+          </Box>
+        </TypeCard>
+      </Box>
+      <VStack spacing={4}>
+        <CountDownCard
+          count={count}
+          color="typeboutGray"
+          allFinished={canRestartGame}
+        ></CountDownCard>
+        <Fade in={canRestartGame}>
+          <PlayAgainCard onClick={handlePlayAgain}></PlayAgainCard>
+        </Fade>
+      </VStack> */}
+    </VStack>
   )
 }

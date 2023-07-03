@@ -15,7 +15,7 @@ import { PropsWithChildren, useState } from 'react'
 const inter = Inter({ subsets: ['latin'] })
 
 interface TypeCardProps {
-  header: string
+  header?: string
   path?: string
   buttonTitle?: string
 }
@@ -30,11 +30,11 @@ export default function TypeCard({
 
   return (
     <Card variant="filled">
-      <CardHeader>
-        <Flex justifyContent="space-between">
+      {header && (
+        <CardHeader>
           <Heading size="md">{header}</Heading>
-        </Flex>
-      </CardHeader>
+        </CardHeader>
+      )}
       <CardBody>{children}</CardBody>
       {buttonTitle && (
         <CardFooter>

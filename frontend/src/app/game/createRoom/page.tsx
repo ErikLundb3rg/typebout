@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import SocketGameComponentWrapper, {
   BeforeGameComponentProps
-} from '../socketGameComponentWrapper'
+} from '../SocketGameComponentWrapper.tsx'
 import {
   Heading,
   HStack,
@@ -16,10 +16,17 @@ import {
   Spinner,
   ListItem,
   UnorderedList,
-  Flex,
   Divider,
-  Center
+  Center,
+  Card,
+  CardHeader,
+  CardBody,
+  Flex,
+  CardFooter
 } from '@chakra-ui/react'
+import { LoadingPage } from '@/components/LoadingPage'
+import TypeCard from '@/components/TypeCard'
+import { TypeButtonCard } from '@/components/TypeButtonCard'
 
 const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
   const [roomCode, setRoomCode] = useState<string>('')
@@ -39,56 +46,59 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
   }
 
   return loading ? (
-    <Center>
-      <Spinner />
-    </Center>
+    <LoadingPage text="Creating your room..." />
   ) : (
-    <Flex flexDirection={['column', 'row']} justifyContent="space-evenly">
-      <VStack spacing={8} mb={8}>
-        <Box border="3px solid gray" borderRadius="10px" p="4">
-          <Heading m="4" size="md" color="gray">
-            Joined players
-          </Heading>
-          <UnorderedList spacing={6} listStyleType="none">
-            {players?.map((player, index) => {
-              const { isGuest, username } = player
-              return (
-                <ListItem key={index}>
-                  <Divider />
-                  <HStack paddingTop="3">
-                    {isGuest ? (
-                      <Tag colorScheme="teal"> guest </Tag>
-                    ) : (
-                      <Tag colorScheme="blue"> user</Tag>
-                    )}
-                    <Text fontSize="xl"> {username}</Text>
-                  </HStack>
-                </ListItem>
-              )
-            })}
-          </UnorderedList>
-        </Box>
-        <Button size="md" colorScheme="teal" onClick={handleStartGame}>
-          Start game
-        </Button>
-      </VStack>
-      <VStack spacing={8}>
-        <Heading size="lg" color="gray">
+    <VStack spacing={8} p={3}>
+      <Box>
+        <Heading size="md">Room</Heading>
+        <Heading size="2xl" letterSpacing={2}>
           {' '}
-          Room #{roomCode}
+          # {roomCode}
         </Heading>
-
-        <Heading size="sm" color="gray">
-          Share this link with your friends:
-        </Heading>
-        <HStack>
-          <Input value={link} readOnly onFocus={(e) => e.target.select()} />
-          <Button size="md" colorScheme="teal" onClick={onCopy}>
-            Copy
-          </Button>
-        </HStack>
-      </VStack>
-    </Flex>
+      </Box>
+      <Flex
+        justifyContent="space-around"
+        gap={4}
+        flexWrap={['wrap-reverse', null, 'wrap']}
+        flexDirection={['row-reverse', null, 'row']}
+      >
+        <Box flex="1" minWidth="200px">
+          <TypeCard header="Joined Players">
+            <UnorderedList spacing={6} listStyleType="none">
+              {players?.map((player, index) => {
+                const { isGuest, username } = player
+                return (
+                  <ListItem key={index}>
+                    <Divider />
+                    <HStack paddingTop="3">
+                      {isGuest ? (
+                        <Tag colorScheme="sandyBrown"> guest </Tag>
+                      ) : (
+                        <Tag colorScheme="burntSienna"> user</Tag>
+                      )}
+                      <Text fontSize="xl"> {username}</Text>
+                    </HStack>
+                  </ListItem>
+                )
+              })}
+            </UnorderedList>
+          </TypeCard>
+        </Box>
+        <Box flex="1" minWidth="200px">
+          <TypeCard header="Room Link:">
+            <HStack>
+              <Input value={link} readOnly onFocus={(e) => e.target.select()} />
+              <Button size="md" colorScheme="persianGreen" onClick={onCopy}>
+                Copy
+              </Button>
+            </HStack>
+          </TypeCard>
+        </Box>
+        <Box flex="1" minWidth="200px">
+          <TypeButtonCard header="Start game" onClick={handleStartGame} />
+        </Box>
+      </Flex>
+    </VStack>
   )
 }
 
