@@ -48,20 +48,46 @@ const profile = () => {
   const { user } = useAuth()
   const [selectedGraph, setSelectedGraph] = useState(Amount.LAST_10)
 
-  // TODO: use these variables to calculate averages and best wpm dynamically
-  const [last10Races, last100Races] = useMemo(() => {
+  const last10= useMemo(() => {
     const lastRaces = data?.data?.lastRaces
-    if (!lastRaces) return [[], []]
-    return [
-      lastRaces.slice(0, Math.min(lastRaces.length, 10)),
-      lastRaces.slice(0, Math.min(lastRaces.length, 100))
-    ]
+    if (!lastRaces) return []
+    return lastRaces.slice(0, Math.min(lastRaces.length, 10)).reverse();
   }, [data?.data?.lastRaces])
+
+  const [last10Races, last100Races, allRaces] = useMemo(() => {
+    const wpmHistory = data?.data?.wpmHistory
+    if (!wpmHistory) return [[], [], []]
+    return [
+      wpmHistory.slice(0, Math.min(wpmHistory.length, 10)).reverse(),
+      wpmHistory.slice(0, Math.min(wpmHistory.length, 100)).reverse(),
+      wpmHistory.reverse()
+    ]
+  }, [data?.data?.wpmHistory])
+
+  const [last10Average, last100Average, allAverage] = useMemo(() => {
+    const wpmHistory = data?.data?.wpmHistory
+    if (!wpmHistory) return [0, 0, 0]
+    return [
+      last10Races.reduce((a, b) => a + b, 0) / last10Races.length,
+      last100Races.reduce((a, b) => a + b, 0) / last100Races.length,
+      allRaces.reduce((a, b) => a + b, 0) / allRaces.length
+    ]
+  }, [data?.data?.wpmHistory])
+
+  const [last10Best, last100Best, allBest] = useMemo(() => {
+    const wpmHistory = data?.data?.wpmHistory
+    if (!wpmHistory) return [0, 0, 0]
+    return [
+      Math.max(...last10Races),
+      Math.max(...last100Races),
+      Math.max(...allRaces)
+    ]
+  }, [data?.data?.wpmHistory])
 
   if (isLoading || !data || error) {
     return
   }
-  const { wpmAverage, highestWpm, accuracyAverage, wpmHistory } = data.data
+  const { accuracyAverage, wpmHistory } = data.data
 
   return (
     <Center>
@@ -114,19 +140,20 @@ const profile = () => {
               <HStack>
                 <Box w="full" h={360} mr={6}>
                   {selectedGraph === Amount.ALL ? (
-                    <AllGraph wpmHistory={wpmHistory} />
+                    <AllGraph wpmHistory={allRaces} />
                   ) : selectedGraph === Amount.LAST_100 ? (
-                    <Last100Graph wpmHistory={wpmHistory} />
+                    <Last100Graph wpmHistory={last100Races} />
                   ) : (
-                    <Last10Graph wpmHistory={wpmHistory} />
+                    <Last10Graph wpmHistory={last10Races} />
                   )}
                 </Box>
                 <Center>
                   <VStack pb={12} spacing={6} align="flex-start">
-                    <StatComponent title="Average wpm " content={wpmAverage} />
-                    <StatComponent title="Highest wpm" content={highestWpm} />
+                    <StatComponent title="Average wpm " content={(selectedGraph === Amount.ALL ? allAverage : selectedGraph === Amount.LAST_100 ? last100Average : last10Average).toFixed(1)} />
+                    <StatComponent title="Highest wpm" content={selectedGraph === Amount.ALL ? allBest : selectedGraph === Amount.LAST_100 ? last100Best : last10Best} />
                     <StatComponent
-                      title="Accuracy average"
+                        title="Accuracy average"
+                        // TODO: dynamically calculate accuracy average based on selected graph
                       content={accuracyAverage}
                     />
                   </VStack>
@@ -137,7 +164,7 @@ const profile = () => {
                 Latest races:{' '}
               </Heading>
               <VStack spacing={3} overflow="auto" maxHeight={500} pr={3}>
-                {last10Races.map((race: any, index) => {
+                {last10.map((race: any, index) => {
                   const { participants, timeFromNow, quote } = race
 
                   return (
@@ -184,14 +211,10 @@ interface GraphProps {
 }
 
 const Last10Graph = ({ wpmHistory }: GraphProps) => {
-  const last10 = useMemo(
-    () => wpmHistory.slice(0, Math.min(wpmHistory.length, 10)),
-    [wpmHistory]
-  )
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart
-        data={last10.map((wpm: number, index) => ({ wpm, index: index + 1 }))}
+        data={wpmHistory.map((wpm: number, index) => ({ wpm, index: index + 1 }))}
       >
         <XAxis dataKey="index" />
         <YAxis />
@@ -209,18 +232,14 @@ const Last10Graph = ({ wpmHistory }: GraphProps) => {
 }
 
 const Last100Graph = ({ wpmHistory }: GraphProps) => {
-  const latest100 = useMemo(
-    () => wpmHistory.slice(0, Math.min(wpmHistory.length, 100)),
-    [wpmHistory]
-  )
   const slidingAverage = useMemo(
-    () => getSlidingAverage(latest100, 10),
-    [latest100]
+    () => getSlidingAverage(wpmHistory, 10),
+    [wpmHistory]
   )
   return (
     <ResponsiveContainer width="100%" height="100%">
       <ComposedChart
-        data={latest100.map((wpm: number, i: number) => ({
+        data={wpmHistory.map((wpm: number, i: number) => ({
           wpm,
           tenAverage: slidingAverage[i],
           index: i + 1
@@ -229,7 +248,7 @@ const Last100Graph = ({ wpmHistory }: GraphProps) => {
         <XAxis dataKey="index" />
         <YAxis />
         <Tooltip />
-        <Scatter dataKey="wpm" fill="#8884d8" />
+        <Scatter dataKey="wpm" fill="#8884d8c0" />
         <Line
           dot={false}
           type="monotone"
@@ -264,19 +283,19 @@ const AllGraph = ({ wpmHistory }: GraphProps) => {
         <XAxis dataKey="index" />
         <YAxis />
         <Tooltip />
-        <Scatter dataKey="wpm" fill="#8884d8" />
+        <Scatter dataKey="wpm" fill="#8884d840" />
         <Line
           dot={false}
           type="monotone"
-          dataKey="hundredAverage"
+          dataKey="tenAverage"
           stroke="#8884d8"
           strokeWidth={3}
         />
         <Line
           dot={false}
           type="monotone"
-          dataKey="tenAverage"
-          stroke="#82ca9d60"
+          dataKey="hundredAverage"
+          stroke="#82ca9d"
           strokeWidth={3}
         />
       </ComposedChart>
