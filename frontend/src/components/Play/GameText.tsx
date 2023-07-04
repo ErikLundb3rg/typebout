@@ -38,7 +38,6 @@ const CurrentWord: React.FC<CurrentWordProps> = ({
   wrongIndex
 }) => {
   const currentIndex = Math.max(correctIndex, wrongIndex)
-  console.log(currentIndex)
 
   const renderWord = () => {
     const letters = currentWord.split('')
@@ -133,14 +132,6 @@ export const GameText = ({
   author,
   completed
 }: GameTextProps) => {
-  useEffect(() => {
-    console.log()
-    console.log(`completed: _${completedContent}_`)
-    console.log(`current: _${currentWord}_`)
-    console.log(`upcoming: _${upComingContent.join('')}_`)
-    console.log()
-  }, [completedContent, currentWord, upComingContent])
-
   return (
     <>
       <Box fontSize="larger" lineHeight={8} whiteSpace="pre-wrap">
