@@ -1,6 +1,6 @@
 import { Text, Box, Fade } from '@chakra-ui/react'
-import { PropsWithChildren, useState } from 'react'
-import '../css/gameText.css'
+import { PropsWithChildren, useEffect, useState } from 'react'
+import './gameText.css'
 
 interface GameTextProps {
   completedContent: string
@@ -116,7 +116,7 @@ const CurrentWord = ({
   return <span>{word}</span>
 }
 
-const gameText = ({
+export const GameText = ({
   completedContent,
   currentWord,
   upComingContent,
@@ -125,17 +125,30 @@ const gameText = ({
   author,
   completed
 }: GameTextProps) => {
+  useEffect(() => {
+    console.log()
+    console.log(`completed: _${completedContent}_`)
+    console.log(`current: _${currentWord}_`)
+    console.log(`upcoming: _${upComingContent.join('')}_`)
+    console.log()
+  }, [completedContent, currentWord, upComingContent])
+
   return (
     <>
-      <Box fontSize="larger" userSelect="none" lineHeight={8}>
-        <span style={{ color: 'gray' }}>{completedContent}</span>
-        <CurrentWord
-          correctIndex={correctIndex}
-          wrongIndex={wrongIndex}
-          currentWord={currentWord}
-        />
-
-        <span>{upComingContent.join('')}</span>
+      <Box fontSize="larger" lineHeight={8}>
+        <span style={{ color: 'gray' }}>
+          {completedContent && completedContent.trim()}
+        </span>
+        <span> </span>
+        <span style={{ whiteSpace: 'nowrap' }}>
+          <CurrentWord
+            correctIndex={correctIndex}
+            wrongIndex={wrongIndex}
+            currentWord={currentWord && currentWord.trim()}
+          />
+        </span>
+        <span> </span>
+        <span>{upComingContent.join(' ')}</span>
       </Box>
       <Fade in>
         <Text
@@ -150,5 +163,3 @@ const gameText = ({
     </>
   )
 }
-
-export default gameText

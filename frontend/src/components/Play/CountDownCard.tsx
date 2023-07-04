@@ -65,7 +65,7 @@ export const CountDownCard = ({
     <Card
       variant="filled"
       background={useColorModeValue(`${color}.200`, `${color}.500`)}
-      minW="200px"
+      w="100%"
     >
       <CardHeader>
         <Heading size="md">

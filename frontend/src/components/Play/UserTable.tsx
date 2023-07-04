@@ -26,7 +26,8 @@ import {
   Flex,
   Button,
   CardFooter,
-  useColorModeValue
+  useColorModeValue,
+  CircularProgress
 } from '@chakra-ui/react'
 import TypeCard from '../TypeCard'
 
@@ -41,14 +42,14 @@ export const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
     'typeboutGray.600'
   )
   return (
-    <Card variant="filled" align="center" maxW="100%">
+    <Card variant="filled" w="100%">
       <CardHeader pb={0}>
         <Heading size="md">Players</Heading>
       </CardHeader>
-      <CardBody maxW="100%">
+      <CardBody w="100%">
         <TableContainer>
           <Table variant="simple" size="sm">
-            <Tbody>
+            <Tbody w="100%">
               {gameInfoArr.map((gameInfo, index) => {
                 const { color, username, wpm, progressPercentage } = gameInfo
                 const placement = endgameStats.find(
@@ -64,13 +65,21 @@ export const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
                     >
                       {username}
                     </Td>
-                    <Td>
+                    <Td w={[null, '70%']}>
                       <Progress
                         size="xs"
                         value={progressPercentage}
                         background={defaultProgressBackgroundColor}
                         colorScheme={progressPercentage > 0 ? color : undefined}
-                        width="10vw"
+                        display={['none', 'block']}
+                      />
+
+                      <CircularProgress
+                        size="1.6rem"
+                        value={progressPercentage}
+                        color={color}
+                        trackColor={defaultProgressBackgroundColor}
+                        display={['block', 'none']}
                       />
                     </Td>
                     <Td isNumeric>{wpm} wpm</Td>
