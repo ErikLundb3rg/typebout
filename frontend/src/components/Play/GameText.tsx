@@ -1,6 +1,5 @@
 import { Text, Box, Fade } from '@chakra-ui/react'
 import { PropsWithChildren, useEffect, useState } from 'react'
-import './gameText.css'
 
 interface GameTextProps {
   completedContent: string
@@ -24,96 +23,105 @@ const cursorStyling = {
   top: 0,
   left: 0,
   width: '100%',
-  height: '100%',
-  animation: 'blink 1s ease-in-out infinite'
+  height: '100%'
 }
 
-const WithCursor = ({
-  children,
-  index,
-  currentIndex
-}: PropsWithChildren<{
-  index: number
-  currentIndex: number
-}>) => {
-  return (
-    <span style={{ position: 'relative' }}>
-      {index === 0 && currentIndex === -1 && (
-        <span
-          style={{
-            ...cursorStyling,
-            borderLeft: '1px solid black',
-            position: 'absolute'
-          }}
-        ></span>
-      )}
-      {children}
+interface CurrentWordProps {
+  currentWord: string
+  correctIndex: number
+  wrongIndex: number
+}
 
-      {currentIndex === index && (
+const CurrentWord: React.FC<CurrentWordProps> = ({
+  currentWord,
+  correctIndex,
+  wrongIndex
+}) => {
+  const currentIndex = Math.max(correctIndex, wrongIndex)
+  console.log(currentIndex)
+
+  const renderWord = () => {
+    const letters = currentWord.split('')
+
+    return letters.map((letter, index) => {
+      let color = undefined
+      let customStyle = {}
+
+      if (index === 0 && currentIndex === -1) {
+        customStyle = {
+          ...customStyle,
+          borderLeft: '1px solid black',
+          marginLeft: '-1px'
+        }
+      } else if (currentIndex === index) {
+        customStyle = {
+          ...customStyle,
+          borderRight: '1px solid black',
+          marginRight: '-1px'
+        }
+      }
+
+      if (correctIndex >= index) {
+        customStyle = { ...customStyle, color: 'green' }
+      } else if (wrongIndex >= index) {
+        // Space, show red underline instead of coloring
+        if (letter === ' ') {
+          customStyle = {
+            ...customStyle,
+            textDecoration: 'underline',
+            textDecorationColor: 'red',
+            textDecorationThickness: '3px'
+          }
+        }
+        customStyle = { ...customStyle, color: 'red' }
+      }
+
+      return (
         <span
+          key={index}
           style={{
-            ...cursorStyling,
-            borderRight: '1px solid black',
-            position: 'absolute'
+            color,
+            ...customStyle
           }}
-        ></span>
-      )}
+        >
+          {letter}
+        </span>
+      )
+    })
+  }
+
+  return <span>{renderWord()}</span>
+}
+
+interface ErrorSpaceProps {
+  withErrorSpace: boolean
+}
+const ErrorSpace = ({ withErrorSpace }: ErrorSpaceProps) => {
+  if (withErrorSpace) {
+    return (
+      <span
+        style={{
+          textDecoration: 'underline',
+          textDecorationColor: 'red',
+          textDecorationThickness: '3px'
+        }}
+      >
+        {' '}
+      </span>
+    )
+  }
+
+  return (
+    <span
+      style={{
+        textDecoration: 'underline',
+        textDecorationColor: 'blue',
+        textDecorationThickness: '3px'
+      }}
+    >
+      {' '}
     </span>
   )
-}
-
-const CurrentWord = ({
-  correctIndex,
-  currentWord,
-  wrongIndex
-}: CurrentWordProps) => {
-  const currentIndex = Math.max(correctIndex, wrongIndex)
-
-  const word = currentWord?.split('').map((c, index) => {
-    if (correctIndex >= index) {
-      return (
-        <WithCursor currentIndex={currentIndex} index={index}>
-          <span
-            style={{
-              color: 'green'
-            }}
-          >
-            {c}
-          </span>
-        </WithCursor>
-      )
-    }
-
-    if (wrongIndex >= index) {
-      const underlineError =
-        currentWord[index] === ' '
-          ? {
-              textDecoration: 'underline',
-              textDecorationColor: 'red',
-              textDecorationThickness: '3px'
-            }
-          : {}
-      return (
-        <WithCursor currentIndex={currentIndex} index={index}>
-          <span
-            style={{
-              color: 'red',
-              ...underlineError
-            }}
-          >
-            {c}
-          </span>
-        </WithCursor>
-      )
-    }
-    return (
-      <WithCursor currentIndex={currentIndex} index={index}>
-        <span>{c}</span>
-      </WithCursor>
-    )
-  })
-
-  return <span>{word}</span>
 }
 
 export const GameText = ({
@@ -135,20 +143,23 @@ export const GameText = ({
 
   return (
     <>
-      <Box fontSize="larger" lineHeight={8}>
-        <span style={{ color: 'gray' }}>
-          {completedContent && completedContent.trim()}
+      <Box fontSize="larger" lineHeight={8} whiteSpace="pre-wrap">
+        <span
+          style={{
+            color: 'gray'
+          }}
+        >
+          {completedContent}
         </span>
-        <span> </span>
-        <span style={{ whiteSpace: 'nowrap' }}>
+        {currentWord && (
           <CurrentWord
             correctIndex={correctIndex}
+            currentWord={currentWord}
             wrongIndex={wrongIndex}
-            currentWord={currentWord && currentWord.trim()}
           />
-        </span>
-        <span> </span>
-        <span>{upComingContent.join(' ')}</span>
+        )}
+
+        <span>{upComingContent}</span>
       </Box>
       <Fade in>
         <Text
