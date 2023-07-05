@@ -10,7 +10,9 @@ import {
   useColorMode,
   useColorModeValue,
   Center,
-  VStack
+  VStack,
+  Text,
+  Collapse
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { Spinner } from '@chakra-ui/react'
@@ -21,6 +23,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 interface PlayAgainCardProps {
   onClick: () => void
+  canRestartGame: boolean
   color?: string
 }
 
@@ -37,27 +40,38 @@ const formatTime = (time: number) => {
 
 export const PlayAgainCard = ({
   onClick,
-  color = 'persianGreen'
+  color = 'persianGreen',
+  canRestartGame
 }: PropsWithChildren<PlayAgainCardProps>) => {
+  color = canRestartGame ? color : 'typeboutGray'
+
   return (
-    <Card
-      variant="filled"
-      onClick={onClick}
-      _hover={{
-        cursor: 'pointer',
-        background: useColorModeValue(`${color}.400`, `${color}.300`)
-      }}
-      background={useColorModeValue(`${color}.200`, `${color}.500`)}
-      minW="200px"
-    >
-      <CardHeader>
-        <Heading size="md">Play again</Heading>
-      </CardHeader>
-      <CardFooter>
-        <Flex justifyContent="flex-end" w="100%">
-          <ArrowRightIcon />
-        </Flex>
-      </CardFooter>
-    </Card>
+    <Collapse in>
+      <Card
+        variant="filled"
+        onClick={onClick}
+        pointerEvents={canRestartGame ? 'auto' : 'none'}
+        _hover={{
+          cursor: 'pointer',
+          background: useColorModeValue(`${color}.400`, `${color}.300`)
+        }}
+        background={useColorModeValue(`${color}.200`, `${color}.500`)}
+        minW="200px"
+        p={0}
+      >
+        <CardHeader>
+          <Flex
+            justifyContent="space-between"
+            alignContent="center"
+            visibility={canRestartGame ? 'visible' : 'hidden'}
+          >
+            <Heading p={0} size="md">
+              Play Again
+            </Heading>
+            <ArrowRightIcon marginTop="3px" />
+          </Flex>
+        </CardHeader>
+      </Card>
+    </Collapse>
   )
 }

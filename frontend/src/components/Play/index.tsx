@@ -23,10 +23,12 @@ import {
   TableContainer,
   Tag,
   Flex,
-  Fade
+  Fade,
+  SlideFade,
+  HStack
 } from '@chakra-ui/react'
 import { GameText } from './GameText'
-import { PostGameStats } from '../PostGameStats'
+import { PostGameStats } from './PostGameStats'
 import { UserTable } from './UserTable'
 import TypeCard from '../TypeCard'
 import { TypeButtonCard } from '../TypeButtonCard'
@@ -181,61 +183,67 @@ export default function PlayGame({
 
   return (
     <Center>
-      <VStack p={3} maxW={800}>
-        <UserTable gameInfoArr={gameInfoArr} endgameStats={endGameStats} />
-        {/* {count > 0 && (
-          <CountDownCard
-            count={count}
-            color="typeboutGray"
-            allFinished={canRestartGame}
-          ></CountDownCard>
-        )}
- */}
-        <Box>
-          <TypeCard header="Quote">
-            <GameText
-              completedContent={completedContent}
-              currentWord={currentWord}
-              upComingContent={upComingContent}
-              correctIndex={correctIndex}
-              wrongIndex={wrongIndex}
-              splitContent={splitContent}
-              completed={completed}
-              author={quote.author}
-            />
-            <Box maxW={300}>
-              <form
-                id="input-form"
-                onSubmit={(e) => {
-                  e.preventDefault()
-                }}
-              >
-                <Input
-                  variant="flushed"
-                  placeholder="Type here when the game begins"
-                  onChange={handleInputChange}
-                  size="lg"
-                  disabled={!gameStarted || completed}
-                  ref={inputRef}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  spellCheck="false"
-                />
-              </form>
+      <VStack p={3} w="100%" spacing={3}>
+        <VStack maxW={800} w={[null, 800]} spacing={3}>
+          <UserTable gameInfoArr={gameInfoArr} endgameStats={endGameStats} />
+
+          <Flex w="100%" gap={3} wrap="wrap">
+            <Box w={['100%', '50%']}>
+              <CountDownCard
+                count={count}
+                color="saffron"
+                allFinished={canRestartGame}
+              />
             </Box>
-          </TypeCard>
+            <Box flexGrow={1}>
+              <PlayAgainCard
+                onClick={handlePlayAgain}
+                canRestartGame={canRestartGame}
+              ></PlayAgainCard>
+            </Box>
+          </Flex>
+          <Box fontSize="larger" w="100%">
+            <TypeCard header="Quote">
+              <GameText
+                completedContent={completedContent}
+                currentWord={currentWord}
+                upComingContent={upComingContent}
+                correctIndex={correctIndex}
+                wrongIndex={wrongIndex}
+                splitContent={splitContent}
+                completed={completed}
+                author={quote.author}
+              />
+              <Box maxW={300}>
+                <form
+                  id="input-form"
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                  }}
+                >
+                  <Input
+                    variant="flushed"
+                    placeholder="Type here when the game begins"
+                    onChange={handleInputChange}
+                    size="lg"
+                    disabled={!gameStarted || completed}
+                    ref={inputRef}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                  />
+                </form>
+              </Box>
+            </TypeCard>
+          </Box>
+        </VStack>
+        <Box maxW={1100} w="100%">
+          <PostGameStats
+            endGameStats={endGameStats}
+            gameInfoArr={gameInfoArr}
+          />
         </Box>
-        {/* <VStack spacing={4}>
-          <CountDownCard
-            count={count}
-            color="typeboutGray"
-            allFinished={canRestartGame}
-          ></CountDownCard>
-          <Fade in={canRestartGame}>
-            <PlayAgainCard onClick={handlePlayAgain}></PlayAgainCard>
-          </Fade>
-        </VStack> */}
       </VStack>
     </Center>
   )

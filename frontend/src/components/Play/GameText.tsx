@@ -1,4 +1,4 @@
-import { Text, Box, Fade } from '@chakra-ui/react'
+import { Text, Box, Fade, useColorModeValue } from '@chakra-ui/react'
 import { PropsWithChildren, useEffect, useState } from 'react'
 
 interface GameTextProps {
@@ -38,6 +38,7 @@ const CurrentWord: React.FC<CurrentWordProps> = ({
   wrongIndex
 }) => {
   const currentIndex = Math.max(correctIndex, wrongIndex)
+  const borderColor = useColorModeValue('black', 'white')
 
   const renderWord = () => {
     const letters = currentWord.split('')
@@ -49,13 +50,13 @@ const CurrentWord: React.FC<CurrentWordProps> = ({
       if (index === 0 && currentIndex === -1) {
         customStyle = {
           ...customStyle,
-          borderLeft: '1px solid black',
+          borderLeft: `1px solid ${borderColor}`,
           marginLeft: '-1px'
         }
       } else if (currentIndex === index) {
         customStyle = {
           ...customStyle,
-          borderRight: '1px solid black',
+          borderRight: `1px solid ${borderColor}`,
           marginRight: '-1px'
         }
       }
@@ -92,37 +93,6 @@ const CurrentWord: React.FC<CurrentWordProps> = ({
   return <span>{renderWord()}</span>
 }
 
-interface ErrorSpaceProps {
-  withErrorSpace: boolean
-}
-const ErrorSpace = ({ withErrorSpace }: ErrorSpaceProps) => {
-  if (withErrorSpace) {
-    return (
-      <span
-        style={{
-          textDecoration: 'underline',
-          textDecorationColor: 'red',
-          textDecorationThickness: '3px'
-        }}
-      >
-        {' '}
-      </span>
-    )
-  }
-
-  return (
-    <span
-      style={{
-        textDecoration: 'underline',
-        textDecorationColor: 'blue',
-        textDecorationThickness: '3px'
-      }}
-    >
-      {' '}
-    </span>
-  )
-}
-
 export const GameText = ({
   completedContent,
   currentWord,
@@ -134,7 +104,7 @@ export const GameText = ({
 }: GameTextProps) => {
   return (
     <>
-      <Box fontSize="larger" lineHeight={8} whiteSpace="pre-wrap">
+      <Box lineHeight={8} whiteSpace="pre-wrap">
         <span
           style={{
             color: 'gray'

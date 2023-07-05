@@ -77,7 +77,7 @@ const RegularNav = ({
   toggleColorMode,
   colorMode
 }: NavProps) => {
-  const color = useColorModeValue('blackAlpha.800', 'whiteAlpha.900')
+  const color = useColorModeValue('typeBoutGray.800', 'whiteAlpha.900')
   const hoverColor = useColorModeValue('typeboutGray.300', 'typeboutGray.200')
   return (
     <HStack spacing={20} fontSize="1.2rem">
@@ -92,7 +92,7 @@ const RegularNav = ({
             >
               <IconButton
                 icon={<FaUserCircle fontSize="1.5rem" />}
-                aria-label="Logout"
+                aria-label="Profile"
                 variant="ghost"
                 color={color}
                 _hover={{
@@ -166,29 +166,40 @@ const MobileNav = ({
       <MenuList>
         {isLoggedIn ? (
           <>
-            <MenuItem icon={<AiOutlineUser />}>
-              <Link href="/users/profile">Profile</Link>
-            </MenuItem>
-            <MenuItem icon={<BiLogOutCircle />}>
-              <Link href="/users/profile">Logout</Link>
+            <Link href="/users/profile">
+              <MenuItem icon={<AiOutlineUser />} as="a">
+                Profile
+              </MenuItem>
+            </Link>
+            <MenuItem icon={<BiLogOutCircle />} as="a" onClick={logout}>
+              Logout
             </MenuItem>
           </>
         ) : (
           <>
-            <MenuItem icon={<MdOutlineLogin />}>
-              <Link href="/users/login">Login</Link>
-            </MenuItem>
-            <MenuItem icon={<FaUserPlus />}>
-              <Link href="/users/signup">Sign up</Link>
-            </MenuItem>
+            <Link href="/users/login">
+              <MenuItem icon={<MdOutlineLogin />} as="a">
+                {' '}
+                Login
+              </MenuItem>
+            </Link>
+            <Link href="/users/signup">
+              <MenuItem icon={<FaUserPlus />} as="a">
+                Sign up
+              </MenuItem>
+            </Link>
           </>
         )}
-        <MenuItem icon={<MdCreate />}>
-          <Link href="/users/login">Create game</Link>
-        </MenuItem>
-        <MenuItem icon={<ArrowLeftIcon />}>
-          <Link href="/users/signup">Join game</Link>
-        </MenuItem>
+        <Link href="/game/createRoom">
+          <MenuItem icon={<MdCreate />} as="a">
+            Create game
+          </MenuItem>
+        </Link>
+        <Link href="/game/join">
+          <MenuItem icon={<ArrowLeftIcon />} as="a">
+            Join game
+          </MenuItem>
+        </Link>
 
         <MenuItem
           onClick={toggleColorMode}

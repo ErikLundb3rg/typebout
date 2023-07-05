@@ -14,21 +14,17 @@ interface StatComponentProps {
   content: string | number | undefined
 }
 
-const StatComponent = ({ content, title }: StatComponentProps) => {
+const RaceStat = ({ content, title }: StatComponentProps) => {
   return (
     <Stat size="md">
       <StatNumber>
-        <Heading color="gray" size="3xl">
-          {content}
-        </Heading>
+        <Heading size="2xl">{content}</Heading>
       </StatNumber>
       <StatLabel>
-        <Heading color="gray" size="md">
-          {title}
-        </Heading>
+        <Heading size="md">{title}</Heading>
       </StatLabel>
     </Stat>
   )
 }
 
-export default StatComponent
+export default RaceStat

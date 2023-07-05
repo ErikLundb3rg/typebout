@@ -10,7 +10,9 @@ import {
   useColorMode,
   useColorModeValue,
   Center,
-  VStack
+  VStack,
+  Collapse,
+  Text
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { Spinner } from '@chakra-ui/react'
@@ -42,41 +44,33 @@ export const CountDownCard = ({
   count,
   allFinished,
   color = 'persianGreen'
-}: PropsWithChildren<CountDownCardProps>) => {
+}: CountDownCardProps) => {
   const [loading, setLoading] = useState(false)
-  const [elapsedTime, setElapsedTime] = useState(0)
-
-  useEffect(() => {
-    if (count != 0) return
-
-    console.log('creating interval for countdown')
-    interval = setInterval(() => {
-      setElapsedTime((prev) => prev + 1)
-    }, ONE_SECOND)
-  }, [count])
-
-  useEffect(() => {
-    if (!allFinished) return
-
-    clearInterval(interval)
-  }, [allFinished])
 
   return (
     <Card
       variant="filled"
       background={useColorModeValue(`${color}.200`, `${color}.500`)}
       w="100%"
+      p={0}
     >
       <CardHeader>
-        <Heading size="md">
-          {count == 0 ? (allFinished ? `Finished` : `Go!`) : `Get ready in: `}
+        <Heading p={0} size="md">
+          Starting in {formatTime(count)}
         </Heading>
+        {/* <Heading size="md">
+            {count == 0
+              ? allFinished
+                ? `Finished`
+                : `Go!`
+              : `Get ready in: ${formatTime(count)} `}
+          </Heading> */}
       </CardHeader>
-      <CardBody>
-        <Heading size="2xl">
-          {count > 0 ? formatTime(count) : formatTime(elapsedTime)}{' '}
-        </Heading>
-      </CardBody>
+      {/* <CardBody>
+          <Heading size="2xl" visibility={count > 0 ? 'visible' : 'hidden'}>
+            {formatTime(count)}
+          </Heading>
+        </CardBody> */}
     </Card>
   )
 }

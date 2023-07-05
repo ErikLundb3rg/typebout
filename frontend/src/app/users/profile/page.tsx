@@ -12,7 +12,7 @@ import {
   SimpleGrid,
   Fade
 } from '@chakra-ui/react'
-import StatComponent from '@/components/statComponent'
+import StatComponent from '@/components/RaceStat'
 import useAuth from '@/providers/useAuth'
 import {
   LineChart,
