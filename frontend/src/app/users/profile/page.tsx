@@ -57,6 +57,7 @@ const Profile = () => {
   )
   const { user } = useAuth()
   const [selectedGraph, setSelectedGraph] = useState(Amount.LAST_10)
+  const cardColor = useColorModeValue('typeboutGray.600', 'typeboutGray.50')
 
   const last10 = useMemo(() => {
     const lastRaces = data?.data?.lastRaces
@@ -94,20 +95,27 @@ const Profile = () => {
     ]
   }, [data?.data?.wpmHistory])
 
-  if (isLoading || !data || error) {
-    return
+  if (!data || isLoading) {
+    return (
+      <Fade in>
+        <Heading m="7">Fetching profile...</Heading>
+      </Fade>
+    )
   }
+
+  if (error) {
+    return (
+      <Fade in>
+        <Heading m="7">Could not fetch profile</Heading>
+      </Fade>
+    )
+  }
+
   const { accuracyAverage, wpmHistory } = data.data
 
   return (
     <Center p={3}>
-      <Card
-        variant="filled"
-        w="100%"
-        maxW={1000}
-        p={8}
-        color={useColorModeValue('typeboutGray.600', 'typeboutGray.50')}
-      >
+      <Card variant="filled" w="100%" maxW={1000} p={8} color={cardColor}>
         <VStack w="100%" spacing={6}>
           <Flex justifyContent="space-between" wrap="wrap" w="100%" gap={6}>
             <Box>
