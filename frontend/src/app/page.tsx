@@ -47,12 +47,12 @@ const InfoCard = () => (
     <Text>
       Typebout was just released. This means you might find some bugs or other
       unintended things regarding the website.
-      <br /> <br />
+      {/* <br /> <br />
       Contact{' '}
       <a href="mailto:erik.lundberg32@gmail.com">
         erik.lundberg32@gmail.com
       </a>{' '}
-      for inquiries.
+      for inquiries. */}
     </Text>
   </TypeCard>
 )
