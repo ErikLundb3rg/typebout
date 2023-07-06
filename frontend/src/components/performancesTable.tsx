@@ -27,8 +27,8 @@ interface PerformancesTableProps {
   header: string
 }
 
-export const PerformancesTable = ({ path, header }: PerformancesTableProps) => {
-  const { data, error, isLoading } = useSWR(path, fetcherGet)
+const performancesTable = ({ path }: PerformancesTableProps) => {
+  const { data, error, isLoading } = useSWR(path, (url) => fetcherGet<any>(url))
 
   return (
     <TypeCard header={header}>
