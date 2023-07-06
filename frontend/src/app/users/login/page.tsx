@@ -17,7 +17,7 @@ import {
   Fade,
   useColorModeValue
 } from '@chakra-ui/react'
-import { PasswordField } from '@/components/passwordField'
+import { PasswordField } from '@/components/PasswordField'
 import { Field, Form, Formik } from 'formik'
 import { Link } from '@chakra-ui/next-js'
 import { useState } from 'react'

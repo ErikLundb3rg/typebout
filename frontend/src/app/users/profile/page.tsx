@@ -24,7 +24,7 @@ import {
   ComposedChart,
   Scatter
 } from 'recharts'
-import TypeCard from '@/components/typeCard'
+import TypeCard from '@/components/TypeCard'
 import { getSlidingAverage } from '@/util/functions'
 
 enum Amount {

@@ -20,7 +20,7 @@ import {
   useColorModeValue
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
-import { PasswordField } from '@/components/passwordField'
+import { PasswordField } from '@/components/PasswordField'
 import { Link } from '@chakra-ui/next-js'
 import { SignUpProps } from '@/types'
 

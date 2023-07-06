@@ -27,7 +27,7 @@ interface PerformancesTableProps {
   header: string
 }
 
-const performancesTable = ({ path }: PerformancesTableProps) => {
+export const PerformancesTable = ({ path, header }: PerformancesTableProps) => {
   const { data, error, isLoading } = useSWR(path, (url) => fetcherGet<any>(url))
 
   return (
