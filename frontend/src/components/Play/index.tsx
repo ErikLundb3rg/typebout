@@ -21,10 +21,19 @@ import {
   Tr,
   Td,
   TableContainer,
-  Tag
+  Tag,
+  Flex,
+  Fade,
+  SlideFade,
+  HStack
 } from '@chakra-ui/react'
-import GameText from '@/components/gameText'
+import { GameText } from './GameText'
 import { PostGameStats } from './PostGameStats'
+import { UserTable } from './UserTable'
+import TypeCard from '../TypeCard'
+import { TypeButtonCard } from '../TypeButtonCard'
+import { CountDownCard } from './CountDownCard'
+import { PlayAgainCard } from './PlayAgainCard'
 
 interface PlayGameProps {
   count: number
@@ -48,46 +57,6 @@ const splitStringIncludeSpaces = (str: string) => {
     }
   }
   return res
-}
-
-interface UserTableProps {
-  gameInfoArr: GameInformation[]
-  endgameStats: EndGameStats[]
-}
-
-const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
-  return (
-    <TableContainer>
-      <Table variant="simple" size="md">
-        <Tbody>
-          {gameInfoArr.map((gameInfo, index) => {
-            const { color, username, wpm, progressPercentage } = gameInfo
-            return (
-              <Tr key={index}>
-                <Td> {username} </Td>
-                <Td width={['100px', '400px']}>
-                  <Progress
-                    size="xs"
-                    value={progressPercentage}
-                    colorScheme={color}
-                  />
-                </Td>
-                <Td isNumeric>{wpm} wpm</Td>
-                <Td isNumeric>
-                  <Tag>
-                    {
-                      endgameStats.find((eg) => eg.username === username)
-                        ?.placement
-                    }
-                  </Tag>
-                </Td>
-              </Tr>
-            )
-          })}
-        </Tbody>
-      </Table>
-    </TableContainer>
-  )
 }
 
 export default function PlayGame({
@@ -214,60 +183,67 @@ export default function PlayGame({
 
   return (
     <Center>
-      <VStack spacing="6" w={['100%', 'container.lg']}>
-        <Heading size="md" color="gray">
-          {count > 0 ? (
-            <Text>Race starting in {count} seconds</Text>
-          ) : (
-            <Text>Race!</Text>
-          )}
-        </Heading>
-        <UserTable gameInfoArr={gameInfoArr} endgameStats={endGameStats} />
-        <Box p={3}>
-          <GameText
-            completedContent={completedContent}
-            currentWord={currentWord}
-            upComingContent={upComingContent}
-            correctIndex={correctIndex}
-            wrongIndex={wrongIndex}
-            splitContent={splitContent}
-            completed={completed}
-            author={quote.author}
+      <VStack p={3} w="100%" spacing={3} mb={300}>
+        <VStack maxW={800} w={[null, 800]} spacing={3}>
+          <UserTable gameInfoArr={gameInfoArr} endgameStats={endGameStats} />
+
+          <Flex w="100%" gap={3} wrap="wrap">
+            <Box w={['100%', '50%']}>
+              <CountDownCard
+                count={count}
+                color="saffron"
+                allFinished={canRestartGame}
+              />
+            </Box>
+            <Box flexGrow={1}>
+              <PlayAgainCard
+                onClick={handlePlayAgain}
+                canRestartGame={canRestartGame}
+              ></PlayAgainCard>
+            </Box>
+          </Flex>
+          <Box fontSize="larger" w="100%">
+            <TypeCard header="Quote">
+              <GameText
+                completedContent={completedContent}
+                currentWord={currentWord}
+                upComingContent={upComingContent}
+                correctIndex={correctIndex}
+                wrongIndex={wrongIndex}
+                splitContent={splitContent}
+                completed={completed}
+                author={quote.author}
+              />
+              <Box maxW={300}>
+                <form
+                  id="input-form"
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                  }}
+                >
+                  <Input
+                    variant="flushed"
+                    placeholder="Type here when the game begins"
+                    onChange={handleInputChange}
+                    size="lg"
+                    disabled={!gameStarted || completed}
+                    ref={inputRef}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                  />
+                </form>
+              </Box>
+            </TypeCard>
+          </Box>
+        </VStack>
+        <Box maxW={1100} w="100%">
+          <PostGameStats
+            endGameStats={endGameStats}
+            gameInfoArr={gameInfoArr}
           />
         </Box>
-        {!completed && (
-          <form
-            id="input-form"
-            onSubmit={(e) => {
-              e.preventDefault()
-            }}
-          >
-            <Input
-              variant="flushed"
-              onChange={handleInputChange}
-              size="lg"
-              disabled={!gameStarted}
-              ref={inputRef}
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck="false"
-            />
-          </form>
-        )}
-        {completed && (
-          <VStack spacing="6" w="100%">
-            {canRestartGame && (
-              <Button onClick={handlePlayAgain} colorScheme="teal">
-                Play again
-              </Button>
-            )}
-            <PostGameStats
-              endGameStats={endGameStats}
-              gameInfoArr={gameInfoArr}
-            />
-          </VStack>
-        )}
       </VStack>
     </Center>
   )

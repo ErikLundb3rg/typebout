@@ -15,84 +15,197 @@ import {
   HStack,
   Center,
   StackDivider,
-  Divider
+  Divider,
+  useColorModeValue,
+  textDecoration,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  MenuGroup,
+  Tooltip
 } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 import MenuToggle from '@/components/MenuToggle'
-import { useState } from 'react'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { JSXElementConstructor, ReactElement, useState } from 'react'
+import {
+  ArrowLeftIcon,
+  HamburgerIcon,
+  MoonIcon,
+  SunIcon
+} from '@chakra-ui/icons'
+import { Logo } from '@/components/Logo'
+import { AiFillProfile, AiOutlineUser, AiOutlineLogout } from 'react-icons/ai'
 
-const inter = Inter({ subsets: ['latin'] })
+import { BsFillPlayCircleFill } from 'react-icons/bs'
+import { MdCreate, MdOutlineLogin } from 'react-icons/md'
+import { FaUserPlus, FaUserCircle } from 'react-icons/fa'
+import { BiLogOutCircle } from 'react-icons/bi'
 
-const Logo = () => {
+const HeadText = () => {
   return (
     <Heading size="lg">
-      <Link href="/">TypeBout⌨</Link>
+      <Link
+        href="/"
+        _hover={{
+          color: useColorModeValue('typeboutGray.800', 'typeboutGray.50'),
+          textDecoration: 'none',
+          opacity: 0.6
+        }}
+      >
+        <span>
+          <Text display="inline-block"> Typebout </Text>
+          <Box w="14px" display="inline-block" ml={2}>
+            <Logo />
+          </Box>
+        </span>
+      </Link>
     </Heading>
   )
 }
 
-const Username = ({
-  username,
-  isGuest
-}: {
-  username: string
-  isGuest: boolean
-}) => {
+interface NavProps {
+  isLoggedIn: boolean
+  logout: () => void
+  toggleColorMode: () => void
+  colorMode: 'light' | 'dark'
+}
+
+const RegularNav = ({
+  isLoggedIn,
+  logout,
+  toggleColorMode,
+  colorMode
+}: NavProps) => {
+  const color = useColorModeValue('typeBoutGray.800', 'whiteAlpha.900')
+  const hoverColor = useColorModeValue('typeboutGray.300', 'typeboutGray.200')
   return (
-    <Text display={['none', 'block']}>
-      {username}
-      {isGuest && (
-        <Highlight
-          query="guest"
-          styles={{ px: '2', py: '0', rounded: 'full', bg: 'teal.100' }}
-        >
-          guest
-        </Highlight>
+    <HStack spacing={20} fontSize="1.2rem">
+      {isLoggedIn ? (
+        <>
+          <Tooltip label="Profile">
+            <Link
+              href="/users/profile"
+              _hover={{
+                textDecoration: 'none'
+              }}
+            >
+              <IconButton
+                icon={<FaUserCircle fontSize="1.5rem" />}
+                aria-label="Profile"
+                variant="ghost"
+                color={color}
+                _hover={{
+                  color: hoverColor
+                }}
+              />
+            </Link>
+          </Tooltip>
+          <Tooltip label="Logout">
+            <IconButton
+              onClick={logout}
+              icon={
+                <BiLogOutCircle
+                  fontSize="1.5rem"
+                  style={{ transform: 'rotate(180deg)' }}
+                />
+              }
+              aria-label="Logout"
+              variant="ghost"
+              color={color}
+              _hover={{
+                color: hoverColor
+              }}
+            />
+          </Tooltip>
+        </>
+      ) : (
+        <>
+          <Link href="/users/login">Login</Link>
+          <Link href="/users/signup">Sign up</Link>
+        </>
       )}
-    </Text>
+
+      <Tooltip label="Toggle theme">
+        <IconButton
+          onClick={toggleColorMode}
+          icon={
+            colorMode === 'light' ? (
+              <MoonIcon fontSize="1.5rem" />
+            ) : (
+              <SunIcon fontSize="1.5rem" />
+            )
+          }
+          aria-label="Toggle dark mode"
+          variant="ghost"
+          color={color}
+          _hover={{
+            color: hoverColor
+          }}
+        />
+      </Tooltip>
+    </HStack>
   )
 }
 
-const MenuLinks = ({ isOpen }: { isOpen: boolean }) => {
+const MobileNav = ({
+  isLoggedIn,
+  logout,
+  toggleColorMode,
+  colorMode
+}: NavProps) => {
   return (
-    <Box
-      display={{ base: isOpen ? 'block' : 'none', md: 'block' }}
-      flexBasis={{ base: '100%', md: 'auto' }}
-    >
-      <Stack
-        spacing={8}
-        align="center"
-        justify={['center', 'space-between', 'flex-end', 'flex-end']}
-        direction={['column', 'row', 'row', 'row']}
-        pt={[4, 4, 0, 0]}
-      >
-        <Link
-          href="/users/login"
-          _hover={{ color: 'blue.500', textDecoration: 'underline' }}
-        >
-          Login
+    <Menu autoSelect={false}>
+      <MenuButton
+        as={IconButton}
+        aria-label="Options"
+        icon={<HamburgerIcon />}
+        variant="solid"
+        colorScheme="persianGreen"
+      />
+      <MenuList>
+        {isLoggedIn ? (
+          <>
+            <Link href="/users/profile">
+              <MenuItem icon={<AiOutlineUser />}>Profile</MenuItem>
+            </Link>
+            <MenuItem icon={<BiLogOutCircle />} onClick={logout}>
+              Logout
+            </MenuItem>
+          </>
+        ) : (
+          <>
+            <Link href="/users/login">
+              <MenuItem icon={<MdOutlineLogin />}> Login</MenuItem>
+            </Link>
+            <Link href="/users/signup">
+              <MenuItem icon={<FaUserPlus />}>Sign up</MenuItem>
+            </Link>
+          </>
+        )}
+        <Link href="/game/createRoom">
+          <MenuItem icon={<MdCreate />}>Create game</MenuItem>
         </Link>
-        <Link
-          href="/users/signup"
-          _hover={{ color: 'blue.500', textDecoration: 'underline' }}
-        >
-          Sign up
+        <Link href="/game/join">
+          <MenuItem icon={<ArrowLeftIcon />}>Join game</MenuItem>
         </Link>
-      </Stack>
-    </Box>
+
+        <MenuItem
+          onClick={toggleColorMode}
+          icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+          closeOnSelect={false}
+        >
+          Toggle theme
+        </MenuItem>
+      </MenuList>
+    </Menu>
   )
 }
 
 export default function Header() {
   const { user, logout } = useAuth()
   const { colorMode, toggleColorMode } = useColorMode()
-  const [isOpen, setIsOpen] = useState(false)
-
-  const toggle = () => setIsOpen(!isOpen)
-
-  const isLoggedIn = user && !user.isGuest!
-
+  const isLoggedIn = (user || false) && !user.isGuest!
   return (
     <Flex
       as="nav"
@@ -102,62 +215,22 @@ export default function Header() {
       w="100%"
       p={8}
     >
-      <Logo />
-      <MenuToggle toggle={toggle} isOpen={isOpen} />
-      <Box
-        display={{ base: isOpen ? 'block' : 'none', md: 'block' }}
-        flexBasis={{ base: '100%', md: 'auto' }}
-      >
-        <Stack
-          spacing={8}
-          align="center"
-          justify={['center', 'space-between', 'flex-end', 'flex-end']}
-          alignItems="center"
-          direction={['column', 'row']}
-          pt={[4, 4, 0, 0]}
-        >
-          {isLoggedIn ? (
-            <>
-              <Link
-                href="/users/profile"
-                _hover={{ color: 'blue.500', textDecoration: 'underline' }}
-              >
-                <Username isGuest={user.isGuest} username={user.username} />
-              </Link>
-              <Text
-                onClick={logout}
-                _hover={{
-                  color: 'blue.500',
-                  textDecoration: 'underline',
-                  cursor: 'pointer'
-                }}
-              >
-                Logout
-              </Text>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/users/login"
-                _hover={{ color: 'blue.500', textDecoration: 'underline' }}
-              >
-                Login
-              </Link>
-              <Link
-                href="/users/signup"
-                _hover={{ color: 'blue.500', textDecoration: 'underline' }}
-              >
-                Sign up
-              </Link>
-            </>
-          )}
-
-          <IconButton
-            onClick={toggleColorMode}
-            icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-            aria-label="Toggle dark mode"
-          />
-        </Stack>
+      <HeadText />
+      <Box display={{ base: 'block', md: 'none' }}>
+        <MobileNav
+          isLoggedIn={isLoggedIn}
+          colorMode={colorMode}
+          toggleColorMode={toggleColorMode}
+          logout={logout}
+        />
+      </Box>
+      <Box display={{ base: 'none', md: 'block' }}>
+        <RegularNav
+          isLoggedIn={isLoggedIn}
+          colorMode={colorMode}
+          toggleColorMode={toggleColorMode}
+          logout={logout}
+        />
       </Box>
     </Flex>
   )

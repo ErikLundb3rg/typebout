@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
 
-const BecomeGuest = () => {
+export const BecomeGuest = () => {
   const { becomeGuest } = useAuth()
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -30,32 +30,25 @@ const BecomeGuest = () => {
     <Fade in>
       <Center>
         <Stack align="center">
-          <Heading m="7" size="md" color="gray">
+          <Heading m="7" size="lg">
             Enter a nickname to play as
           </Heading>
 
           <form onSubmit={handleSubmit}>
-            <VStack
-              divider={<StackDivider borderColor="gray.200" />}
-              spacing={4}
-              align="stretch"
-            >
-              <Input name="username" placeholder="e.g lucbror" />
-              <Button type="submit" colorScheme="teal" size="lg">
+            <VStack divider={<StackDivider />} spacing={4} align="stretch">
+              <Input name="username" placeholder="e.g Superman" />
+              <Button type="submit" colorScheme="persianGreen" size="lg">
                 Play
               </Button>
             </VStack>
           </form>
           <Text>
-            or
-            <Link
-              color="blue.500"
-              href="/users/login"
-              _hover={{ textDecoration: 'underline' }}
-            >
-              {' '}
-              Login{' '}
-            </Link>
+            or{' '}
+            <Link href="/users/login">
+              <Button variant="link" colorScheme="saffron">
+                Login
+              </Button>
+            </Link>{' '}
             to your account
           </Text>
         </Stack>
@@ -63,5 +56,3 @@ const BecomeGuest = () => {
     </Fade>
   )
 }
-
-export default BecomeGuest

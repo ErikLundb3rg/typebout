@@ -12,9 +12,11 @@ import {
   StackDivider,
   PinInput,
   PinInputField,
-  Center
+  Center,
+  Fade
 } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
+import { LoadingPage } from '@/components/LoadingPage'
 
 export default function Join() {
   const { becomeGuest } = useAuth()
@@ -35,11 +37,15 @@ export default function Join() {
     <Box>
       <Center>
         <Stack align="center">
-          <Heading m="7" size="md" color="gray">
-            Enter the room code
-          </Heading>
+          {isJoiningRoom ? (
+            <Fade in>
+              <Heading m="7">Trying to join {value}...</Heading>
+            </Fade>
+          ) : (
+            <Heading m="7">Enter the room code</Heading>
+          )}
 
-          <VStack divider={<StackDivider borderColor="gray.200" />} spacing={6}>
+          <VStack spacing={6}>
             <HStack>
               <PinInput
                 type="alphanumeric"
@@ -47,6 +53,7 @@ export default function Join() {
                 onComplete={handleSubmit}
                 onChange={capitalize}
                 value={value}
+                size={['md', 'lg']}
               >
                 <PinInputField />
                 <PinInputField />
@@ -56,6 +63,7 @@ export default function Join() {
                 <PinInputField />
               </PinInput>
             </HStack>
+            <StackDivider />
             {isJoiningRoom && <Spinner />}
           </VStack>
         </Stack>

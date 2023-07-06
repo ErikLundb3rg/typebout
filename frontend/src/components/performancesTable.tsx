@@ -8,8 +8,13 @@ import {
   Td,
   TableContainer,
   Thead,
-  Th
+  Th,
+  Spinner,
+  Text,
+  Skeleton,
+  Tfoot
 } from '@chakra-ui/react'
+import TypeCard from './TypeCard'
 
 interface PerformanceProps {
   username: string
@@ -19,42 +24,46 @@ interface PerformanceProps {
 
 interface PerformancesTableProps {
   path: string
+  header: string
 }
 
-const performancesTable = ({ path }: PerformancesTableProps) => {
+export const PerformancesTable = ({ path, header }: PerformancesTableProps) => {
   const { data, error, isLoading } = useSWR(path, (url) => fetcherGet<any>(url))
 
-  if (error || isLoading) {
-    return <></>
-  }
-
   return (
-    <TableContainer>
-      <Table variant="striped" colorScheme="telegram" size="sm">
-        <Thead>
-          <Tr>
-            <Th>Time</Th>
-            <Th>Username</Th>
-            <Th isNumeric>wpm</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data?.data.performances.map(
-            (performance: PerformanceProps, index: number) => {
-              const { username, timeFromNow, wpm } = performance
-              return (
-                <Tr key={index}>
-                  <Td> {timeFromNow} </Td>
-                  <Td> {username} </Td>
-                  <Td isNumeric>{wpm}</Td>
+    <TypeCard header={header}>
+      {error ? (
+        <Text> Failed to fetch data </Text>
+      ) : (
+        <Skeleton isLoaded={!isLoading}>
+          <TableContainer>
+            <Table variant="striped" colorScheme="persianGreen" size="sm">
+              <Thead>
+                <Tr>
+                  <Th>Time</Th>
+                  <Th>Username</Th>
+                  <Th isNumeric>wpm</Th>
                 </Tr>
-              )
-            }
-          )}
-        </Tbody>
-      </Table>
-    </TableContainer>
+              </Thead>
+              <Tbody>
+                {data?.data.performances.map(
+                  (performance: PerformanceProps, index: number) => {
+                    const { username, timeFromNow, wpm } = performance
+                    return (
+                      <Tr key={index}>
+                        <Td> {timeFromNow} </Td>
+                        <Td> {username} </Td>
+                        <Td isNumeric>{wpm}</Td>
+                      </Tr>
+                    )
+                  }
+                )}
+              </Tbody>
+              <Tfoot></Tfoot>
+            </Table>
+          </TableContainer>
+        </Skeleton>
+      )}
+    </TypeCard>
   )
 }
-
-export default performancesTable

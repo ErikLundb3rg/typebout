@@ -94,11 +94,12 @@ export const AuthProvider = ({
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
       setUser({ username: user.username, isGuest: false })
+
       router.back()
       toast({
         title: 'Login successful',
         status: 'success',
-        duration: 1000,
+        duration: 3000,
         isClosable: true
       })
     } catch (error: any) {
@@ -154,6 +155,11 @@ export const AuthProvider = ({
     setUser(undefined)
     try {
       await api.logout()
+      toast({
+        title: 'You were logged out',
+        duration: 3000,
+        isClosable: true
+      })
     } catch (error) {}
   }
 
