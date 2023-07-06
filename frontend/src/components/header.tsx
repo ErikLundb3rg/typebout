@@ -167,38 +167,27 @@ const MobileNav = ({
         {isLoggedIn ? (
           <>
             <Link href="/users/profile">
-              <MenuItem icon={<AiOutlineUser />} as="a">
-                Profile
-              </MenuItem>
+              <MenuItem icon={<AiOutlineUser />}>Profile</MenuItem>
             </Link>
-            <MenuItem icon={<BiLogOutCircle />} as="a" onClick={logout}>
+            <MenuItem icon={<BiLogOutCircle />} onClick={logout}>
               Logout
             </MenuItem>
           </>
         ) : (
           <>
             <Link href="/users/login">
-              <MenuItem icon={<MdOutlineLogin />} as="a">
-                {' '}
-                Login
-              </MenuItem>
+              <MenuItem icon={<MdOutlineLogin />}> Login</MenuItem>
             </Link>
             <Link href="/users/signup">
-              <MenuItem icon={<FaUserPlus />} as="a">
-                Sign up
-              </MenuItem>
+              <MenuItem icon={<FaUserPlus />}>Sign up</MenuItem>
             </Link>
           </>
         )}
         <Link href="/game/createRoom">
-          <MenuItem icon={<MdCreate />} as="a">
-            Create game
-          </MenuItem>
+          <MenuItem icon={<MdCreate />}>Create game</MenuItem>
         </Link>
         <Link href="/game/join">
-          <MenuItem icon={<ArrowLeftIcon />} as="a">
-            Join game
-          </MenuItem>
+          <MenuItem icon={<ArrowLeftIcon />}>Join game</MenuItem>
         </Link>
 
         <MenuItem

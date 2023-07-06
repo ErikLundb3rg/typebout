@@ -86,9 +86,9 @@ export function PostGameStats({
     <Card variant="filled" w="100%">
       <CardHeader pb={0}>
         <VStack spacing={4} align="normal">
-          <Heading size="md">Stats for: </Heading>
-          <Flex justifyContent="space-between" w="100%" wrap="wrap" gap={4}>
+          <Box pl={3}>
             <Menu>
+              <Heading size="md">Stats for: </Heading>
               <Heading>
                 <MenuButton
                   as={Button}
@@ -97,6 +97,7 @@ export function PostGameStats({
                   }
                   variant="ghost"
                   fontSize="3xl"
+                  pl={0}
                 >
                   {chosenEndgameStats.username}
                 </MenuButton>
@@ -118,13 +119,12 @@ export function PostGameStats({
                 </MenuList>
               )}
             </Menu>
-          </Flex>
+          </Box>
         </VStack>
       </CardHeader>
       <CardBody
         color={useColorModeValue('typeboutGray.600', 'typeboutGray.50')}
       >
-        <Divider mb={3} />
         <VStack spacing={10}>
           <Flex justifyContent="space-around" w="100%" wrap="wrap" gap={6}>
             <Box>

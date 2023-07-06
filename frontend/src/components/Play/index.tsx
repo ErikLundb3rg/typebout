@@ -183,7 +183,7 @@ export default function PlayGame({
 
   return (
     <Center>
-      <VStack p={3} w="100%" spacing={3}>
+      <VStack p={3} w="100%" spacing={3} mb={300}>
         <VStack maxW={800} w={[null, 800]} spacing={3}>
           <UserTable gameInfoArr={gameInfoArr} endgameStats={endGameStats} />
 
