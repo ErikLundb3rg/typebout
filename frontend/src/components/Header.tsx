@@ -1,5 +1,5 @@
 'use client'
-import { Inter } from '@next/font/google'
+import { Inter } from "next/font/google"
 import useAuth from '@/providers/useAuth'
 import {
   Box,
