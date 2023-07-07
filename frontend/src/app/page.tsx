@@ -1,5 +1,5 @@
 'use client'
-import { Inter } from "next/font/google"
+import { Inter } from 'next/font/google'
 import {
   Box,
   Stack,
@@ -35,10 +35,7 @@ const CreateGameCard = () => (
     path="game/createRoom"
     buttonTitle="Create game"
   >
-    <Text>
-      Create a game which gives you a link your friends can join.
-      <br />
-    </Text>
+    <Text>Create a game which gives you a link your friends can join.</Text>
   </TypeCard>
 )
 
@@ -60,35 +57,27 @@ export default function Home() {
   return (
     <main>
       <Center>
-        <HStack
-          justifyContent="center"
-          p={[3]}
-          flexWrap="wrap"
-          width="100%"
-          alignItems="flex-start"
-          gap={2}
-        >
-          <VStack maxWidth={['none', '600px']} spacing={[2, 4]}>
-            <Stack direction={['column', 'row']} spacing={[2, 4]}>
+        <Flex p={[3]} wrap="wrap" width="100%" gap={3} justifyContent="center">
+          <VStack maxWidth={[null, 600]} spacing={[3]}>
+            <Stack direction={['column', 'row']} spacing={[3]}>
               <CreateGameCard />
               <JoinGameCard />
             </Stack>
             <InfoCard />
           </VStack>
-
-          <Box m={3}>
+          <Box>
             <PerformancesTable
               header="Latest Races"
               path={'/races/getLatestPerformances?entries=10'}
             />
           </Box>
-          <Box m={3}>
+          <Box>
             <PerformancesTable
               path={'/races/topPerformances?entries=10'}
               header="Top races"
             />
           </Box>
-        </HStack>
+        </Flex>
       </Center>
     </main>
   )
