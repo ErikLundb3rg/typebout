@@ -3,17 +3,13 @@ import { keys } from '@/util/localstoragekeys'
 import { io } from 'socket.io-client'
 import { TypeBoutSocket } from './types'
 import { refreshToken } from '@/apicalls'
+import { tryRefreshToken } from '@/util/auth'
 
 export const createSocket = async (user: Player) => {
   if (!user.isGuest) {
-    try {
-      const res = await refreshToken()
-      const { accessToken } = res.data.data
-      localStorage.setItem(keys.accessToken, accessToken)
-    } catch (error) {
-      localStorage.removeItem(keys.accessToken)
-      localStorage.removeItem(keys.user)
-      location.href = '/users/login'
+    const hasRefreshed = await tryRefreshToken()
+
+    if (!hasRefreshed) {
       return
     }
   }

@@ -14,6 +14,7 @@ import { keys } from '@/util/localstoragekeys'
 import { useRouter } from 'next/navigation'
 import { SignUpError } from '@/types'
 import { useToast } from '@chakra-ui/react'
+import { tryRefreshToken } from '@/util/auth'
 
 interface AuthContextProps {
   loading: boolean
@@ -71,8 +72,22 @@ export const AuthProvider = ({
   // Reintroduce state if we refresh the page
   useEffect(() => {
     const user = localStorage.getItem(keys.user)
+    console.log('Found user object', user)
     if (user) {
-      setUser(JSON.parse(user))
+      // Check if user's refresh token is still valid (if not redirect to login page)
+      tryRefreshToken().then((refreshed) => {
+        if (refreshed) {
+          setUser(JSON.parse(user))
+        } else {
+          router.push('/users/login')
+          toast({
+            title: 'Please login again',
+            description: 'Looks like it has been a while since your last login',
+            duration: 5000,
+            isClosable: true
+          })
+        }
+      })
     } else {
       setUser(undefined)
     }
