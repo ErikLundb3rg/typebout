@@ -72,7 +72,6 @@ export const AuthProvider = ({
   // Reintroduce state if we refresh the page
   useEffect(() => {
     const user = localStorage.getItem(keys.user)
-    console.log('Found user object', user)
     if (user) {
       // Check if user's refresh token is still valid (if not redirect to login page)
       tryRefreshToken().then((refreshed) => {
