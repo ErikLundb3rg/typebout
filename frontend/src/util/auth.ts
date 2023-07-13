@@ -6,38 +6,16 @@ interface TokenProps {
   exp: number
 }
 
-const setAccessToken = (token: string) =>
-  localStorage.setItem(keys.accessToken, token)
-const getAccessToken = () =>
-  localStorage.getItem('accessToken') as string | undefined
-
-const accessTokenIsValid = () => {
-  const token = getAccessToken()
-
-  if (!token) {
-    return false
-  }
-
+// Tries to refresh the token and will update localstorage accordingly
+export const tryRefreshToken = async () => {
   try {
-    const { exp } = jwtDecode<TokenProps>(token)
-
-    if (Date.now() >= exp * 1000) {
-      return false
-    }
-
+    const res = await refreshToken()
+    const { accessToken } = res.data.data
+    localStorage.setItem(keys.accessToken, accessToken)
     return true
-  } catch (e) {
+  } catch (error) {
+    localStorage.removeItem(keys.accessToken)
+    localStorage.removeItem(keys.user)
     return false
   }
-}
-
-export const refreshTokens = async () => {
-  const response = (await refreshToken()).data
-  const { data, ok } = response
-  if (ok) {
-    setAccessToken(data.accessToken)
-  } else {
-    console.error('invalid refresh_token')
-  }
-  return ok
 }
