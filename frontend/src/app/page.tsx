@@ -57,7 +57,7 @@ export default function Home() {
   return (
     <main>
       <Center>
-        <Flex p={[3]} wrap="wrap" width="100%" gap={3} justifyContent="center">
+        <Flex p={3} wrap="wrap" width="100%" gap={3} justifyContent="center">
           <VStack maxWidth={[null, 600]} spacing={[3]}>
             <Stack direction={['column', 'row']} spacing={[3]}>
               <CreateGameCard />
@@ -65,13 +65,13 @@ export default function Home() {
             </Stack>
             <InfoCard />
           </VStack>
-          <Box>
+          <Box maxW="100%">
             <PerformancesTable
               header="Latest Races"
               path={'/races/getLatestPerformances?entries=10'}
             />
           </Box>
-          <Box>
+          <Box maxW="100%">
             <PerformancesTable
               path={'/races/topPerformances?entries=10'}
               header="Top races"
