@@ -32,10 +32,6 @@ router.post(
   }
 )
 
-router.get(
-  '/profile',
-  passport.authenticate('bearer', { session: false }),
-  asyncHandler(profile)
-)
+router.get('/profile', asyncHandler(profile))
 
 export default router
