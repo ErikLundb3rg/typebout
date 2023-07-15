@@ -12,20 +12,14 @@ export interface Player {
 // to the clients
 export interface GameInformation {
   wpm: number
-  user: {
-    username: string
-    id: number
-  }
+  user: Player
   color: string
   progressPercentage: number
 }
 
 export interface EndGameStats {
   wpm: number
-  user: {
-    username: string
-    id: number
-  }
+  user: Player
   time: number
   accuracy: number
   correct: number
@@ -34,6 +28,7 @@ export interface EndGameStats {
   placement: number
   graphData: { wpm: number; rawWpm: number; time: number }[]
 }
+
 export interface MistakeProps {
   mistakes: number
   mistakeWords: string[]

@@ -30,6 +30,7 @@ import {
   CircularProgress
 } from '@chakra-ui/react'
 import TypeCard from '../TypeCard'
+import Link from 'next/link'
 
 interface UserTableProps {
   gameInfoArr: GameInformation[]
@@ -53,7 +54,7 @@ export const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
               {gameInfoArr.map((gameInfo, index) => {
                 const {
                   color,
-                  user: { username, id },
+                  user: { username, id, isGuest },
                   wpm,
                   progressPercentage
                 } = gameInfo
@@ -68,7 +69,21 @@ export const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
                       whiteSpace="nowrap"
                       maxW={[100, 200, 300]}
                     >
-                      {username}
+                      {isGuest ? (
+                        <Text fontWeight="bold" fontSize="md">
+                          {username}
+                        </Text>
+                      ) : (
+                        <Link href={'/users/profile/' + username}>
+                          <Button
+                            variant="link"
+                            colorScheme="charcoal"
+                            textDecoration="underline"
+                          >
+                            {username}
+                          </Button>
+                        </Link>
+                      )}
                     </Td>
                     <Td w={[null, '70%']}>
                       <Progress

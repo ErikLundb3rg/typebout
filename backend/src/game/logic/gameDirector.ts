@@ -148,7 +148,8 @@ export class PersonalGame {
       wpm: this.getWPM(),
       user: {
         username: this.user.data.username || 'unknown',
-        id: this.user.data.id!
+        id: this.user.data.id!,
+        isGuest: this.user.data.isGuest!
       },
       color: this.color,
       progressPercentage: Math.round(
