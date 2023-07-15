@@ -98,7 +98,10 @@ export const AuthProvider = ({
   }, [user?.username, user?.isGuest])
 
   const becomeGuest = (username: string) => {
-    setUser({ username, isGuest: true })
+    const ONE_TRILLION = 1000000000000
+    // Yeah this is a funny fix but works just fine
+    const generatedId = Math.floor(Math.random() * ONE_TRILLION) + ONE_TRILLION
+    setUser({ username, isGuest: true, id: generatedId })
   }
 
   const login: AuthContextProps['login'] = async (username, password) => {
@@ -107,7 +110,7 @@ export const AuthProvider = ({
       const response = (await api.login(username, password)).data
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
-      setUser({ username: user.username, isGuest: false })
+      setUser({ username: user.username, id: user.id, isGuest: false })
 
       router.back()
       toast({
@@ -141,7 +144,7 @@ export const AuthProvider = ({
         .data
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
-      setUser({ username: user.username, isGuest: false })
+      setUser({ username: user.username, id: user.id, isGuest: false })
       router.push('/')
       toast({
         title: 'Signup successful',

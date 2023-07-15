@@ -4,6 +4,7 @@ import { Quotes } from '@prisma/client'
 
 export interface Player {
   username: string
+  id: number
   isGuest: boolean
 }
 
@@ -11,14 +12,20 @@ export interface Player {
 // to the clients
 export interface GameInformation {
   wpm: number
-  username: string
+  user: {
+    username: string
+    id: number
+  }
   color: string
   progressPercentage: number
 }
 
 export interface EndGameStats {
   wpm: number
-  username: string
+  user: {
+    username: string
+    id: number
+  }
   time: number
   accuracy: number
   correct: number

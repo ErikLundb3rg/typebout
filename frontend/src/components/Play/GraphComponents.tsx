@@ -100,13 +100,12 @@ export const MultiGraph: React.FC<MultiGraphProps> = ({
             type="monotone"
             dataKey="wpm"
             stroke={
-              gameInfoArr.find(
-                (gameInfo) => gameInfo.username === data.username
-              )?.color ?? '#82ca9d60'
+              gameInfoArr.find((gameInfo) => gameInfo.user.id === data.user.id)
+                ?.color ?? '#82ca9d60'
             }
             strokeWidth={2}
             dot={false}
-            name={data.username}
+            name={data.user.username}
           />
         ))}
       </LineChart>

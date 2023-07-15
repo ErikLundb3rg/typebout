@@ -51,9 +51,14 @@ export const UserTable = ({ gameInfoArr, endgameStats }: UserTableProps) => {
           <Table variant="simple" size="sm">
             <Tbody w="100%">
               {gameInfoArr.map((gameInfo, index) => {
-                const { color, username, wpm, progressPercentage } = gameInfo
+                const {
+                  color,
+                  user: { username, id },
+                  wpm,
+                  progressPercentage
+                } = gameInfo
                 const placement = endgameStats.find(
-                  (eg) => eg.username === username
+                  (eg) => eg.user.id === id
                 )?.placement
                 return (
                   <Tr key={index}>

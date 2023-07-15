@@ -97,7 +97,7 @@ export class PersonalGame {
   public user: TypeBoutSocket
   public group: Group | undefined
 
-  private graphData: { wpm: number, rawWpm: number, time: number }[] = []
+  private graphData: { wpm: number; rawWpm: number; time: number }[] = []
   private wordCompletionTimes: number[] = []
   private quote: Quotes
   private splitQuoteContent: string[]
@@ -146,7 +146,10 @@ export class PersonalGame {
   public getInformation = (): GameInformation => {
     return {
       wpm: this.getWPM(),
-      username: this.user.data.username || 'unknown',
+      user: {
+        username: this.user.data.username || 'unknown',
+        id: this.user.data.id!
+      },
       color: this.color,
       progressPercentage: Math.round(
         100 * (this.current / this.quote.content.length)
@@ -158,11 +161,11 @@ export class PersonalGame {
     if (this.endTime === null || this.startTime === null) {
       throw new Error('Cannot retrieve end of game stats')
     }
-    const { username, wpm } = this.getInformation()
+    const { user, wpm } = this.getInformation()
     const { current, mistakes, mistakeWords, graphData } = this
     const correct = current - mistakes
     this.endGameStats = {
-      username,
+      user,
       wpm,
       time: round((this.endTime - this.startTime) / 1000, 1),
       accuracy: round(100 * (correct / current), 0),

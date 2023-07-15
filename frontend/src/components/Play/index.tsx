@@ -89,25 +89,28 @@ export default function PlayGame({
 
   useEffect(() => {
     gameInfoArr.forEach((gameInfo) => {
-      const { wpm, username } = gameInfo
+      const {
+        wpm,
+        user: { id }
+      } = gameInfo
       if (
-        endGameStats.find((eg) => eg.username === username) !== undefined ||
+        endGameStats.find((eg) => eg.user.id === id) !== undefined ||
         wpm === 0
       ) {
         return
       }
 
-      if (wpmHistories[username] === undefined) {
+      if (wpmHistories[id] === undefined) {
         setWpmHistories((wpmHistory) => ({
           ...wpmHistory,
-          [username]: []
+          [id]: []
         }))
         return
       }
 
       setWpmHistories((wpmHistory) => ({
         ...wpmHistory,
-        [username]: [...wpmHistories[username], wpm]
+        [id]: [...wpmHistories[id], wpm]
       }))
     })
   }, [gameInfoArr])

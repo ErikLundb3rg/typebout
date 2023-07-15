@@ -24,6 +24,7 @@ export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
   if (user.isGuest) {
     socket.data = {
       username: user.username,
+      id: user.id,
       isGuest: true
     }
   } // Verify that the user is actually logged in and not just saying "i'm not a guest"

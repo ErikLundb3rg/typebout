@@ -46,9 +46,7 @@ export function PostGameStats({
 
   useEffect(() => {
     if (!chosenEndgameStats) {
-      setChosenEndgameStats(
-        endGameStats.find((eg) => eg.username === user?.username)
-      )
+      setChosenEndgameStats(endGameStats.find((eg) => eg.user.id === user?.id))
     }
   }, [endGameStats])
 
@@ -99,7 +97,7 @@ export function PostGameStats({
                   fontSize="3xl"
                   pl={0}
                 >
-                  {chosenEndgameStats.username}
+                  {chosenEndgameStats.user.username}
                 </MenuButton>
               </Heading>
               {endGameStats.length > 1 && (
@@ -107,13 +105,13 @@ export function PostGameStats({
                   {endGameStats
                     .filter(
                       (endGameStat) =>
-                        endGameStat.username !== chosenEndgameStats.username
+                        endGameStat.user.id !== chosenEndgameStats.user.id
                     )
                     .map((endGameStat) => (
                       <MenuItem
                         onClick={() => setChosenEndgameStats(endGameStat)}
                       >
-                        {endGameStat.username}
+                        {endGameStat.user.username}
                       </MenuItem>
                     ))}
                 </MenuList>

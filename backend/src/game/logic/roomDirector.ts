@@ -58,13 +58,14 @@ export class Room {
 
   public getInformation = (): Player[] =>
     this.users.map((user) => {
-      const { isGuest, username } = user.data
+      const { isGuest, username, id } = user.data
       if (isGuest === undefined || username === undefined) {
         throw new Error('isGuest or username not attached to socket data')
       }
       return {
         isGuest,
-        username
+        username,
+        id: id!
       }
     })
 }
