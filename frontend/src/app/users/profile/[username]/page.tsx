@@ -1,5 +1,5 @@
 'use client'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { fetcherGet } from '@/apicalls/index'
 import {
@@ -51,11 +51,17 @@ interface ResponseData {
   lastRaces: any[]
 }
 
-const Profile = () => {
-  const { data, error, isLoading } = useSWR('users/profile', (url) =>
-    fetcherGet<ResponseData>(url)
-  )
+const Profile = ({
+  params: { username }
+}: {
+  params: { username: string }
+}) => {
   const { user } = useAuth()
+  const { data, error, isLoading } = useSWR(
+    `users/profile?username=${username}`,
+    (url) => fetcherGet<ResponseData>(url)
+  )
+
   const [selectedGraph, setSelectedGraph] = useState(Amount.LAST_10)
   const cardColor = useColorModeValue('typeboutGray.600', 'typeboutGray.50')
 
@@ -120,7 +126,7 @@ const Profile = () => {
           <Flex justifyContent="space-between" wrap="wrap" w="100%" gap={6}>
             <Box>
               <Heading size="md">Stats for: </Heading>
-              <Heading> {user?.username} </Heading>
+              <Heading> {username} </Heading>
             </Box>
             <Box>
               <StatComponent title="Games Played" content={wpmHistory.length} />

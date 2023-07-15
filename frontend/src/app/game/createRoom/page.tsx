@@ -22,11 +22,13 @@ import {
   CardHeader,
   CardBody,
   Flex,
-  CardFooter
+  CardFooter,
+  Link
 } from '@chakra-ui/react'
 import { LoadingPage } from '@/components/LoadingPage'
 import TypeCard from '@/components/TypeCard'
 import { TypeButtonCard } from '@/components/TypeButtonCard'
+import { JoinedPlayers } from '@/components/JoinedPlayers'
 
 const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
   const [roomCode, setRoomCode] = useState<string>('')
@@ -63,26 +65,7 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
         flexDirection={['row-reverse', null, 'row']}
       >
         <Box flex="1" minWidth="200px">
-          <TypeCard header="Joined Players">
-            <UnorderedList spacing={6} listStyleType="none">
-              {players?.map((player, index) => {
-                const { isGuest, username } = player
-                return (
-                  <ListItem key={index}>
-                    <Divider />
-                    <HStack paddingTop="3">
-                      {isGuest ? (
-                        <Tag colorScheme="sandyBrown"> guest </Tag>
-                      ) : (
-                        <Tag colorScheme="burntSienna"> user</Tag>
-                      )}
-                      <Text fontSize="xl"> {username}</Text>
-                    </HStack>
-                  </ListItem>
-                )
-              })}
-            </UnorderedList>
-          </TypeCard>
+          {players && <JoinedPlayers players={players} />}
         </Box>
         <Box flex="1" minWidth="200px">
           <TypeCard header="Room Link:">

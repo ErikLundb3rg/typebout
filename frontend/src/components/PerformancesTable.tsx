@@ -12,7 +12,9 @@ import {
   Spinner,
   Text,
   Skeleton,
-  Tfoot
+  Tfoot,
+  Link,
+  Button
 } from '@chakra-ui/react'
 import TypeCard from './TypeCard'
 
@@ -52,7 +54,17 @@ export const PerformancesTable = ({ path, header }: PerformancesTableProps) => {
                     return (
                       <Tr key={index}>
                         <Td> {timeFromNow} </Td>
-                        <Td> {username} </Td>
+                        <Td>
+                          <Link href={'/users/profile/' + username}>
+                            <Button
+                              variant="link"
+                              colorScheme="charcoal"
+                              textDecoration="underline"
+                            >
+                              {username}
+                            </Button>
+                          </Link>
+                        </Td>
                         <Td isNumeric>{wpm}</Td>
                       </Tr>
                     )

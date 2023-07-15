@@ -1,5 +1,5 @@
 'use client'
-import { Inter } from "next/font/google"
+import { Inter } from 'next/font/google'
 import useAuth from '@/providers/useAuth'
 import {
   Box,
@@ -41,6 +41,7 @@ import { BsFillPlayCircleFill } from 'react-icons/bs'
 import { MdCreate, MdOutlineLogin } from 'react-icons/md'
 import { FaUserPlus, FaUserCircle } from 'react-icons/fa'
 import { BiLogOutCircle } from 'react-icons/bi'
+import { Player } from '@/socket/types'
 
 const HeadText = () => {
   return (
@@ -69,13 +70,15 @@ interface NavProps {
   logout: () => void
   toggleColorMode: () => void
   colorMode: 'light' | 'dark'
+  user?: Player
 }
 
 const RegularNav = ({
   isLoggedIn,
   logout,
   toggleColorMode,
-  colorMode
+  colorMode,
+  user
 }: NavProps) => {
   const color = useColorModeValue('typeBoutGray.800', 'whiteAlpha.900')
   const hoverColor = useColorModeValue('typeboutGray.300', 'typeboutGray.200')
@@ -85,7 +88,7 @@ const RegularNav = ({
         <>
           <Tooltip label="Profile">
             <Link
-              href="/users/profile"
+              href={'/users/profile/' + user?.username}
               _hover={{
                 textDecoration: 'none'
               }}
@@ -152,7 +155,8 @@ const MobileNav = ({
   isLoggedIn,
   logout,
   toggleColorMode,
-  colorMode
+  colorMode,
+  user
 }: NavProps) => {
   return (
     <Menu autoSelect={false}>
@@ -166,7 +170,7 @@ const MobileNav = ({
       <MenuList>
         {isLoggedIn ? (
           <>
-            <Link href="/users/profile">
+            <Link href={'/users/profile/' + user?.username}>
               <MenuItem icon={<AiOutlineUser />}>Profile</MenuItem>
             </Link>
             <MenuItem icon={<BiLogOutCircle />} onClick={logout}>
@@ -222,6 +226,7 @@ export default function Header() {
           colorMode={colorMode}
           toggleColorMode={toggleColorMode}
           logout={logout}
+          user={user}
         />
       </Box>
       <Box display={{ base: 'none', md: 'block' }}>
@@ -230,6 +235,7 @@ export default function Header() {
           colorMode={colorMode}
           toggleColorMode={toggleColorMode}
           logout={logout}
+          user={user}
         />
       </Box>
     </Flex>
