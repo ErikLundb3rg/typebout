@@ -2,6 +2,7 @@ import { ExtendedError } from 'socket.io/dist/namespace'
 import { Player } from '../types/index'
 import { verifyAccessToken, JWTPayload } from '../../auth/util/verifyers'
 import { TypeBoutSocket } from '../types'
+import { profanitiesSet } from '../../constants/profanities'
 
 // This middleware will check if the connecting
 // client has the status of a logged in User
@@ -22,6 +23,9 @@ export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
   const { accessToken, user } = socket.handshake.auth as SocketAuthProps
 
   if (user.isGuest) {
+    if (profanitiesSet.has(user.username)) {
+      return next(new Error('Username contains profanities'))
+    }
     socket.data = {
       username: user.username,
       id: user.id,
