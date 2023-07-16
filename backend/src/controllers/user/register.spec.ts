@@ -6,6 +6,9 @@ import {
   generateAccessToken,
   generateRefreshToken
 } from '../../auth/util/verifyers'
+import axios from 'axios'
+
+jest.mock('axios')
 
 describe('Register Controller', () => {
   let req: any = {}
@@ -26,13 +29,15 @@ describe('Register Controller', () => {
       .mockReturnValue('accesstoken')
     ;(generateRefreshToken as jest.Mock) = jest.fn()
     res.cookie = jest.fn()
+    ;(axios.post as jest.Mock).mockResolvedValue({ data: { success: true } })
   })
 
   test('is successful with correct input', async () => {
     req.body = {
       username: 'username',
       password: 'password',
-      confirmPassword: 'password'
+      confirmPassword: 'password',
+      captcha: 'captcha'
     }
     prismaMock.users.findUnique.mockResolvedValue(null)
     prismaMock.users.create.mockResolvedValue(user)
@@ -45,7 +50,8 @@ describe('Register Controller', () => {
     req.body = {
       username: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      captcha: 'captcha'
     }
 
     expect(await register(req, res)).toMatchSnapshot()
@@ -55,7 +61,8 @@ describe('Register Controller', () => {
     req.body = {
       username: 'username',
       password: 'password',
-      confirmPassword: 'passwordDifferent'
+      confirmPassword: 'passwordDifferent',
+      captcha: 'captcha'
     }
 
     expect(await register(req, res)).toMatchSnapshot()
@@ -65,7 +72,8 @@ describe('Register Controller', () => {
     req.body = {
       username: 'username',
       password: 'password',
-      confirmPassword: 'password'
+      confirmPassword: 'password',
+      captcha: 'captcha'
     }
     prismaMock.users.findUnique.mockResolvedValue(user)
 

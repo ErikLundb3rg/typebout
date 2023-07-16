@@ -21,6 +21,7 @@ exports[`Register Controller is unsuccessful with confirmedPassword not matching
 {
   "data": {
     "errors": {
+      "captcha": "",
       "confirmPassword": "Confirm password does not match password",
       "password": "",
       "username": "",
@@ -36,6 +37,7 @@ exports[`Register Controller is unsuccessful with empty input 1`] = `
 {
   "data": {
     "errors": {
+      "captcha": "",
       "confirmPassword": "",
       "password": "",
       "username": ""username" is not allowed to be empty",
