@@ -4,4 +4,4 @@ export interface SignUpProps {
   confirmPassword: string
 }
 
-export type SignUpError = SignUpProps
+export type SignUpError = SignUpProps & { captcha: string }

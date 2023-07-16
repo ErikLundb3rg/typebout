@@ -24,7 +24,8 @@ interface AuthContextProps {
   register: (
     username: string,
     password: string,
-    confirmPassword: string
+    confirmPassword: string,
+    captcha: string
   ) => Promise<SignUpError | null>
   logout: () => void
   becomeGuest: (username: string) => void
@@ -135,13 +136,15 @@ export const AuthProvider = ({
   const register: AuthContextProps['register'] = async (
     username,
     password,
-    confirmPassword
+    confirmPassword,
+    captcha
   ) => {
     let validationError: SignUpError | null = null
     setLoading(true)
     try {
-      const response = (await api.register(username, password, confirmPassword))
-        .data
+      const response = (
+        await api.register(username, password, confirmPassword, captcha)
+      ).data
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
       setUser({ username: user.username, id: user.id, isGuest: false })

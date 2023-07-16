@@ -13,11 +13,13 @@ import {
   generateRefreshToken,
   generateAccessToken
 } from '../../auth/util/verifyers'
+import axios from 'axios'
 
 interface RegisterProps {
   username: string
   password: string
   confirmPassword: string
+  captcha: string
 }
 
 const userExists = async (username: string) => {
@@ -39,14 +41,16 @@ const registerSchema = Joi.object({
   confirmPassword: Joi.any().equal(Joi.ref('password')).messages({
     'any.only': 'Confirm password does not match password',
     'any.required': 'Please re-enter the password'
-  })
+  }),
+  captcha: Joi.string().required()
 })
 
 const transformError = (error: Joi.ValidationError) => {
   const errors: RegisterProps = {
     username: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    captcha: ''
   }
   error.details.forEach((detail) => {
     const { message, context } = detail
@@ -81,6 +85,21 @@ export const register: AsyncController<RegisterProps> = async (req, res) => {
         },
         status: errorCodes.BAD_REQUEST
       }
+    })
+  }
+
+  const captchaResponse = await axios.post(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET_KEY}&response=${req.body.captcha}`
+  )
+
+  if (!captchaResponse.data.success) {
+    return defaultErrorResponse({
+      data: {
+        errors: {
+          captcha: 'Captcha verification failed'
+        }
+      },
+      status: errorCodes.FORBIDDEN
     })
   }
 

@@ -1,8 +1,7 @@
 'use client'
-import { useState } from 'react'
+import { LegacyRef, useState } from 'react'
 import useAuth from '@/providers/useAuth'
-import { FormEvent, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRef } from 'react'
 import {
   Box,
   Button,
@@ -23,9 +22,12 @@ import { Field, Form, Formik } from 'formik'
 import { PasswordField } from '@/components/PasswordField'
 import { Link } from '@chakra-ui/next-js'
 import { SignUpProps } from '@/types'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 export default function SignUp() {
   const { register, networkError, loading } = useAuth()
+  const captchaRef = useRef<ReCAPTCHA>(null)
+  const [captchaError, setCaptchaError] = useState('')
 
   const [formErrors, setFormErrors] = useState<SignUpProps>({
     confirmPassword: '',
@@ -41,9 +43,24 @@ export default function SignUp() {
 
   const handleSubmit = async (values: SignUpProps) => {
     const { username, password, confirmPassword } = values
-    const validationError = await register(username, password, confirmPassword)
+
+    const captcha = captchaRef.current?.getValue()
+
+    if (!captcha) {
+      setCaptchaError('Please complete the captcha')
+      return
+    }
+
+    captchaRef.current?.reset()
+    const validationError = await register(
+      username,
+      password,
+      confirmPassword,
+      captcha
+    )
     if (validationError) {
       setFormErrors(validationError)
+      setCaptchaError(validationError.captcha)
     }
   }
 
@@ -81,42 +98,48 @@ export default function SignUp() {
               {(props) => (
                 <Form>
                   <Stack spacing="6">
-                    <Stack spacing="5">
-                      <Field name="username">
-                        {({ field }: { field: typeof Field }) => (
-                          <FormControl isInvalid={formErrors.username !== ''}>
-                            <FormLabel>Username</FormLabel>
-                            <Input {...field} placeholder="e.g username123" />
-                            <FormErrorMessage>
-                              {formErrors.username}{' '}
-                            </FormErrorMessage>
-                          </FormControl>
-                        )}
-                      </Field>
-                      <Field name="password">
-                        {({ field }: { field: typeof Field }) => (
-                          <PasswordField
-                            {...field}
-                            title={'Password'}
-                            error={formErrors.password}
-                          />
-                        )}
-                      </Field>
-                      <Field name="confirmPassword">
-                        {({ field }: { field: typeof Field }) => (
-                          <PasswordField
-                            {...field}
-                            title={'Confirm  password'}
-                            error={formErrors.confirmPassword}
-                          />
-                        )}
-                      </Field>
-                    </Stack>
-                    <Stack spacing="6">
-                      <Button type="submit" colorScheme="persianGreen">
-                        Sign up
-                      </Button>
-                    </Stack>
+                    <Field name="username">
+                      {({ field }: { field: typeof Field }) => (
+                        <FormControl isInvalid={formErrors.username !== ''}>
+                          <FormLabel>Username</FormLabel>
+                          <Input {...field} placeholder="e.g username123" />
+                          <FormErrorMessage>
+                            {formErrors.username}{' '}
+                          </FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="password">
+                      {({ field }: { field: typeof Field }) => (
+                        <PasswordField
+                          {...field}
+                          title={'Password'}
+                          error={formErrors.password}
+                        />
+                      )}
+                    </Field>
+                    <Field name="confirmPassword">
+                      {({ field }: { field: typeof Field }) => (
+                        <PasswordField
+                          {...field}
+                          title={'Confirm  password'}
+                          error={formErrors.confirmPassword}
+                        />
+                      )}
+                    </Field>
+
+                    <FormControl isInvalid={captchaError !== ''}>
+                      <FormLabel htmlFor="Captcha">Captcha</FormLabel>
+                      <ReCAPTCHA
+                        sitekey={process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY!}
+                        ref={captchaRef}
+                        theme={useColorModeValue('light', 'dark')}
+                      />
+                      <FormErrorMessage> {captchaError} </FormErrorMessage>
+                    </FormControl>
+                    <Button type="submit" colorScheme="persianGreen">
+                      Sign up
+                    </Button>
                   </Stack>
                 </Form>
               )}
