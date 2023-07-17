@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react'
 import TypeCard from '@/components/TypeCard'
 import { PerformancesTable } from '@/components/PerformancesTable'
+import { GoogleAnalytics } from 'nextjs-google-analytics'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -56,6 +57,7 @@ const InfoCard = () => (
 export default function Home() {
   return (
     <main>
+      <GoogleAnalytics trackPageViews />
       <Center>
         <Flex p={3} wrap="wrap" width="100%" gap={3} justifyContent="center">
           <VStack maxWidth={[null, 600]} spacing={[3]}>
