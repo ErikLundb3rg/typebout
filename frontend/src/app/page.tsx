@@ -60,25 +60,27 @@ export default function Home() {
       <GoogleAnalytics trackPageViews />
       <Center>
         <Flex p={3} wrap="wrap" width="100%" gap={3} justifyContent="center">
-          <VStack maxWidth={[null, 600]} spacing={[3]}>
+          <VStack maxWidth={[null, 720]} spacing={[3]}>
             <Stack direction={['column', 'row']} spacing={[3]}>
               <CreateGameCard />
               <JoinGameCard />
             </Stack>
             <InfoCard />
           </VStack>
-          <Box maxW="100%">
-            <PerformancesTable
-              header="Latest Races"
-              path={'/races/getLatestPerformances?entries=10'}
-            />
-          </Box>
-          <Box maxW="100%">
-            <PerformancesTable
-              path={'/races/topPerformances?entries=10'}
-              header="Top races"
-            />
-          </Box>
+          <Stack gap={3} direction={['column', 'row']}>
+            <Flex flex={1} maxWidth="100%">
+              <PerformancesTable
+                header="Latest Races"
+                path={'/races/getLatestPerformances?entries=10'}
+              />
+            </Flex>
+            <Flex flex={1} maxW="100%">
+              <PerformancesTable
+                path={'/races/topPerformances?entries=10'}
+                header="Top races"
+              />
+            </Flex>
+          </Stack>
         </Flex>
       </Center>
     </main>

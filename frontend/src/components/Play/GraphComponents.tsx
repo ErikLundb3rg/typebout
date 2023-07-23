@@ -29,7 +29,7 @@ export const SingleGraph: React.FC<SingleGraphProps> = ({
   completionTimes
 }) => {
   return (
-    <ResponsiveContainer width="100%" height={250}>
+    <ResponsiveContainer width="100%" height={400}>
       <LineChart data={chosenEndgameStats.graphData}>
         <XAxis
           dataKey="time"
@@ -82,7 +82,7 @@ export const MultiGraph: React.FC<MultiGraphProps> = ({
   completionTimes
 }) => {
   return (
-    <ResponsiveContainer width="100%" height={250}>
+    <ResponsiveContainer width="100%" height={400}>
       <LineChart>
         <XAxis
           dataKey="time"
