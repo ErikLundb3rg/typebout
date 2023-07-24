@@ -6,25 +6,12 @@ import SocketGameComponentWrapper, {
 import {
   Heading,
   HStack,
-  Text,
   Button,
   Box,
   Input,
   VStack,
   useClipboard,
-  Tag,
-  Spinner,
-  ListItem,
-  UnorderedList,
-  Divider,
-  Center,
-  Card,
-  CardHeader,
-  CardBody,
-  Flex,
-  CardFooter,
-  Link
-} from '@chakra-ui/react'
+  Flex} from '@chakra-ui/react'
 import { LoadingPage } from '@/components/LoadingPage'
 import TypeCard from '@/components/TypeCard'
 import { TypeButtonCard } from '@/components/TypeButtonCard'
@@ -77,9 +64,9 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
             </HStack>
           </TypeCard>
         </Box>
-        <Box flex="1" minWidth="200px">
+        <Flex flex="1" minWidth="200px">
           <TypeButtonCard header="Start game" onClick={handleStartGame} />
-        </Box>
+        </Flex>
       </Flex>
     </VStack>
   )

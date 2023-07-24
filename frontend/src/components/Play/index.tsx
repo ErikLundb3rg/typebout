@@ -217,27 +217,37 @@ export default function PlayGame({
                 completed={completed}
                 author={quote.author}
               />
-              <Box maxW={300}>
-                <form
-                  id="input-form"
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                  }}
-                >
-                  <Input
-                    variant="flushed"
-                    placeholder="Type here when the game begins"
-                    onChange={handleInputChange}
-                    size="lg"
-                    disabled={!gameStarted || completed}
-                    ref={inputRef}
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck="false"
-                  />
-                </form>
-              </Box>
+              {!completed && (
+                <Box maxW={300}>
+                  <form
+                    id="input-form"
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                    }}
+                  >
+                    <Input
+                      style={{
+                        color: 'transparent',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 1
+                      }}
+                      variant="flushed"
+                      onChange={handleInputChange}
+                      size="lg"
+                      disabled={!gameStarted || completed}
+                      ref={inputRef}
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck="false"
+                    />
+                  </form>
+                </Box>
+              )}
             </TypeCard>
           </Box>
         </VStack>

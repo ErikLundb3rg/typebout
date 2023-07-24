@@ -29,7 +29,7 @@ export default function TypeCard({
   const [loading, setLoading] = useState(false)
 
   return (
-    <Card variant="filled">
+    <Card variant="filled" flex={1}>
       {header && (
         <CardHeader>
           <Heading size="md">{header}</Heading>

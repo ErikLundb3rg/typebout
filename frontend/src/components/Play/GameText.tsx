@@ -1,5 +1,6 @@
-import { Text, Box, Fade, useColorModeValue } from '@chakra-ui/react'
+import { Text, Box, Fade, useColorModeValue, Flex } from '@chakra-ui/react'
 import { PropsWithChildren, useEffect, useState } from 'react'
+import './gameText.css'
 
 interface GameTextProps {
   completedContent: string
@@ -46,23 +47,8 @@ const CurrentWord: React.FC<CurrentWordProps> = ({
     return letters.map((letter, index) => {
       let color = undefined
       let customStyle = {}
-
-      if (index === 0 && currentIndex === -1) {
-        customStyle = {
-          ...customStyle,
-          borderLeft: `1px solid ${borderColor}`,
-          marginLeft: '-1px'
-        }
-      } else if (currentIndex === index) {
-        customStyle = {
-          ...customStyle,
-          borderRight: `1px solid ${borderColor}`,
-          marginRight: '-1px'
-        }
-      }
-
       if (correctIndex >= index) {
-        customStyle = { ...customStyle, color: 'green' }
+        customStyle = { ...customStyle, color: 'green'}
       } else if (wrongIndex >= index) {
         // Space, show red underline instead of coloring
         if (letter === ' ') {
@@ -77,20 +63,47 @@ const CurrentWord: React.FC<CurrentWordProps> = ({
       }
 
       return (
-        <span
-          key={index}
-          style={{
-            color,
-            ...customStyle
-          }}
-        >
-          {letter}
-        </span>
+        <>
+          <span
+            key={index}
+            style={{
+              position: 'relative'
+            }}
+          >
+            {currentIndex === index - 1 && (
+              <span
+                className="blink"
+                style={{
+                  display: 'inline-block',
+                  height: '20px',
+                  width: '1.5px',
+                  borderRadius: '100px',
+                  marginBottom: '-4px',
+                  marginLeft: '-1.5px',
+                  backgroundColor: borderColor
+                }}
+              />
+            )}
+            <span
+              style={{
+                color,
+                ...customStyle
+              }}
+            >
+              {letter}
+            </span>
+          </span>
+        </>
       )
     })
   }
 
-  return <span>{renderWord()}</span>
+  return <span style={
+    {
+      display: 'inline-block',
+      position: 'relative'
+    }
+  }>{renderWord()}</span>
 }
 
 export const GameText = ({
@@ -104,7 +117,12 @@ export const GameText = ({
 }: GameTextProps) => {
   return (
     <>
-      <Box lineHeight={8} whiteSpace="pre-wrap">
+      <Box
+        lineHeight={8}
+        whiteSpace="pre-wrap"
+        letterSpacing="1px"
+        fontFamily="mono"
+      >
         <span
           style={{
             color: 'gray'

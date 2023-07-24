@@ -8,7 +8,7 @@ import { getWPM, round } from '../../utils/calculations'
 import { Quotes } from '@prisma/client'
 
 const colors = ['green', 'purple', 'blue', 'black']
-const RAW_WPM_LOOKBACK = 3
+const RAW_WPM_LOOKBACK = 5
 
 const splitStringIncludeSpaces = (str: string) => {
   const res: string[] = []

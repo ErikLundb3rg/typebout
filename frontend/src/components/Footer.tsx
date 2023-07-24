@@ -58,14 +58,14 @@ export function Footer() {
       <Container
         as={Stack}
         maxW={'6xl'}
-        py={4}
+        py={2}
         direction={{ base: 'column', md: 'row' }}
         spacing={4}
         justify={{ base: 'center', md: 'space-between' }}
         align={{ base: 'center', md: 'center' }}
       >
         <Center>
-          <Heading size="md" as="h2" display="inline-block">
+          <Heading size="sm" as="h2" display="inline-block">
             {' '}
             Typebout{' '}
           </Heading>
@@ -75,7 +75,7 @@ export function Footer() {
         </Center>
 
         <Flex align="inherit">
-          <Text>© 2023 Typebout. Made in Sweden </Text>
+          <Text fontSize="smaller">© 2023 Typebout. Made in Sweden </Text>
           <Box width="26px" ml={2}>
             <SwedishFlag />
           </Box>

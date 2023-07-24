@@ -75,9 +75,15 @@ const Profile = ({
     const wpmHistory = data?.data?.wpmHistory
     if (!wpmHistory) return [[], [], []]
     return [
-      wpmHistory.slice(0, Math.min(wpmHistory.length, 10)).reverse(),
-      wpmHistory.slice(0, Math.min(wpmHistory.length, 100)).reverse(),
-      wpmHistory.reverse()
+      wpmHistory
+        .slice(0, Math.min(wpmHistory.length, 10))
+        .reverse()
+        .map((wpm) => +wpm.toFixed(2)),
+      wpmHistory
+        .slice(0, Math.min(wpmHistory.length, 100))
+        .reverse()
+        .map((wpm) => +wpm.toFixed(2)),
+      wpmHistory.reverse().map((wpm) => +wpm.toFixed(2))
     ]
   }, [data?.data?.wpmHistory])
 
@@ -121,18 +127,13 @@ const Profile = ({
 
   return (
     <Center p={3}>
-      <Card variant="filled" w="100%" maxW={1000} p={8} color={cardColor}>
+      <Card variant="filled" w="100%" maxW={1300} p={8} color={cardColor}>
         <VStack w="100%" spacing={6}>
-          <Flex justifyContent="space-between" wrap="wrap" w="100%" gap={6}>
+          <Flex justifyContent="space-between" wrap="wrap" w="100%" gap={6} alignItems="flex-end">
             <Box>
               <Heading size="md">Stats for: </Heading>
               <Heading> {username} </Heading>
             </Box>
-            <Box>
-              <StatComponent title="Games Played" content={wpmHistory.length} />
-            </Box>
-          </Flex>
-          <VStack w="full" mr={6} spacing={6}>
             <Menu>
               <Flex wrap="wrap" alignItems="baseline" gap={4}>
                 <Heading size="md" color="#8884d8">
@@ -149,38 +150,36 @@ const Profile = ({
                   </MenuButton>
                 </Heading>
               </Flex>
-
               <MenuList>
-                {selectedGraph !== Amount.LAST_10 && (
-                  <MenuItem
-                    onClick={() => {
-                      setSelectedGraph(Amount.LAST_10)
-                    }}
-                  >
-                    Last 10
-                  </MenuItem>
-                )}
-                {selectedGraph !== Amount.LAST_100 && (
-                  <MenuItem
-                    onClick={() => {
-                      setSelectedGraph(Amount.LAST_100)
-                    }}
-                  >
-                    Last 100
-                  </MenuItem>
-                )}
-                {selectedGraph !== Amount.ALL && (
-                  <MenuItem
-                    onClick={() => {
-                      setSelectedGraph(Amount.ALL)
-                    }}
-                  >
-                    All
-                  </MenuItem>
-                )}
+                <MenuItem
+                  onClick={() => {
+                    setSelectedGraph(Amount.LAST_10)
+                  }}
+                >
+                  Last 10
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setSelectedGraph(Amount.LAST_100)
+                  }}
+                >
+                  Last 100
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setSelectedGraph(Amount.ALL)
+                  }}
+                >
+                  All
+                </MenuItem>
               </MenuList>
             </Menu>
-            <Box w="100%" h={200}>
+            <Box>
+              <StatComponent title="Games Played" content={wpmHistory.length} />
+            </Box>
+          </Flex>
+          <VStack w="full" mr={6} spacing={6}>
+            <Box w="100%" h={450}>
               {selectedGraph === Amount.ALL ? (
                 <AllGraph wpmHistory={allRaces} />
               ) : selectedGraph === Amount.LAST_100 ? (
@@ -263,7 +262,7 @@ const Last10Graph = ({ wpmHistory }: GraphProps) => {
 
 const Last100Graph = ({ wpmHistory }: GraphProps) => {
   const slidingAverage = useMemo(
-    () => getSlidingAverage(wpmHistory, 10),
+    () => getSlidingAverage(wpmHistory, 10).map((n) => +n.toFixed(2)),
     [wpmHistory]
   )
   return (
@@ -278,12 +277,12 @@ const Last100Graph = ({ wpmHistory }: GraphProps) => {
         <XAxis dataKey="index" />
         <YAxis />
         <Tooltip />
-        <Scatter dataKey="wpm" fill="#8884d8c0" />
+        <Scatter dataKey="wpm" fill="#9894e8" />
         <Line
           dot={false}
           type="monotone"
           dataKey="tenAverage"
-          stroke="#8884d8"
+          stroke="#82ca9d"
           strokeWidth={3}
         />
       </ComposedChart>
@@ -293,11 +292,11 @@ const Last100Graph = ({ wpmHistory }: GraphProps) => {
 
 const AllGraph = ({ wpmHistory }: GraphProps) => {
   const slidingAverage = useMemo(
-    () => getSlidingAverage(wpmHistory, 100),
+    () => getSlidingAverage(wpmHistory, 100).map((n) => +n.toFixed(2)),
     [wpmHistory]
   )
   const slidingAverage2 = useMemo(
-    () => getSlidingAverage(wpmHistory, 10),
+    () => getSlidingAverage(wpmHistory, 10).map((n) => +n.toFixed(2)),
     [wpmHistory]
   )
   return (
@@ -313,19 +312,19 @@ const AllGraph = ({ wpmHistory }: GraphProps) => {
         <XAxis dataKey="index" />
         <YAxis />
         <Tooltip />
-        <Scatter dataKey="wpm" fill="#8884d840" />
+        <Scatter dataKey="wpm" fill="#a8a4f8" />
         <Line
           dot={false}
           type="monotone"
           dataKey="tenAverage"
-          stroke="#8884d8"
+          stroke="#82ca9d"
           strokeWidth={3}
         />
         <Line
           dot={false}
           type="monotone"
           dataKey="hundredAverage"
-          stroke="#82ca9d"
+          stroke="cyan"
           strokeWidth={3}
         />
       </ComposedChart>

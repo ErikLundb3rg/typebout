@@ -39,6 +39,7 @@ export const TypeButtonCard = ({
         background: useColorModeValue(`${color}.400`, `${color}.300`)
       }}
       background={useColorModeValue(`${color}.200`, `${color}.500`)}
+      flex={1}
     >
       <CardHeader>
         <Heading size="md"> {header} </Heading>
