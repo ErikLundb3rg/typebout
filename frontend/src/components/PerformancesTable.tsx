@@ -43,7 +43,7 @@ export const PerformancesTable = ({ path, header }: PerformancesTableProps) => {
               <Thead>
                 <Tr>
                   <Th>Time</Th>
-                  <Th>Username</Th>
+                  <Th>Namn</Th>
                   <Th isNumeric>wpm</Th>
                 </Tr>
               </Thead>

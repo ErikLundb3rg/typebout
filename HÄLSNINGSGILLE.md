@@ -15,3 +15,5 @@ kommentera sedan ut den (notera att om du kör prisma:seed och raderar alla cita
 kör 
 `npm run start`
 
+
+

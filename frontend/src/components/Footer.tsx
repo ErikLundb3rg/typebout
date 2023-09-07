@@ -76,14 +76,6 @@ export function Footer() {
             <SwedishFlag />
           </Box>
         </Flex>
-        <Stack direction={'row'} spacing={6}>
-          <SocialButton
-            label={'Github'}
-            href={'https://github.com/ErikLundb3rg/typebout'}
-          >
-            <FaGithub />
-          </SocialButton>
-        </Stack>
       </Container>
     </Box>
   )

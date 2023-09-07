@@ -3,6 +3,7 @@ import { sendEndGameStats, sendGameInfo } from '../emissions'
 import { addPerformance } from '../../dal/performances'
 import { getUserByUsername, registerUser } from '../../dal/user'
 import fs from 'fs'
+import { getWPM } from '../../utils/calculations'
 
 export const sendGameInfoRepeatedly = (
   group: Group,
@@ -37,6 +38,7 @@ export const onFinish = async (personalGame: PersonalGame) => {
   const { username } = personalGame.user.data
   if (personalGame.user.data.isGuest) {
     let user = await getUserByUsername(username!)
+    const { correct, mistakes, time } = personalGame.endGameStats!
 
     if (!user) {
       user = await registerUser({
@@ -47,7 +49,7 @@ export const onFinish = async (personalGame: PersonalGame) => {
       const { email, phone } = personalGame.user.data.user as any
       fs.appendFile(
         'users.csv',
-        `\n${username},${email},${phone}`,
+        `\n${username},${email},${phone},${getWPM(correct + mistakes, time)}`,
         function (err) {
           if (err) throw err
           console.log('Saved!')
@@ -55,7 +57,6 @@ export const onFinish = async (personalGame: PersonalGame) => {
       )
     }
 
-    const { correct, mistakes, time } = personalGame.endGameStats!
     const { raceId } = await addPerformance({
       completed_in_ms: time * 1000,
       correct,

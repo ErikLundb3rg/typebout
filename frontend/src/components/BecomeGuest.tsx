@@ -46,7 +46,11 @@ export const BecomeGuest = () => {
                 <InputLeftElement pointerEvents="none">
                   <EditIcon color="gray.300" />
                 </InputLeftElement>
-                <Input name="username" type="text" placeholder="Lucas Boberg" />
+                <Input
+                  name="username"
+                  type="text"
+                  placeholder="Förnamn Efternamn"
+                />
               </InputGroup>
 
               <Heading size="sm">Email</Heading>
@@ -54,11 +58,7 @@ export const BecomeGuest = () => {
                 <InputLeftElement pointerEvents="none">
                   <EmailIcon color="gray.300" />
                 </InputLeftElement>
-                <Input
-                  name="email"
-                  type="email"
-                  placeholder="user@hotmail.com"
-                />
+                <Input name="email" type="email" placeholder="user@gmail.com" />
               </InputGroup>
 
               <Heading size="sm">Telefon (valfritt) </Heading>
