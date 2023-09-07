@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google"
+import { Inter } from 'next/font/google'
 import {
   Heading,
   Card,
@@ -25,7 +25,7 @@ interface TypeCardProps {
 
 export const TypeButtonCard = ({
   onClick,
-  color = 'persianGreen',
+  color = 'typeboutGray',
   header
 }: PropsWithChildren<TypeCardProps>) => {
   const [loading, setLoading] = useState(false)

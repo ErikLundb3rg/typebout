@@ -19,24 +19,20 @@ const formatTime = (time: number) => {
 
 export const CountDownCard = ({
   count,
-  color = 'persianGreen'
+  color = 'typeboutGray'
 }: CountDownCardProps) => {
   const [loading, setLoading] = useState(false)
 
   return (
     <Card
       variant="filled"
-      background={
-        count !== 0
-          ? useColorModeValue(`${color}.200`, `${color}.500`)
-          : useColorModeValue(`persianGreen.200`, `persianGreen.500`)
-      }
+      background={useColorModeValue(`${color}.200`, `${color}.500`)}
       w="100%"
       p={0}
     >
       <CardHeader>
         <Heading p={0} size="md">
-          {count !== 0 ? "Starting in: " + formatTime(count) : "GO!"}
+          {count !== 0 ? 'Starting in: ' + formatTime(count) : 'Type!'}
         </Heading>
       </CardHeader>
     </Card>

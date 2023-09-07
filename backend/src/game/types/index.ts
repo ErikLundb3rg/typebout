@@ -72,6 +72,7 @@ export interface SocketData {
   roomID: string
   group: Group
   personalGame: PersonalGame
+  user: Player
 }
 
 export type TypeBoutSocket = Socket<

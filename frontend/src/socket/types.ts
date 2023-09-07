@@ -2,6 +2,8 @@ import { Socket } from 'socket.io-client'
 
 export interface Player {
   username: string
+  email: string
+  phone: string
   id: number
   isGuest: boolean
 }

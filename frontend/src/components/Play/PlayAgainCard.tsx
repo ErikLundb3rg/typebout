@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google"
+import { Inter } from 'next/font/google'
 import {
   Heading,
   Card,
@@ -40,7 +40,7 @@ const formatTime = (time: number) => {
 
 export const PlayAgainCard = ({
   onClick,
-  color = 'persianGreen',
+  color = 'typeboutGray',
   canRestartGame
 }: PropsWithChildren<PlayAgainCardProps>) => {
   color = canRestartGame ? color : 'typeboutGray'

@@ -11,7 +11,8 @@ import {
   Input,
   VStack,
   useClipboard,
-  Flex} from '@chakra-ui/react'
+  Flex
+} from '@chakra-ui/react'
 import { LoadingPage } from '@/components/LoadingPage'
 import TypeCard from '@/components/TypeCard'
 import { TypeButtonCard } from '@/components/TypeButtonCard'
@@ -28,6 +29,7 @@ const CreateRoom = ({ socket, user, players }: BeforeGameComponentProps) => {
       setRoomCode(link.slice(-6))
       setLoading(false)
     })
+    socket.emit('startGame')
   }, [])
 
   const handleStartGame = () => {

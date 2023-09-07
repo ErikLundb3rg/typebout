@@ -28,7 +28,7 @@ interface AuthContextProps {
     captcha: string
   ) => Promise<SignUpError | null>
   logout: () => void
-  becomeGuest: (username: string) => void
+  becomeGuest: (username: string, email: string, phone: string) => void
 }
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps)
@@ -72,25 +72,25 @@ export const AuthProvider = ({
 
   // Reintroduce state if we refresh the page
   useEffect(() => {
-    const user = localStorage.getItem(keys.user)
-    if (user) {
-      // Check if user's refresh token is still valid (if not redirect to login page)
-      tryRefreshToken().then((refreshed) => {
-        if (refreshed) {
-          setUser(JSON.parse(user))
-        } else {
-          router.push('/users/login')
-          toast({
-            title: 'Please login again',
-            description: 'Looks like it has been a while since your last login',
-            duration: 5000,
-            isClosable: true
-          })
-        }
-      })
-    } else {
-      setUser(undefined)
-    }
+    // const user = localStorage.getItem(keys.user)
+    // if (user) {
+    //   // Check if user's refresh token is still valid (if not redirect to login page)
+    //   tryRefreshToken().then((refreshed) => {
+    //     if (refreshed) {
+    //       setUser(JSON.parse(user))
+    //     } else {
+    //       router.push('/users/login')
+    //       toast({
+    //         title: 'Please login again',
+    //         description: 'Looks like it has been a while since your last login',
+    //         duration: 5000,
+    //         isClosable: true
+    //       })
+    //     }
+    //   })
+    // } else {
+    //   setUser(undefined)
+    // }
   }, [])
 
   // Save user in localstorage whenever we update it
@@ -98,11 +98,11 @@ export const AuthProvider = ({
     user && localStorage.setItem(keys.user, JSON.stringify(user))
   }, [user?.username, user?.isGuest])
 
-  const becomeGuest = (username: string) => {
+  const becomeGuest = (username: string, email: string, phone: string) => {
     const ONE_TRILLION = 1000000000000
     // Yeah this is a funny fix but works just fine
     const generatedId = Math.floor(Math.random() * ONE_TRILLION) + ONE_TRILLION
-    setUser({ username, isGuest: true, id: generatedId })
+    setUser({ username, email, phone, isGuest: true, id: generatedId })
   }
 
   const login: AuthContextProps['login'] = async (username, password) => {
@@ -111,7 +111,13 @@ export const AuthProvider = ({
       const response = (await api.login(username, password)).data
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
-      setUser({ username: user.username, id: user.id, isGuest: false })
+      setUser({
+        username: user.username,
+        email: '',
+        phone: '',
+        id: user.id,
+        isGuest: false
+      })
 
       router.back()
       toast({
@@ -147,7 +153,13 @@ export const AuthProvider = ({
       ).data
       const { accessToken, user } = response.data
       localStorage.setItem(keys.accessToken, accessToken)
-      setUser({ username: user.username, id: user.id, isGuest: false })
+      setUser({
+        username: user.username,
+        email: '',
+        phone: '',
+        id: user.id,
+        isGuest: false
+      })
       router.push('/')
       toast({
         title: 'Signup successful',
@@ -173,14 +185,6 @@ export const AuthProvider = ({
     localStorage.removeItem(keys.accessToken)
     localStorage.removeItem(keys.user)
     setUser(undefined)
-    try {
-      await api.logout()
-      toast({
-        title: 'You were logged out',
-        duration: 3000,
-        isClosable: true
-      })
-    } catch (error) {}
   }
 
   const memoedValue = useMemo(

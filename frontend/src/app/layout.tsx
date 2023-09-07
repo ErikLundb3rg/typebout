@@ -6,8 +6,8 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export const metadata = {
-  title: 'Typebout',
-  description: 'Compete against your friends in typing'
+  title: 'LABB hälsningsgillet',
+  description: 'Kom och besök oss på hälsningsgillet!'
 }
 
 export default function RootLayout({

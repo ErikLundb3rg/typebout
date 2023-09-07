@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google"
+import { Inter } from 'next/font/google'
 import {
   Heading,
   Card,
@@ -29,7 +29,7 @@ export default function TypeCard({
   const [loading, setLoading] = useState(false)
 
   return (
-    <Card variant="filled" flex={1}>
+    <Card background="typeboutGray.50" flex={1}>
       {header && (
         <CardHeader>
           <Heading size="md">{header}</Heading>

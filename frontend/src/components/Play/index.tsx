@@ -192,11 +192,7 @@ export default function PlayGame({
 
           <Flex w="100%" gap={3} wrap="wrap">
             <Box w={['100%', '50%']}>
-              <CountDownCard
-                count={count}
-                color="saffron"
-                allFinished={canRestartGame}
-              />
+              <CountDownCard count={count} allFinished={canRestartGame} />
             </Box>
             <Box flexGrow={1}>
               <PlayAgainCard

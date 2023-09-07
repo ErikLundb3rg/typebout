@@ -9,9 +9,15 @@ import {
   Input,
   Fade,
   VStack,
-  StackDivider
+  StackDivider,
+  InputGroup,
+  InputLeftElement,
+  Box
 } from '@chakra-ui/react'
+import { PhoneIcon, EmailIcon, EditIcon } from '@chakra-ui/icons'
+import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import { Link } from '@chakra-ui/next-js'
+import fs from 'fs'
 
 export const BecomeGuest = () => {
   const { becomeGuest } = useAuth()
@@ -21,8 +27,11 @@ export const BecomeGuest = () => {
 
     const formData = new FormData(event.currentTarget)
     const username = formData.get('username') as string | undefined
+    const email = formData.get('email') as string
+    const phone = formData.get('phone') as string
+    console.log('Received formdata', formData)
     if (username) {
-      becomeGuest(username)
+      becomeGuest(username, email, phone)
     }
   }
 
@@ -30,27 +39,51 @@ export const BecomeGuest = () => {
     <Fade in>
       <Center>
         <Stack align="center">
-          <Heading m="7" size="lg">
-            Enter a nickname to play as
-          </Heading>
-
           <form onSubmit={handleSubmit}>
-            <VStack divider={<StackDivider />} spacing={4} align="stretch">
-              <Input name="username" placeholder="e.g Superman" />
-              <Button type="submit" colorScheme="persianGreen" size="lg">
+            <VStack spacing={3} align="stretch">
+              <Heading size="sm">För och efternamn</Heading>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none">
+                  <EditIcon color="gray.300" />
+                </InputLeftElement>
+                <Input name="username" type="text" placeholder="Lucas Boberg" />
+              </InputGroup>
+
+              <Heading size="sm">Email</Heading>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none">
+                  <EmailIcon color="gray.300" />
+                </InputLeftElement>
+                <Input
+                  name="email"
+                  type="email"
+                  placeholder="user@hotmail.com"
+                />
+              </InputGroup>
+
+              <Heading size="sm">Telefon (valfritt) </Heading>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none">
+                  <PhoneIcon color="gray.300" />
+                </InputLeftElement>
+                <Input
+                  isRequired={false}
+                  name="phone"
+                  type="tel"
+                  placeholder="07..."
+                />
+              </InputGroup>
+
+              <Checkbox m={3} maxW={300} isRequired>
+                Jag godkänner att Lunds Akademiska Biljettbyrå sparar mina
+                uppgifter
+              </Checkbox>
+
+              <Button type="submit" size="lg">
                 Play
               </Button>
             </VStack>
           </form>
-          <Text>
-            or{' '}
-            <Link href="/users/login">
-              <Button variant="link" colorScheme="saffron">
-                Login
-              </Button>
-            </Link>{' '}
-            to your account
-          </Text>
         </Stack>
       </Center>
     </Fade>

@@ -39,7 +39,7 @@ export const PerformancesTable = ({ path, header }: PerformancesTableProps) => {
       ) : (
         <Skeleton isLoaded={!isLoading}>
           <TableContainer>
-            <Table variant="striped" colorScheme="persianGreen" size="sm">
+            <Table variant="striped" size="sm">
               <Thead>
                 <Tr>
                   <Th>Time</Th>
@@ -58,7 +58,7 @@ export const PerformancesTable = ({ path, header }: PerformancesTableProps) => {
                           <Link href={'/users/profile/' + username}>
                             <Button
                               variant="link"
-                              colorScheme="charcoal"
+                              color="typeboutGray.600"
                               textDecoration="underline"
                             >
                               {username}

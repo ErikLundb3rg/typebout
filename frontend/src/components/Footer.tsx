@@ -65,17 +65,13 @@ export function Footer() {
         align={{ base: 'center', md: 'center' }}
       >
         <Center>
-          <Heading size="sm" as="h2" display="inline-block">
-            {' '}
-            Typebout{' '}
-          </Heading>
-          <Box w="12px" display="inline-block" ml={2}>
-            <Logo />
-          </Box>
+          <Logo height={30} />
         </Center>
 
         <Flex align="inherit">
-          <Text fontSize="smaller">© 2023 Typebout. Made in Sweden </Text>
+          <Text fontSize="smaller">
+            © 2023 Lunds Akademiska Biljettbyrå. Made in Sweden{' '}
+          </Text>
           <Box width="26px" ml={2}>
             <SwedishFlag />
           </Box>

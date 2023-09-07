@@ -17,6 +17,11 @@ import {
 import TypeCard from '@/components/TypeCard'
 import { PerformancesTable } from '@/components/PerformancesTable'
 import { GoogleAnalytics } from 'nextjs-google-analytics'
+import { useEffect } from 'react'
+import { keys } from '@/util/localstoragekeys'
+import useAuth from '@/providers/useAuth'
+import { Link } from '@chakra-ui/next-js'
+import { TypeButtonCard } from '@/components/TypeButtonCard'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -55,33 +60,37 @@ const InfoCard = () => (
   </TypeCard>
 )
 export default function Home() {
+  const { logout } = useAuth()
+  useEffect(() => {
+    // Wipe each time you go to starting page because then we want a new guest when they
+    // decide to create a game
+    logout()
+  }, [])
   return (
     <main>
       <GoogleAnalytics trackPageViews />
       <Center>
-        <Flex p={3} wrap="wrap" width="100%" gap={3} justifyContent="center">
-          <VStack maxWidth={[null, 720]} spacing={[3]}>
-            <Stack direction={['column', 'row']} spacing={[3]}>
-              <CreateGameCard />
-              <JoinGameCard />
+        <VStack>
+          <Link href={'game/createRoom'} w="60%">
+            <TypeButtonCard header="Start game" onClick={() => {}} />
+          </Link>
+          <Flex p={3} wrap="wrap" width="100%" gap={3} justifyContent="center">
+            <Stack gap={3} direction={['column', 'row']}>
+              <Flex flex={1} maxWidth="100%">
+                <PerformancesTable
+                  header="Latest Races"
+                  path={'/races/getLatestPerformances?entries=10'}
+                />
+              </Flex>
+              <Flex flex={1} maxW="100%">
+                <PerformancesTable
+                  path={'/races/topPerformances?entries=10'}
+                  header="Top races"
+                />
+              </Flex>
             </Stack>
-            <InfoCard />
-          </VStack>
-          <Stack gap={3} direction={['column', 'row']}>
-            <Flex flex={1} maxWidth="100%">
-              <PerformancesTable
-                header="Latest Races"
-                path={'/races/getLatestPerformances?entries=10'}
-              />
-            </Flex>
-            <Flex flex={1} maxW="100%">
-              <PerformancesTable
-                path={'/races/topPerformances?entries=10'}
-                header="Top races"
-              />
-            </Flex>
-          </Stack>
-        </Flex>
+          </Flex>
+        </VStack>
       </Center>
     </main>
   )

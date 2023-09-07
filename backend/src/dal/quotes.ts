@@ -5,7 +5,7 @@ export const getRandomQuote = async () => {
   const skip = Math.floor(Math.random() * productsCount)
 
   const randomQuote = await db.quotes.findFirst({
-    skip,
+    skip: 0,
     include: {
       author: true
     }

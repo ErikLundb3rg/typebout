@@ -55,9 +55,8 @@ const HeadText = () => {
         }}
       >
         <span>
-          <Text display="inline-block"> Typebout </Text>
           <Box w="14px" display="inline-block" ml={2}>
-            <Logo />
+            <Logo height={50} />
           </Box>
         </span>
       </Link>
@@ -82,73 +81,7 @@ const RegularNav = ({
 }: NavProps) => {
   const color = useColorModeValue('typeBoutGray.800', 'whiteAlpha.900')
   const hoverColor = useColorModeValue('typeboutGray.300', 'typeboutGray.200')
-  return (
-    <HStack spacing={20} fontSize="1.2rem">
-      {isLoggedIn ? (
-        <>
-          <Tooltip label="Profile">
-            <Link
-              href={'/users/profile/' + user?.username}
-              _hover={{
-                textDecoration: 'none'
-              }}
-            >
-              <IconButton
-                icon={<FaUserCircle fontSize="1.5rem" />}
-                aria-label="Profile"
-                variant="ghost"
-                color={color}
-                _hover={{
-                  color: hoverColor
-                }}
-              />
-            </Link>
-          </Tooltip>
-          <Tooltip label="Logout">
-            <IconButton
-              onClick={logout}
-              icon={
-                <BiLogOutCircle
-                  fontSize="1.5rem"
-                  style={{ transform: 'rotate(180deg)' }}
-                />
-              }
-              aria-label="Logout"
-              variant="ghost"
-              color={color}
-              _hover={{
-                color: hoverColor
-              }}
-            />
-          </Tooltip>
-        </>
-      ) : (
-        <>
-          <Link href="/users/login">Login</Link>
-          <Link href="/users/signup">Sign up</Link>
-        </>
-      )}
-
-      <Tooltip label="Toggle theme">
-        <IconButton
-          onClick={toggleColorMode}
-          icon={
-            colorMode === 'light' ? (
-              <MoonIcon fontSize="1.5rem" />
-            ) : (
-              <SunIcon fontSize="1.5rem" />
-            )
-          }
-          aria-label="Toggle dark mode"
-          variant="ghost"
-          color={color}
-          _hover={{
-            color: hoverColor
-          }}
-        />
-      </Tooltip>
-    </HStack>
-  )
+  return <HStack spacing={20} fontSize="1.2rem"></HStack>
 }
 
 const MobileNav = ({
@@ -193,14 +126,6 @@ const MobileNav = ({
         <Link href="/game/join">
           <MenuItem icon={<ArrowLeftIcon />}>Join game</MenuItem>
         </Link>
-
-        <MenuItem
-          onClick={toggleColorMode}
-          icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-          closeOnSelect={false}
-        >
-          Toggle theme
-        </MenuItem>
       </MenuList>
     </Menu>
   )

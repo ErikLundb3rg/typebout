@@ -113,6 +113,8 @@ export default function SocketGameComponentWrapper(
       return (
         <BeforeGameComponent socket={socket} user={user} players={players} />
       )
+      // socket.emit('createRoom', (link) => {})
+      // socket.emit('startGame')
     }
 
     return (

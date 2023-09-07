@@ -67,16 +67,16 @@ const colors = {
     900: '#1e0800'
   },
   typeboutGray: {
-    50: '#f0f0fa',
-    100: '#d1d3e1',
-    200: '#b3b6c9',
-    300: '#9499b4',
-    400: '#777c9f',
-    500: '#5d6385',
-    600: '#484d69',
-    700: '#34374b',
-    800: '#1e212e',
-    900: '#080b14'
+    50: '#EEEEEE',
+    100: '#d9d9d9',
+    200: '#bfbfbf',
+    300: '#a6a6a6',
+    400: '#8c8c8c',
+    500: '#737373',
+    600: '#595959',
+    700: '#404040',
+    800: '#262626',
+    900: '#120b0d'
   }
 }
 
@@ -99,17 +99,15 @@ export const theme = extendTheme(
       global: (props: StyleFunctionProps) => ({
         body: {
           fontFamily: 'body',
-          color: mode('typeboutGray.700', 'typeboutGray.50')(props),
           lineHeight: 'base'
         },
         a: {
           _hover: {
-            textDecoration: 'underline',
-            color: 'persianGreen.500'
+            textDecoration: 'underline'
           }
         }
       })
     }
   },
-  withDefaultColorScheme({ colorScheme: 'charcoal' })
+  withDefaultColorScheme({ colorScheme: 'typeboutGray' })
 )

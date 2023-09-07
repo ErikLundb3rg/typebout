@@ -27,6 +27,7 @@ export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
       return next(new Error('Username contains profanities'))
     }
     socket.data = {
+      user,
       username: user.username,
       id: user.id,
       isGuest: true
@@ -36,6 +37,7 @@ export const verifyConnection: SocketIOMiddleWareHandler = (socket, next) => {
     try {
       const { userId, username } = verifyAccessToken(accessToken) as JWTPayload
       socket.data = {
+        user,
         id: userId,
         username,
         isGuest: false

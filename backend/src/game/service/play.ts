@@ -1,6 +1,8 @@
 import { Group, PersonalGame } from '../logic/gameDirector'
 import { sendEndGameStats, sendGameInfo } from '../emissions'
 import { addPerformance } from '../../dal/performances'
+import { getUserByUsername, registerUser } from '../../dal/user'
+import fs from 'fs'
 
 export const sendGameInfoRepeatedly = (
   group: Group,
@@ -32,22 +34,39 @@ export const onFinish = async (personalGame: PersonalGame) => {
   // Send final users data to user
   sendEndGameStats(group)
 
+  const { username } = personalGame.user.data
   if (personalGame.user.data.isGuest) {
-    return
-  }
+    let user = await getUserByUsername(username!)
 
-  // Log users result to database
-  // time in seconds
-  const { correct, mistakes, time } = personalGame.endGameStats!
-  const { raceId } = await addPerformance({
-    completed_in_ms: time * 1000,
-    correct,
-    mistakes,
-    quoteId: group.quote.id,
-    userId: personalGame.user.data.id!,
-    raceId: group.raceId
-  })
-  if (!group.raceId) {
-    group.raceId = raceId
+    if (!user) {
+      user = await registerUser({
+        username: personalGame.user.data.username!,
+        password: 'dummy'
+      })
+
+      const { email, phone } = personalGame.user.data.user as any
+      fs.appendFile(
+        'users.csv',
+        `\n${username},${email},${phone}`,
+        function (err) {
+          if (err) throw err
+          console.log('Saved!')
+        }
+      )
+    }
+
+    const { correct, mistakes, time } = personalGame.endGameStats!
+    const { raceId } = await addPerformance({
+      completed_in_ms: time * 1000,
+      correct,
+      mistakes,
+      quoteId: group.quote.id,
+      userId: user.id,
+      raceId: group.raceId
+    })
+
+    if (!group.raceId) {
+      group.raceId = raceId
+    }
   }
 }
