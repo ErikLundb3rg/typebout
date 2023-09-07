@@ -4,7 +4,9 @@ import quoteFile from '../quotes/quotes.json'
 const prisma = new PrismaClient()
 
 const main = async () => {
-  // delete all quotes
+  // delete all
+  await prisma.quotes.deleteMany({})
+  console.log('deleting everything')
 
   for (const quote of quoteFile) {
     await prisma.quotes.upsert({

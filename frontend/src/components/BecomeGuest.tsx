@@ -31,7 +31,7 @@ export const BecomeGuest = () => {
     const phone = formData.get('phone') as string
     console.log('Received formdata', formData)
     if (username) {
-      becomeGuest(username, email, phone)
+      becomeGuest(username.replace(' ', '_'), email, phone)
     }
   }
 
